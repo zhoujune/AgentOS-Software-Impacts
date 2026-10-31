@@ -33,6 +33,8 @@ The server-side staging copy had originally lost the executable bit on 29 upstre
 - Ten tracked-file modifications listed above.
 - Ten new text/data files: the deterministic replay fixtures, replay documentation, offline validation and repeated-benchmark scripts, and benchmark aggregation/tests.
 
+The patch also adds a reproducible post-build Eval image builder. It injects the updated guest startup/agent scripts into a copy of the clean rootfs, keeps the workspace parent root-owned, and makes only the two benign fixture roots agent-writable. A six-task unprivileged QEMU run passed all six cases with this image; a post-boot inode probe confirmed the workspace parent and failcases remained root-owned. Six new regression tests check that the task corpus stays within this permission boundary.
+
 The patch deliberately excludes:
 - The 21 changed Python bytecode caches and all other generated caches.
 - The separate `judge/run_vtrm_eval_local_model.py` experiment and the local-model bootstrap patch, which are documented in [PR #3](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/3).
@@ -40,13 +42,13 @@ The patch deliberately excludes:
 
 ### Patch validation
 
-The six modified non-empty upstream blobs were retrieved by their exact Git blob SHA from the pinned commit; the four empty placeholders were verified against the empty-blob SHA. A pristine test tree was created with original executable modes. The patch passed `git apply --check`, applied successfully, and recreated all 20 modified/added files byte-for-byte equal to the experimental server copy.
+The six modified non-empty upstream blobs were retrieved by their exact Git blob SHA from the pinned commit; the four empty placeholders were verified against the empty-blob SHA. A pristine test tree was created with original executable modes. The patch passed `git apply --check`, applied successfully, and recreated all 22 modified/added files byte-for-byte equal to the experimental server copy.
 
 This is a verified patch-application test, **not** a full clone-and-rebuild on the server. Direct `git ls-remote https://github.com/zhoujune/AgentOS.git` from the server fails with a connection reset. The included `scripts/reconstruct_agentos_overlay.sh` is the user-side full-clone procedure: it clones the public repository, checks out the pinned commit, applies the patch, and runs the Python unit tests. Its full networked clone path has not yet been executed here.
 
 Patch SHA-256:
 
-`935cb3b8df2da958fe2ac3a6e1e21679807b917502a78f991b18ad7623ef0f01`
+`dcae1c4abdf821dd357d0004ea0b4adf9376cac16879e21c1746d35c9f82488d`
 
 ## License evidence and remaining legal action
 
