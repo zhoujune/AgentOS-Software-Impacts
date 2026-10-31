@@ -1,0 +1,108 @@
+{
+  "validation": "PASS",
+  "repetitions_each": 3,
+  "cases_each": 18,
+  "controls": {
+    "cassette_sha256": "ca11bf6e0ce71ab28e55803a47dec7b0d48ea8cf015134517f6c489e9d033ede",
+    "kernel_sha256": "2e7101b6ce88b5b7c27b8bc3ecee0d48c2db97992900539d75784397ca11436d",
+    "platform": "Linux-5.10.134-17.2.al8.x86_64-x86_64-with-glibc2.39",
+    "kernel": "5.10.134-17.2.al8.x86_64",
+    "machine": "x86_64",
+    "cpu_model": "Hygon C86-4G (OPN:7490)",
+    "qemu_version": "QEMU emulator version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.18)",
+    "memory_mb": 512,
+    "vm_boot_timeout_seconds": 60,
+    "task_timeout_seconds": 90,
+    "reset_strategy": "copy-image",
+    "llm_proxy_poll_interval_seconds": 2.0,
+    "result_poll_interval_seconds": 1.0
+  },
+  "a_image_sha256": "cb5483033c50ee28d247faec1fe0744acc3ff05ec1cccfbf898ba229855c5ca4",
+  "b_image_sha256": "d6bd8f99b6b897eca5b84da2dcc52b82aeb3d0d2d790cf226fc04bc2cf2bbc0f",
+  "a_guest_poll_s": [
+    5.0,
+    1.0
+  ],
+  "b_guest_poll_s": [
+    0.2,
+    0.2
+  ],
+  "metrics": {
+    "task_enqueue_and_wait_seconds": {
+      "name": "Task enqueue/wait",
+      "sample_count_each": 18,
+      "a_median_s": 10.006302,
+      "a_p95_s": 12.007991,
+      "b_median_s": 8.005322,
+      "b_p95_s": 10.006574,
+      "median_difference_s": -2.00098,
+      "median_reduction_pct": 19.997
+    },
+    "case_runtime_including_reset_seconds": {
+      "name": "End-to-end case incl. reset",
+      "sample_count_each": 18,
+      "a_median_s": 25.257772,
+      "a_p95_s": 27.26285,
+      "b_median_s": 23.230435,
+      "b_p95_s": 25.307184,
+      "median_difference_s": -2.027337,
+      "median_reduction_pct": 8.027
+    },
+    "vm_boot_to_ready_seconds": {
+      "name": "VM boot-to-ready",
+      "sample_count_each": 18,
+      "a_median_s": 10.003483,
+      "a_p95_s": 10.004589,
+      "b_median_s": 10.00405,
+      "b_p95_s": 10.00466,
+      "median_difference_s": 0.000567,
+      "median_reduction_pct": -0.006
+    },
+    "image_reset_seconds": {
+      "name": "Image reset",
+      "sample_count_each": 18,
+      "a_median_s": 0.071989,
+      "a_p95_s": 0.095895,
+      "b_median_s": 0.071253,
+      "b_p95_s": 0.093059,
+      "median_difference_s": -0.000736,
+      "median_reduction_pct": 1.022
+    }
+  },
+  "per_run_wait": {
+    "A": [
+      {
+        "repetition": 1,
+        "task_wait_median_s": 10.006101
+      },
+      {
+        "repetition": 2,
+        "task_wait_median_s": 10.006058
+      },
+      {
+        "repetition": 3,
+        "task_wait_median_s": 10.505381
+      }
+    ],
+    "B": [
+      {
+        "repetition": 1,
+        "task_wait_median_s": 8.005586
+      },
+      {
+        "repetition": 2,
+        "task_wait_median_s": 8.005373
+      },
+      {
+        "repetition": 3,
+        "task_wait_median_s": 8.005195
+      }
+    ]
+  },
+  "limitations": [
+    "A runs precede B runs; not randomized/interleaved.",
+    "Six exact-replay tasks only; no live LLM inference.",
+    "Pooled case-level medians are descriptive, not independent samples suitable for a significance test.",
+    "A/B image difference was separately verified in two embedded guest scripts."
+  ]
+}
