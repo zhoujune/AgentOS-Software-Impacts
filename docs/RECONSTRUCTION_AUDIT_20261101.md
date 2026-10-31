@@ -16,21 +16,21 @@ Every one of the 279 upstream blob paths was present in the experimental server 
 
 | Status | Count |
 | --- | ---: |
-| Byte-identical upstream blobs | 252 |
-| Content-different blobs | 27 |
+| Byte-identical upstream blobs | 248 |
+| Content-different blobs | 31 |
 | Missing upstream blobs | 0 |
 | Mode-only mismatches | 0 |
 
-The 27 content differences consist of:
+The 31 content differences consist of:
 - 21 generated `__pycache__/*.pyc` files. These are build/runtime cache artifacts and are not part of the source overlay.
-- Six tracked text/source files: `README.md`, `br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh`, `br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh`, `br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py`, `judge/run_vtrm_eval.py`, and `llm_proxy.py`.
+- Ten tracked text/source/manifest files: `README.md`, `br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh`, `br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh`, `br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py`, `docs/ARTIFACT.md`, `docs/DESIGN.md`, `docs/THREAT_MODEL.md`, `judge/run_vtrm_eval.py`, `llm_proxy.py`, and `manifests/manifest.lock`. The four documentation/manifest files were empty in the upstream baseline and are filled by this overlay.
 
 The server-side staging copy had originally lost the executable bit on 29 upstream executable files. Those mode bits were restored to match the immutable upstream tree. This did not change file contents or either VM image.
 
 ## Reproducible overlay
 
 `patches/0001-agentos-offline-replay-overlay.patch` contains:
-- Six tracked-file modifications listed above.
+- Ten tracked-file modifications listed above.
 - Ten new text/data files: the deterministic replay fixtures, replay documentation, offline validation and repeated-benchmark scripts, and benchmark aggregation/tests.
 
 The patch deliberately excludes:
@@ -40,13 +40,13 @@ The patch deliberately excludes:
 
 ### Patch validation
 
-The six original upstream blobs were retrieved by their exact Git blob SHA from the pinned commit. A pristine test tree was created from those files with their original executable modes. The patch passed `git apply --check`, applied successfully, and recreated all 16 modified/added files byte-for-byte equal to the experimental server copy.
+The six modified non-empty upstream blobs were retrieved by their exact Git blob SHA from the pinned commit; the four empty placeholders were verified against the empty-blob SHA. A pristine test tree was created with original executable modes. The patch passed `git apply --check`, applied successfully, and recreated all 20 modified/added files byte-for-byte equal to the experimental server copy.
 
 This is a verified patch-application test, **not** a full clone-and-rebuild on the server. Direct `git ls-remote https://github.com/zhoujune/AgentOS.git` from the server fails with a connection reset. The included `scripts/reconstruct_agentos_overlay.sh` is the user-side full-clone procedure: it clones the public repository, checks out the pinned commit, applies the patch, and runs the Python unit tests. Its full networked clone path has not yet been executed here.
 
 Patch SHA-256:
 
-`fde362be14b2e5160c36df130ac4ae72ae93cc79f92f946259fdbbd6646a6ea0`
+`935cb3b8df2da958fe2ac3a6e1e21679807b917502a78f991b18ad7623ef0f01`
 
 ## License evidence and remaining legal action
 
