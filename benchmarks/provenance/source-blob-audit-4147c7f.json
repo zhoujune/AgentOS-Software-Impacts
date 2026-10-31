@@ -1,11 +1,12 @@
 {
   "upstream_repository": "zhoujune/AgentOS",
   "upstream_commit": "4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c",
+  "upstream_tree_sha": "a19299570fa796795c8e0cf787f29c41718ae960",
   "checked_blobs": 279,
   "upstream_tracked_bytes": 239002958,
   "counts": {
-    "identical": 252,
-    "content_changed": 27
+    "identical": 248,
+    "content_changed": 31
   },
   "non_identical": [
     {
@@ -169,6 +170,36 @@
       "local_size": 60197
     },
     {
+      "path": "docs/ARTIFACT.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "544441c553acfb1c833125d78542c1f860c4cac4",
+      "local_mode": "100644",
+      "local_size": 5087
+    },
+    {
+      "path": "docs/DESIGN.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "a98bcf5daa60c0f1ae7780c1c1f15961855bc5d6",
+      "local_mode": "100644",
+      "local_size": 5641
+    },
+    {
+      "path": "docs/THREAT_MODEL.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "b1dd217959848770b0081952543af000e148a1f2",
+      "local_mode": "100644",
+      "local_size": 4989
+    },
+    {
       "path": "host_ui/__pycache__/__init__.cpython-312.pyc",
       "mode": "100644",
       "sha": "b65d4778083f3f79f6e9db426ae9a4aafd1726c9",
@@ -277,18 +308,33 @@
       "local_sha": "d24c962a6d82530e24a72eae2b2fd0e23ea8ee87",
       "local_mode": "100644",
       "local_size": 18989
+    },
+    {
+      "path": "manifests/manifest.lock",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "10da1558bed7d0ac4f0a21d8009f75ce4c4f5e4e",
+      "local_mode": "100644",
+      "local_size": 2435
     }
   ],
   "interpretation": {
     "generated_bytecode_differences": 21,
-    "tracked_text_source_differences": [
+    "tracked_text_source_and_manifest_differences": [
       "README.md",
       "br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh",
       "br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh",
       "br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py",
+      "docs/ARTIFACT.md",
+      "docs/DESIGN.md",
+      "docs/THREAT_MODEL.md",
       "judge/run_vtrm_eval.py",
-      "llm_proxy.py"
-    ]
+      "llm_proxy.py",
+      "manifests/manifest.lock"
+    ],
+    "patch_reconstructs_modified_and_added_files": 20
   },
-  "upstream_tree_sha": "a19299570fa796795c8e0cf787f29c41718ae960"
+  "overlay_patch_sha256": "935cb3b8df2da958fe2ac3a6e1e21679807b917502a78f991b18ad7623ef0f01"
 }
