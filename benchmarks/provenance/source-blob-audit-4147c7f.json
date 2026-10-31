@@ -334,7 +334,9 @@
       "llm_proxy.py",
       "manifests/manifest.lock"
     ],
-    "patch_reconstructs_modified_and_added_files": 20
+    "patch_reconstructs_modified_and_added_files": 22,
+    "new_overlay_files": 12,
+    "tracked_modified_files": 10
   },
-  "overlay_patch_sha256": "935cb3b8df2da958fe2ac3a6e1e21679807b917502a78f991b18ad7623ef0f01"
+  "overlay_patch_sha256": "dcae1c4abdf821dd357d0004ea0b4adf9376cac16879e21c1746d35c9f82488d"
 }
