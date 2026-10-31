@@ -33,7 +33,7 @@ git -C "$DESTINATION" apply "$PATCH_FILE"
 
 (
   cd "$DESTINATION"
-  python3 -m unittest -v judge.test_benchmark_timing judge.test_offline_replay
+  python3 -m unittest discover -s judge -p 'test_*.py' -v
   bash -n scripts/test/run_offline_smoke.sh
   bash -n scripts/test/run_offline_representative_suite.sh
   bash -n scripts/test/run_offline_repeated_benchmark.sh
