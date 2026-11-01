@@ -55,15 +55,53 @@ Three **candidate** models, not confirmed installations or completed test result
 
 Use the full OpenAI-compatible HTTP chat-completions endpoint provided by a real model service, e.g. http://127.0.0.1:8000/v1/chat/completions. Confirm the served checkpoint, exact revision, tokenizer and license. The Meta Llama 3 license may require authorized access; Qwen2.5 and Mistral v0.3 model cards indicate Apache-2.0. Model weights and credentials are not part of this journal artifact.
 
-For an explicitly opted-in, two-episode Llama pilot on an already-running **local** vLLM server:
+### Start one local PPU model and run a two-task pilot
+
+On the **PPU host**, start the model in the foreground. For the previously verified local Llama 3 8B model directory, the command is:
 
 ~~~bash
-export AGENTOS_BENCH_LLAMA_ENDPOINT=http://127.0.0.1:8000/v1/chat/completions
-export AGENTOS_BENCH_LLAMA_TOKEN=local-dev-only
-python3 benchmarks/wejbench/v0.1/run_live.py --execute --models llama3-8b --max-episodes 2 --agentos-root "$PWD/AgentOS-candidate" --prepared-root "$PWD/runtime/wejbench-prepared" --output "$PWD/runtime/wejbench-llama-pilot"
+bash benchmarks/wejbench/v0.1/serve_local_model.sh \
+  /models/Llama3-8B-Instruct llama3-8b-local 8017
 ~~~
 
-The dummy token is appropriate only for a locally configured unauthenticated service. Never commit real tokens or model transcripts. For a full three-family study, configure all three endpoint/token environment-variable pairs listed in model-profiles.json and remove --max-episodes; use a new output directory for each run.
+This uses the host's already installed PPU-enabled vLLM. The command serves the **existing local model weights**, binds only to 127.0.0.1 and does not download weights. Stop it with Ctrl-C. The checkpoint directory, license, PPU allocation, and model ID must be verified on the actual host; the private server was unreachable during the current implementation session.
+
+In a second shell on the **same PPU host**, create the clean task corpus once and run an explicitly opted-in pilot:
+
+~~~bash
+# From the benchmark branch checkout:
+bash scripts/reconstruct_agentos_overlay.sh "$PWD/AgentOS-candidate"
+python3 benchmarks/wejbench/v0.1/prepare.py \
+  --agentos-root "$PWD/AgentOS-candidate" \
+  --output "$PWD/runtime/wejbench-prepared"
+
+export AGENTOS_BENCH_LLAMA_ENDPOINT=http://127.0.0.1:8017/v1/chat/completions
+export AGENTOS_BENCH_LLAMA_TOKEN=local-dev-only
+export AGENTOS_BENCH_LLAMA_SERVED_ID=llama3-8b-local
+
+bash benchmarks/wejbench/v0.1/run_local_pilot.sh \
+  "$PWD/AgentOS-candidate" \
+  "$PWD/runtime/wejbench-prepared" \
+  "$PWD/runtime/wejbench-llama-pilot-001" llama3-8b
+~~~
+
+The pilot selects **one new benign task and one strict database-denial task**. The runner explicitly repairs guest `AGENT_MODEL` forwarding in the reconstructed checkout, refuses non-loopback endpoints, verifies the served ID using GET /v1/models, makes a real local chat-completions request, and records each episode's observed LLM API calls and World Effect Judge result.
+
+For Qwen or Mistral, first obtain and verify the correct model files and server runtime for the chosen PPU. Serve them locally using explicit model IDs such as `qwen25-7b-local` or `mistral7b-v03-local` and set `AGENTOS_BENCH_QWEN_ENDPOINT`, `AGENTOS_BENCH_QWEN_TOKEN`, `AGENTOS_BENCH_QWEN_SERVED_ID` or the corresponding `AGENTOS_BENCH_MISTRAL_*` environment variables. You can serve the three models **sequentially on a single accelerator**, freeing resources between models, but record the sequential study design.
+
+The local preflight can also run separately:
+
+~~~bash
+python3 benchmarks/wejbench/v0.1/preflight_local.py \
+  --models llama3-8b \
+  --output "$PWD/runtime/llama-local-preflight.json"
+~~~
+
+Do not mistake the preflight greeting for a WEJ task result. The two-case pilot is complete only when `episodes.json` reports confirmed local API calls and the host judge's outcomes. Raw model-generated response cassettes and VM logs remain **local only** and may include sensitive task data.
+
+For the full study with each model served sequentially, execute `run_live.py --execute --models PROFILE --repetitions 3` once per profile with a separate new output directory. That is 72 episodes per model and 216 in total. An execution on a remote hosted API endpoint is intentionally rejected. Do not use `--max-episodes` and then report a full study.
+
+The local dummy token is for a locally configured **unauthenticated** endpoint only; an authenticated loopback service should use its actual token via the environment. Never commit tokens, model transcripts, VM images, or unreviewed guest audit logs.
 
 Run a model analysis only after episodes.json exists:
 
