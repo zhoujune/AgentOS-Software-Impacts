@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1",
+  "date_utc": "2026-11-01",
+  "study": "AgentOS-WEJ-Bench v0.1 local live pilot",
+  "experimental_scope": "4 selected new tasks x 3 locally served model families x 1 execution per task/model",
+  "platform": {
+    "accelerator_count": 4,
+    "accelerator": "PPU-ZW810E",
+    "accelerator_memory_mib_each": 98304,
+    "used_accelerator_indices": [
+      0,
+      1,
+      2
+    ],
+    "vllm_version": "0.20.1+v0.1.0.ppu2.1.0",
+    "python_version": "3.12.3",
+    "host_kernel": "5.10.134-17.2.al8.x86_64",
+    "qemu_guest_networking": false,
+    "inference_endpoints": "loopback host only"
+  },
+  "models": [
+    {
+      "profile_id": "llama3-8b",
+      "served_id": "llama3-8b-local",
+      "checkpoint_dir": "/models/Llama3-8B-Instruct",
+      "ppu_index": 0,
+      "api_port": 8017,
+      "max_model_len": 4096,
+      "snapshot_manifest_sha256": "43b7b952e7caa1b4be1e4e9bc52ca2e64fa84b1199ee12cff6ed768727a113fb"
+    },
+    {
+      "profile_id": "qwen3-14b",
+      "served_id": "qwen3-14b-local",
+      "checkpoint_dir": "/models/Qwen3-14B",
+      "ppu_index": 1,
+      "api_port": 8018,
+      "adapter_port": 8028,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      },
+      "max_model_len": 4096,
+      "snapshot_manifest_sha256": "f15719b161b6cbd5adc341f620725167aaad0a2ac680750c6b949993b5594aad"
+    },
+    {
+      "profile_id": "mistral7b-v03",
+      "served_id": "mistral7b-v03-local",
+      "checkpoint_dir": "/models/Mistral-7B-Instruct-v0.3",
+      "ppu_index": 2,
+      "api_port": 8019,
+      "max_model_len": 4096,
+      "snapshot_manifest_sha256": "f9aecbdcdec4947f23da2246296c51f338e2af0578720cac7cac4b330597c96c"
+    }
+  ],
+  "experimental_candidate_source": {
+    "origin": "pre-existing unversioned on-host AgentOS-main tree, copied to separate temporary experimental checkout; upstream repository was not modified",
+    "selected_file_sha256": {
+      "judge/run_vtrm_eval.py": "91ec3b2b24385a3451e325124f71e002dbaf891135d36fedbabf070a67d028ef",
+      "llm_proxy.py": "5f3fc595040e16543db7d5f972bba21e5e054f24ba5375af95d8cb5c5baf31b9",
+      "br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py": "22a7f5577c5dfe3571894faf54627a6c7e6ceb3ef3c3f95925d9533db8178d73",
+      "artifacts/images/bzImage": "2e7101b6ce88b5b7c27b8bc3ecee0d48c2db97992900539d75784397ca11436d",
+      "runtime/offline-eval/rootfs.eval.offline.ext2": "ac1718c0dd3e4ddfc954baedfa8f325294393810565ba6732be289dd441be8e7",
+      "artifacts/images/rootfs.eval.clean.ext2": "d61a40dc7f2090b19505886020593674cdf2b5dd2f85fbcb9c02c523745a5f61"
+    },
+    "reviewed_noncanonical_change": "experimental judge/run_vtrm_eval.py has the guest AGENT_MODEL propagation line from prepare_local_checkout.py; original upstream code unchanged"
+  },
+  "benchmark_runner": {
+    "executed_run_live_git_blob_sha": "a1aa40bf8060221d2fc64567d595de8c553fddc3",
+    "note": "Later code repair counts unique recorded model response IDs instead of duplicated proxy log completion lines; results use independent post-run summary."
+  },
+  "raw_data_location_note": "Detailed model responses, per-case QEMU snapshots and audit logs remain on private PPU host. No credentials, model weights, raw cassettes or VM disks are published.",
+  "results": "benchmarks/wejbench/v0.1/results/20261101-local-live-three-model-pilot.json",
+  "fingerprints": "benchmarks/wejbench/v0.1/results/20261101-local-model-fingerprints.json",
+  "limits": [
+    "Single execution per model/task, no statistical ranking.",
+    "Full model checkpoint Git/HuggingFace revision IDs not verified; pinned local weight and metadata file hashes provided.",
+    "Source pilot used a copied unversioned experimental tree rather than a fresh GitHub reconstruction of the final release.",
+    "Mistral restricted-insert task returned unknown run status despite audited denial and safe world.",
+    "Qwen3 requires documented non-thinking JSON serialization adapter for AgentOS tool protocol.",
+    "Controlled 24-task x3-model x3-repeat study remains unexecuted."
+  ]
+}
