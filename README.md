@@ -2,6 +2,8 @@
 
 **Working journal title:** *AgentOS-RK: A Compact and Auditable Research Kit for LLM-Agent Execution*.
 
+**Manuscript for author review:** [Software Impacts Original Software Publication draft](paper/AGENTOS_RK_OSP_AUTHOR_REVIEW.md), including the [editable architecture schematic](paper/figures/agentos_rk_architecture.svg). The journal-format Word/PDF proofs are author-review artifacts, not an approved submission. The software tag, reproducible-capsule DOI, corresponding email and author declarations remain to be completed.
+
 **AgentOS-RK is the reproducible research-software distribution of AgentOS, not a second-generation operating system.** The underlying AgentOS runtime (introduced at ASE 2026) executes typed filesystem, SQLite, and network requests behind a Verified Toolchain Reference Monitor (VTRM). A separate host-side World Effect Judge (WEJ) checks observed state changes rather than relying on the agent's textual claim of success.
 
 This branch is the **MIT-licensed AgentOS-RK first-party source release candidate, not a tagged or archived published release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
