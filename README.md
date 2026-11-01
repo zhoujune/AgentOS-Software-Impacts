@@ -1,10 +1,10 @@
-# AgentOS — Software Impacts companion
+# AgentOS-RK — AgentOS Research Kit
 
-**Working journal title:** *AgentOS: A Compact, Auditable Execution and Evaluation Testbed for LLM Agents*.
+**Working journal title:** *AgentOS-RK: A Compact and Auditable Research Kit for LLM-Agent Execution*.
 
-AgentOS executes typed filesystem, SQLite, and network requests behind a Verified Toolchain Reference Monitor (VTRM). A separate host-side World Effect Judge (WEJ) checks observed state changes rather than relying on the agent's textual claim of success.
+**AgentOS-RK is the reproducible research-software distribution of AgentOS, not a second-generation operating system.** The underlying AgentOS runtime (introduced at ASE 2026) executes typed filesystem, SQLite, and network requests behind a Verified Toolchain Reference Monitor (VTRM). A separate host-side World Effect Judge (WEJ) checks observed state changes rather than relying on the agent's textual claim of success.
 
-This branch is a **licensed first-party source release candidate, not a tagged or published software release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
+This branch is the **MIT-licensed AgentOS-RK first-party source release candidate, not a tagged or archived published release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
 
 **Source license:** First-party AgentOS and journal-specific code is licensed under the [MIT License](LICENSE), **Copyright (c) 2026 Jun Zhou**, as confirmed by the project copyright holder. The same notice has been merged into the [original AgentOS repository](https://github.com/zhoujune/AgentOS/blob/main/LICENSE) through [upstream PR #1](https://github.com/zhoujune/AgentOS/pull/1) (merge commit `09326969884e35d0a3cd8633f94bb28eb90bc378`). The pinned historical upstream commit predates that license file; the reconstruction script carries the reviewed LICENSE into the resulting checkout. **Third-party dependencies, Linux/Buildroot components, model weights and generated guest images are not automatically covered by MIT**. Do not redistribute binary images or publish a release capsule until those notices and dependencies are reviewed; see [release gates](docs/RELEASE_CANDIDATE_GATES.md).
 
