@@ -46,7 +46,7 @@ def verify_model_profile(model: dict) -> None:
         raise ValueError("model endpoint must come from an explicitly named environment variable")
 
 
-def run_episode(job: dict, model: dict, task: dict, source: Path,
+def run_episode(job: dict, model: dict, task: dict, source: Path, agentos: Path,
                 clean_rootfs: Path, output: Path, api_timeout: int,
                 boot_timeout: int) -> dict:
     episode = output / "episodes" / job["episode_id"]
@@ -63,7 +63,7 @@ def run_episode(job: dict, model: dict, task: dict, source: Path,
         "tasks_should_fail" if task.get("judge_completion_skipped") else "tasks_should_pass"
     )
     command = [
-        sys.executable, str(source.parents[1] / "judge/run_vtrm_eval.py"),
+        sys.executable, str(agentos / "judge/run_vtrm_eval.py"),
         "--tasks-dir", str(source_task), "--task-id", job["task_id"],
         "--model", model["model_id"], "--api-style", "openai",
         "--api-endpoint", endpoint, "--temperature", "0",
@@ -79,7 +79,7 @@ def run_episode(job: dict, model: dict, task: dict, source: Path,
     ]
     # Do not serialize command or environment; endpoint URLs may contain tokens.
     with (episode / "runner.log").open("w", encoding="utf-8") as stream:
-        p = subprocess.run(command, cwd=source.parents[1], env=child_env,
+        p = subprocess.run(command, cwd=agentos, env=child_env,
                            stdout=stream, stderr=subprocess.STDOUT)
     record = {**job, "status": "EXECUTED", "exit_code": p.returncode}
     summaries = list((episode / "reports").rglob("summary.json"))
@@ -192,7 +192,7 @@ def main() -> int:
     completed = []
     for i, job in enumerate(plan, start=1):
         model = next(m for m in models if m["profile_id"] == job["model_profile"])
-        result = run_episode(job, model, task_map[job["task_id"]], source, clean_rootfs,
+        result = run_episode(job, model, task_map[job["task_id"]], source, agentos, clean_rootfs,
                              out, args.task_timeout, args.boot_timeout)
         completed.append(result)
         (out / "episodes.json").write_text(json.dumps(completed, indent=2) + "\n")
