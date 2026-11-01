@@ -1,0 +1,34 @@
+name: WEJ-Bench v0.1 fixture and source verification
+on:
+  push:
+    branches: [work/wej-bench-v0.1]
+  pull_request:
+    paths:
+      - "benchmarks/wejbench/**"
+      - ".github/workflows/wej-bench-v01.yml"
+  workflow_dispatch:
+
+jobs:
+  definitions:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate 24-task manifest and 33 hand-authored replay steps
+        run: python3 benchmarks/wejbench/v0.1/prepare.py
+      - name: Run strict task-schema and oracle tests
+        run: python3 -m unittest discover -s benchmarks/wejbench/v0.1 -p 'test_*.py' -v
+      - name: Check scripts compile
+        run: |
+          python3 -m py_compile benchmarks/wejbench/v0.1/prepare.py
+          python3 -m py_compile benchmarks/wejbench/v0.1/run_replay.py
+  source-materialization:
+    needs: definitions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct pinned source
+        run: bash scripts/reconstruct_agentos_overlay.sh "$RUNNER_TEMP/AgentOS"
+      - name: Verify twelve pinned original task blobs and 12 new tasks
+        run: |
+          python3 benchmarks/wejbench/v0.1/prepare.py --agentos-root "$RUNNER_TEMP/AgentOS" --output "$RUNNER_TEMP/wejbench-tasks"
+          python3 -m json.tool "$RUNNER_TEMP/wejbench-tasks/prepared.json" >/dev/null
