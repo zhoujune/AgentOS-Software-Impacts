@@ -43,7 +43,7 @@ bash -n examples/world-effect-reuse/run_demo.sh
 
 These checks do not run QEMU or prove an end-to-end outcome.
 
-### Step 2 — source reconstruction (after patch integrity is certified)
+### Step 2 — reconstruct the verified software candidate
 
 ~~~bash
 cd ..
