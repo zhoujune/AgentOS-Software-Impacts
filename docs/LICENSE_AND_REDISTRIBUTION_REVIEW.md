@@ -1,25 +1,25 @@
 # Licensing approval and distribution review — AgentOS v0.1.0
 
-**Review document, not a license grant.** Prepared 2026-11-01. No `LICENSE` file or copyright authorization has been established for this public repository, and no tagged licensed release should be created until signoff is documented.
+**First-party license committed; binary/third-party redistribution review remains open.** Updated 2026-11-01 following the project owner's confirmation of MIT licensing in the name Jun Zhou. This document records remaining dependencies and does not replace the authoritative [LICENSE](../LICENSE) text. No versioned release tag or binary archive has been created.
 
-## First-party code: proposed MIT terms
+## First-party code: MIT license (committed)
 
-**Proposed SPDX identifier:** `MIT`, subject to documented approval from all relevant rightsholders.
+**SPDX identifier:** `MIT` for first-party AgentOS and journal-specific source code, per project-owner confirmation.
 
-**Standard license text to use only after approval:** [SPDX MIT License](https://spdx.org/licenses/MIT.html).
+**Authoritative first-party license file:** [LICENSE](../LICENSE), consistent with [SPDX MIT](https://spdx.org/licenses/MIT.html).
 
-**Proposed copyright line:** `Copyright (c) 2026 [CONFIRMED COPYRIGHT HOLDER(S)]`. The actual year(s), legal names and scope must be determined from contributor/provenance records; the authors named in a research paper are not automatically all copyright holders.
+**Copyright line:** `Copyright (c) 2026 Jun Zhou` (as explicitly specified by the project owner).
 
-**Rights and scope questions requiring explicit confirmation:**
+**Approval and remaining scope questions:**
 
-- [ ] Does the person authorizing release own, or have permission from all owners to license, the original `zhoujune/AgentOS` code and documentation at commit `4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c` under MIT?
-- [ ] Is the same authorization available for the seven original-to-journal overlay inputs (three patches and four standalone source files) and the later benchmark/evaluation/documentation additions?
+- [x] The project owner specified MIT terms and the copyright notice `Jun Zhou` for original AgentOS and journal first-party code. Any unidentified contributor-owned material still requires a provenance check before release.
+- [x] MIT terms were specified for the journal first-party changes as well as original AgentOS; the candidate includes a top-level LICENSE. The upstream repository's [license PR](https://github.com/zhoujune/AgentOS/pull/1) is open.
 - [ ] Are there any institutional, employment, collaboration, or previously assigned rights requiring additional approval?
-- [ ] What exact copyright holder names and years should appear in the final license and notices?
+- [x] Copyright notice confirmed by the project owner: `Copyright (c) 2026 Jun Zhou`.
 - [ ] Should any third-party files remain subject to their existing licenses instead of an MIT blanket statement?
-- [ ] Is there written approval for distributing the source itself? Public GitHub visibility is not a license grant.
+- [x] First-party source license grant is present in [LICENSE](../LICENSE). Public visibility alone is not a substitute for that license.
 
-**Only after these checks:** add an authoritative top-level `LICENSE` with the unmodified standard MIT text and confirmed copyright line; make clear which portions are separately licensed; add relevant SPDX headers/notices where appropriate. Audit scope before making journal C4 claims.
+**Next:** audit third-party file ownership and licenses separately, reconcile any additional contributor rights, and retain required notices for generated binaries. Journal C4 can identify MIT for first-party code while explicitly stating that third-party components keep their own licenses.
 
 ## Third-party and binary distribution inventory
 
@@ -45,21 +45,21 @@ The staging [PR #12](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/1
 
 | Field | Required value |
 | --- | --- |
-| Grant authorized for original AgentOS source? | **Unconfirmed** |
-| Grant authorized for journal companion code? | **Unconfirmed** |
-| Intended license / scope | Proposed `MIT`; **not approved** |
-| Name(s) of copyright holder(s) | **Unconfirmed** |
-| Year(s) of copyright | **Unconfirmed** |
+| Grant authorized for original AgentOS first-party source? | **MIT specified by project owner; upstream LICENSE PR open** |
+| Grant authorized for journal companion first-party code? | **MIT specified and committed in staging LICENSE** |
+| Intended license / scope | **MIT first-party code**, other components excluded from blanket grant |
+| Name(s) of copyright holder(s) | **Jun Zhou** (per owner confirmation) |
+| Year(s) of copyright | **2026** |
 | Third-party files excluded from the grant | **Under review** |
 | Binary redistribution approved? | **No; pending legal-info audit** |
-| Authorized approver(s) and date | **Unconfirmed** |
+| Authorized approver(s) and date | **Project owner confirmed MIT / Jun Zhou in conversation, 2026-11-01**; retain permanent project governance record if required |
 
 Record final approval in an appropriate maintained repository review/issue or signed project document. Do not publish personal signatures, private emails or contractual details without consent.
 
 ## Next release sequence
 
-1. Record rights-holder and MIT terms approval.
-2. Add the real license and bounded third-party notices; complete package/source inventory and Buildroot pin.
+1. **Completed for first-party code:** MIT license with 2026 Jun Zhou copyright notice committed to the journal candidate; upstream PR proposed.
+2. **Outstanding:** review other contributor rights and third-party/binary notices; complete package/source inventory and Buildroot pin.
 3. Re-run a clean CI workflow against the *new commit*.
 4. Recruit and document one non-maintainer independent reproduction (issue #6).
 5. Tag only the approved and validated commit, create a compliant immutable archive/Zenodo version DOI, and update journal software metadata.
