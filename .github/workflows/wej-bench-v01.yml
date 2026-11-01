@@ -27,6 +27,12 @@ jobs:
           python3 -m py_compile benchmarks/wejbench/v0.1/run_replay.py
           python3 -m py_compile benchmarks/wejbench/v0.1/run_live.py
           python3 -m py_compile benchmarks/wejbench/v0.1/summarize.py
+          python3 -m py_compile benchmarks/wejbench/v0.1/preflight_local.py
+          python3 -m py_compile benchmarks/wejbench/v0.1/prepare_local_checkout.py
+      - name: Validate local pilot and vLLM launcher shell syntax
+        run: |
+          bash -n benchmarks/wejbench/v0.1/run_local_pilot.sh
+          bash -n benchmarks/wejbench/v0.1/serve_local_model.sh
       - name: Plan 216 live episodes without executing them
         run: |
           python3 benchmarks/wejbench/v0.1/run_live.py --output "$RUNNER_TEMP/model-plan"
