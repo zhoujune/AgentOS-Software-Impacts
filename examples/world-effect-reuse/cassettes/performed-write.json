@@ -1,0 +1,14 @@
+{
+  "description": "Hand-authored deterministic replay fixture for a novel user task; NOT captured LLM behavior.",
+  "format_version": 1,
+  "responses": {
+    "llm-401-world-effect-reuse-001": {
+      "assistant_text": "{\"schema_version\":\"0.1\",\"task_id\":\"401-world-effect-reuse\",\"request_id\":\"req-401-world-effect-reuse-001\",\"subject\":\"agent-default\",\"tool\":\"fs.write\",\"args\":{\"path\":\"/workspace/passcases/impact_validation.txt\",\"content\":\"impact_verified=true\"},\"content_label\":\"public\",\"capability_required\":\"fs.write.workspace\"}",
+      "finish_reason": "stop"
+    },
+    "llm-401-world-effect-reuse-002": {
+      "assistant_text": "{\"tool\":\"final\",\"answer\":\"Task completed successfully.\"}",
+      "finish_reason": "stop"
+    }
+  }
+}
