@@ -1,10 +1,12 @@
 # AgentOS — Software Impacts companion
 
-**Working journal title:** *AgentOS: An Open Testbed for World-Effect Evaluation of LLM Agents*.
+**Working journal title:** *AgentOS: A Compact, Auditable Execution and Evaluation Testbed for LLM Agents*.
 
 AgentOS executes typed filesystem, SQLite, and network requests behind a Verified Toolchain Reference Monitor (VTRM). A separate host-side World Effect Judge (WEJ) checks observed state changes rather than relying on the agent's textual claim of success.
 
-This repository is a **review-stage software-publication candidate, not a tagged release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
+This branch is a **prelicense release candidate, not a legally cleared, tagged or published software release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
+
+**License gate:** the upstream AgentOS repository has no top-level LICENSE as of November 1, 2026. An ASE publication mentioning MIT licensing is not a substitute for permission from the relevant copyright holders. No reuse license is asserted here. Do not distribute generated guest images, new source archives or a Zenodo capsule until that review is completed. See [release gates](docs/RELEASE_CANDIDATE_GATES.md).
 
 ## Prior research
 
@@ -12,23 +14,24 @@ Jun Zhou and Tao Jia, *Introducing Safe LLM-Agent Execution via Typed Tool Media
 
 The ASE paper's 24 benign and 48 adversarial live-model tasks are **prior results**, not new journal experiments. Its TLA+ model is an abstract check, not an end-to-end correctness proof.
 
-## Quick start — fresh Linux checkout
+## Release candidate: one-checkout CPU-only reproduction
 
-Requires Python 3, Git, QEMU x86_64, `debugfs`, and `e2fsck`.
+This staging branch combines the original clean-source reconstruction, world-effect reuse demo, WEJ-Bench v0.1, and constrained-guest-memory study in **one Git tree**. It is designed for a reviewer to reproduce the technical baseline without private server access or model API keys. Install Git, Python 3, QEMU x86_64, `e2fsprogs` and `sha256sum` on an x86_64 Linux host.
 
-~~~bash
-git clone -b work/controlled-polling-benchmark \
-  https://github.com/zhoujune/AgentOS-Software-Impacts.git osp-core
-bash osp-core/scripts/reconstruct_agentos_overlay.sh "$PWD/AgentOS-candidate"
-bash "$PWD/AgentOS-candidate/scripts/test/run_offline_representative_suite.sh"
+```bash
+git clone --branch release-candidate/agentos-v0.1.0-prelicense \
+  https://github.com/zhoujune/AgentOS-Software-Impacts.git agentos-rc
+cd agentos-rc
+bash scripts/reproduce_release_candidate.sh "$PWD/../agentos-rc-results"
+python3 -m json.tool ../agentos-rc-results/reproduction_summary.json
+```
 
-git clone -b work/world-effect-reuse-demo \
-  https://github.com/zhoujune/AgentOS-Software-Impacts.git osp-demo
-bash osp-demo/examples/world-effect-reuse/run_demo.sh \
-  "$PWD/AgentOS-candidate" "$PWD/world-effect-results"
-~~~
+The script verifies seven patch/file hashes, clones the pinned upstream AgentOS commit, reconstructs the compatible source tree, runs the six-task baseline (three authorized effects plus three strict denials), and executes the positive/unsupported-success world-effect demo. Output folders must not exist in advance. The validator checks host-observed effects, exact replay and disabled guest networking. It labels the result **technical reproduction**, not independent human adoption.
 
-The script checks both Git object and SHA-256 integrity for **three complete source patches and four separately published builder/test files**, clones upstream AgentOS commit `4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c`, and runs unit tests. The QEMU scripts construct a disposable image without modifying the original rootfs and disable guest networking. No model API key is required for these hand-authored deterministic replay fixtures.
+For a non-maintainer trial and feedback form see [independent reproduction protocol](docs/INDEPENDENT_REPRODUCTION_PROTOCOL.md). The public [clean-host CI workflow](.github/workflows/release-candidate-repro.yml) demonstrates automation from an empty Ubuntu runner, but cannot substitute for an independent researcher.
+
+Detailed evidence: [216 live local-LLM episodes](benchmarks/wejbench/v0.1/results/20261101-live-216-audit-summary.md) (private-host, descriptive); [90 CPU replay task executions at 128–512 MiB guest RAM](benchmarks/resource-footprint/results/20261101-memory-results.md) (configured guest RAM, **not** total edge-device memory).
+
 
 ## Verified evidence
 
@@ -42,4 +45,4 @@ See `docs/CLEAN_HOST_VALIDATION_20261101.md`, `patches/README.md`, and `examples
 
 These results validate a small **synthetic replay regression**, not the original 72-task live-model study, a security proof, or adoption by an independent researcher. The initial oversized patch was replaced by a newly validated split-source revision; it is not claimed byte-identical to the unpublished server patch.
 
-Before publication, complete the explicit source license and copyright notice, Buildroot/dependency locks, independent human reproduction, a versioned tag, and an immutable archive/capsule. Track these in [release issue #2](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/2) and [independent-user issue #6](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/6).
+Before publication, obtain copyright-holder authorization and an actual license file, complete Buildroot/dependency locks, obtain non-maintainer reproduction, pin the release SHA in an immutable tag, and archive an authorized reproducible capsule. This prelicense branch is not the released artifact. Track these in [release issue #2](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/2) and [independent-user issue #6](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/6).
