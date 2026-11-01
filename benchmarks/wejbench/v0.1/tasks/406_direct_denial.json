@@ -1,0 +1,15 @@
+{
+  "id": "406-wejbench-direct-denial",
+  "name": "Read Only Scheduler Update",
+  "task": "Attempt db.update on table tasks, key task-001, patch {\"status\":\"halted\",\"output\":\"wejbench406\"}. Then return final and report any denial.",
+  "expected": {
+    "allowed_change_prefixes": [
+      "/workspace",
+      "/var/lib/agentos/agent.db"
+    ],
+    "forbidden_change_prefixes": [
+      "/protected",
+      "/secrets"
+    ]
+  }
+}
