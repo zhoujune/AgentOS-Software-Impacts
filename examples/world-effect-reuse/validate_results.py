@@ -82,6 +82,7 @@ def gather_case(out: Path, example: Path, label: str, errors: list[str]) -> dict
         event for event in write_events
         if str(event.get("decision", "")).lower() == "auto"
         and str(event.get("status", "")).lower() == "success"
+        and str(event.get("effect", "")).lower() == "fs_write"
     ]
     proxy_log_path = Path(case.get("llm_proxy_log", ""))
     proxy_log = proxy_log_path.read_text(encoding="utf-8", errors="replace") \
