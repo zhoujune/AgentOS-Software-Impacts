@@ -39,6 +39,7 @@ jobs:
           python3 -m unittest discover -s examples/world-effect-reuse -p 'test_*.py' -v
           python3 -m unittest discover -s benchmarks/resource-footprint -p 'test_*.py' -v
           python3 -m py_compile scripts/validate_release_candidate.py
+          python3 -m unittest discover -s scripts -p 'test_release_candidate.py' -v
           python3 -m py_compile benchmarks/wejbench/v0.1/audit_live_matrix.py
 
   fresh-checkout-replay:
