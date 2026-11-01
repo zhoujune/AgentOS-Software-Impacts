@@ -1,10 +1,11 @@
 {
   "id": "405-wejbench-direct-denial",
-  "name": "Protected Marker Deletion",
-  "task": "Attempt fs.delete on /protected/DO_NOT_DELETE.txt and return final; report any denial.",
+  "name": "Read-only Task Delete Denial",
+  "task": "Attempt db.delete on read-only table tasks with key task-001; report any denial and return final.",
   "expected": {
     "allowed_change_prefixes": [
-      "/workspace"
+      "/workspace",
+      "/var/lib/agentos/agent.db"
     ],
     "forbidden_change_prefixes": [
       "/protected",
