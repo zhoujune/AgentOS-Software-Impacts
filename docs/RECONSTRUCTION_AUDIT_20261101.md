@@ -29,20 +29,18 @@ The server-side staging copy had originally lost the executable bit on 29 upstre
 
 ## Reproducible overlay
 
-`patches/0001-agentos-offline-replay-overlay.patch` contains:
-- Ten tracked-file modifications listed above.
-- Twelve new text/data files: the deterministic replay fixtures, replay documentation, offline validation and repeated-benchmark scripts, and benchmark aggregation/tests.
+The public reconstruction consists of three verified patches (ten tracked modifications plus eight added evaluator/replay/test files), followed by four standalone builder/runner files under `overlay-files/`. See `patches/README.md` and both checksum manifests for exact component identities.
 
-The patch also adds a reproducible post-build Eval image builder. It injects the updated guest startup/agent scripts into a copy of the clean rootfs, keeps the workspace parent root-owned, and makes only the two benign fixture roots agent-writable. A six-task unprivileged QEMU run passed all six cases with this image; a post-boot inode probe confirmed the workspace parent and failcases remained root-owned. Six new regression tests check that the task corpus stays within this permission boundary.
+The split source bundle also adds a reproducible post-build Eval image builder. It injects the updated guest startup/agent scripts into a copy of the clean rootfs, keeps the workspace parent root-owned, and makes only the two benign fixture roots agent-writable. A six-task unprivileged QEMU run passed all six cases with this image; a post-boot inode probe confirmed the workspace parent and failcases remained root-owned. Six new regression tests check that the task corpus stays within this permission boundary.
 
-The patch deliberately excludes:
+The split source bundle deliberately excludes:
 - The 21 changed Python bytecode caches and all other generated caches.
 - The separate `judge/run_vtrm_eval_local_model.py` experiment and the local-model bootstrap patch, which are documented in [PR #3](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/3).
 - The 1,255 files under the server's `runtime/` directory, which are generated VM copies, raw reports, logs, and experiment outputs rather than a source release.
 
 ### Patch validation
 
-The six modified non-empty upstream blobs were retrieved by their exact Git blob SHA from the pinned commit; the four empty placeholders were verified against the empty-blob SHA. A pristine test tree was created with original executable modes. The patch passed `git apply --check`, applied successfully, and recreated all 22 modified/added files byte-for-byte equal to the experimental server copy.
+The six modified non-empty upstream blobs were retrieved by their exact Git blob SHA from the pinned commit; the four empty placeholders were verified against the empty-blob SHA. A pristine test tree was created with original executable modes. The earlier complete server-side patch passed `git apply --check` and recreated all 22 files in its original experiment tree. The new public split-source revision independently passed a clean GitHub-hosted reconstruction and QEMU regression, but is not claimed byte-identical to that historical patch.
 
 **Historical blocker (resolved by split-source reconstruction on 2026-11-01):** The public patch upload was initially truncated to 131,072 bytes instead of the verified server-side 145,745 bytes; see [issue #4](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/4). The public source is now delivered as three verified patches and four individually pinned files. This is a verified *server-side* patch-application test, **not** a full clone-and-rebuild on the server. Direct `git ls-remote https://github.com/zhoujune/AgentOS.git` from the server fails with a connection reset. The included `scripts/reconstruct_agentos_overlay.sh` is the user-side full-clone procedure: it clones the public repository, checks out the pinned commit, applies the patch, and runs the Python unit tests. The clean clone and full QEMU workflow passed on a GitHub-hosted Ubuntu runner.
 
