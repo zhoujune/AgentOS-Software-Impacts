@@ -78,6 +78,8 @@ def gather_case(out: Path, example: Path, label: str, errors: list[str]) -> dict
         if event.get("task_id") == TASK_ID
     ]
     write_events = [event for event in task_events if event.get("tool") == "fs.write"]
+    # AuditDecision.AUTO is the permitted automatic decision; status=success
+    # and effect=fs_write establish a completed typed mutation.
     allowed_writes = [
         event for event in write_events
         if str(event.get("decision", "")).lower() == "auto"
