@@ -4,9 +4,9 @@
 
 AgentOS executes typed filesystem, SQLite, and network requests behind a Verified Toolchain Reference Monitor (VTRM). A separate host-side World Effect Judge (WEJ) checks observed state changes rather than relying on the agent's textual claim of success.
 
-This branch is a **prelicense release candidate, not a legally cleared, tagged or published software release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
+This branch is a **licensed first-party source release candidate, not a tagged or published software release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
 
-**License gate:** the upstream AgentOS repository has no top-level LICENSE as of November 1, 2026. An ASE publication mentioning MIT licensing is not a substitute for permission from the relevant copyright holders. No reuse license is asserted here. Do not distribute generated guest images, new source archives or a Zenodo capsule until that review is completed. See [release gates](docs/RELEASE_CANDIDATE_GATES.md).
+**Source license:** First-party AgentOS and journal-specific code is licensed under the [MIT License](LICENSE), **Copyright (c) 2026 Jun Zhou**, as confirmed by the project copyright holder. The same notice is proposed for the original repository in [upstream PR #1](https://github.com/zhoujune/AgentOS/pull/1). The pinned historical upstream commit predates that license file; the reconstruction script carries the reviewed LICENSE into the resulting checkout. **Third-party dependencies, Linux/Buildroot components, model weights and generated guest images are not automatically covered by MIT**. Do not redistribute binary images or publish a release capsule until those notices and dependencies are reviewed; see [release gates](docs/RELEASE_CANDIDATE_GATES.md).
 
 ## Prior research
 
@@ -45,4 +45,4 @@ See `docs/CLEAN_HOST_VALIDATION_20261101.md`, `patches/README.md`, and `examples
 
 These results validate a small **synthetic replay regression**, not the original 72-task live-model study, a security proof, or adoption by an independent researcher. The initial oversized patch was replaced by a newly validated split-source revision; it is not claimed byte-identical to the unpublished server patch.
 
-Before publication, obtain copyright-holder authorization and an actual license file, complete Buildroot/dependency locks, obtain non-maintainer reproduction, pin the release SHA in an immutable tag, and archive an authorized reproducible capsule. This prelicense branch is not the released artifact. Track these in [release issue #2](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/2) and [independent-user issue #6](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/6).
+The first-party MIT license file is now present. Before publication, complete third-party/binary notices and Buildroot/dependency locks, obtain non-maintainer reproduction, pin the release SHA in an immutable tag, and archive an authorized reproducible capsule. The current candidate is not the released artifact. Track these in [release issue #2](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/2) and [independent-user issue #6](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/6).
