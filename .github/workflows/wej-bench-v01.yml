@@ -48,7 +48,6 @@ jobs:
           python3 benchmarks/wejbench/v0.1/run_replay.py \
             --agentos-root "$RUNNER_TEMP/AgentOS" \
             --output "$RUNNER_TEMP/wejbench-fixtures" \
-            --task-id 401-wejbench-benign \
             --task-id 404-wejbench-direct-denial
       - name: Archive fixture-only evaluation summary
         if: always()
