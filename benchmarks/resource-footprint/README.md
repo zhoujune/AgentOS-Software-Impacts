@@ -30,6 +30,12 @@ python3 benchmarks/resource-footprint/run_memory_sweep.py --mode screen
 # Inspect screen_summary.json; do not substitute an unverified success claim.
 python3 benchmarks/resource-footprint/run_memory_sweep.py --mode full
 python3 benchmarks/resource-footprint/run_memory_sweep.py --mode summary
+
+# Independently validate and sanitize the completed study:
+python3 benchmarks/resource-footprint/publish_results.py \
+  --study "$AGENTOS_MEMORY_STUDY_ROOT" \
+  --source "$AGENTOS_ROOT" \
+  --out /path/to/new/sanitized-results
 ```
 
 Use no parallel QEMU evaluators. The runner checks for overlapping QEMU instances and refuses to run in their presence. It refuses the full matrix if the 512 MiB baseline fails, or if no lower-memory configuration passes screening. A failed low-memory screen remains an informative boundary observation and is *not* promoted to a successful full-suite result.
@@ -39,6 +45,37 @@ Use no parallel QEMU evaluators. The runner checks for overlapping QEMU instance
 A screen PASS requires the evaluator to exit successfully, exact replay, no unexpected world mutation and the task-specific oracle. The denial case additionally requires an actual guest VTRM audit event with `decision=deny`, `effect=none` for the expected database mutation. `approval_required` and a missing attack are **not** counted as strict denials.
 
 A full six-case suite PASS requires the existing `validate_offline_suite.py` script to succeed. This verifies all benign effects, all three VTRM denials, exact cassette matches, no guest networking and host-world integrity.
+
+## Completed results (November 1, 2026)
+
+All **10/10 two-case screening checks** passed. All **15/15 repeated six-task suites** (90/90 task cases, comprising 45 benign task-completion checks and 45 explicit database-policy denials) passed the existing host-side judge. Repetitions were interleaved by memory setting. Full data are available in:
+
+- [Human-readable results](results/20261101-memory-results.md)
+- [Machine-readable aggregate, 15 runs and 90 case metadata rows](results/20261101-memory-full.json)
+- [Per-run resource measurements](results/20261101-memory-runs.csv)
+- [Task-level case metadata](results/20261101-memory-cases.csv)
+- [Initial 10-case screen](results/20261101-memory-screen.json)
+- [Separate QEMU TCG-cache attribution probe](results/20261101-tcg-cache-probe.json)
+
+| Guest allocation | Repeated task passes | Mean full-suite runtime | Maximum sampled process-tree PSS |
+| ---: | ---: | ---: | ---: |
+| 512 MiB | 18/18 | 157.89 s | 407.19 MiB |
+| 384 MiB | 18/18 | 158.08 s | 405.14 MiB |
+| 256 MiB | 18/18 | 157.16 s | 403.25 MiB |
+| 192 MiB | 18/18 | 158.41 s | 401.18 MiB |
+| **128 MiB** | **18/18** | **158.09 s** | **401.15 MiB** |
+
+The 128 MiB guest Linux boot log independently reports **105.3 MiB available** to its kernel after reservations. This establishes *viability at a configured RAM cap* for the selected replay tasks, not total-device memory use or the minimum viable RAM level. No lower cap was attempted.
+
+### Why the host PSS remains near 400 MiB
+
+The measured host has no `/dev/kvm`; the evaluation therefore runs under QEMU's **TCG software emulation**. A separate mapping diagnostic captured a large anonymous executable mapping at the default TCG configuration: approximately 1 GiB virtual size, 226 MiB resident PSS, for either 128 or 512 MiB configured guest RAM.
+
+To test attribution rather than speculate, we ran the **same single benign task** under `-accel tcg,tb-size=32`, without changing the guest RAM limit, kernel, or task. The 128 MiB QEMU process peak sampled PSS changed from **367.15 MiB** (default TCG) to **144.46 MiB** (32 MiB TCG translation cache). At 512 MiB, the corresponding comparison was **381.09 MiB** to **154.57 MiB**. Both variants passed the same one-task host-world checks.
+
+QEMU documents `tb-size` as controlling the TCG translation-block cache ([QEMU invocation documentation](https://www.qemu.org/docs/master/system/qemu-manpage.html)). This supports attribution of much of the original host footprint to emulator configuration, rather than to the agent alone. The cache probe is **one task per condition**, not a repeated six-task or physical edge measurement, and has its own separate dataset.
+
+Neither the guest cap nor the optimized QEMU process PSS is a demonstrated total-edge-device memory requirement. The public manuscript retains the untuned baseline as its primary reported run.
 
 ## Measurement and publication caveats
 
