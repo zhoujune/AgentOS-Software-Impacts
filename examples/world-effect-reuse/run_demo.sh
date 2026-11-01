@@ -55,8 +55,8 @@ run_case() {
       --rootfs "$root/rootfs.eval.ext2" \
       --bridge-dir "$root/bridge" \
       --memory-mb 512 \
-      --vm-boot-timeout 60 \
-      --task-timeout 90 \
+      --vm-boot-timeout "${VM_BOOT_TIMEOUT:-120}" \
+      --task-timeout "${TASK_TIMEOUT:-180}" \
       --proxy-warmup-seconds 1 \
       --post-task-settle-seconds 1 \
       --agent-loop-poll-interval 5 \
