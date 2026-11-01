@@ -20,10 +20,10 @@ AgentOS is a Buildroot-based environment for executing and evaluating tool-using
 | **C2 Permanent code/repository link for that version** | [AgentOS-Software-Impacts](https://github.com/zhoujune/AgentOS-Software-Impacts); replace with an immutable tag or release URL |
 | **C3 Permanent reproducible capsule link** | **TBD**: publicly accessible, independently validated capsule/source archive |
 | **C4 Legal code license** | **TBD**: ASE described original work as MIT, but neither inspected tree contained a top-level LICENSE file; confirm authority and publish complete license terms |
-| **C5 Code versioning** | Git/GitHub for this journal repository; original experimental source snapshot still requires commit reconciliation |
+| **C5 Code versioning** | Git/GitHub with immutable original upstream commit and a checksum-verified seven-component source overlay; a journal version tag is still pending |
 | **C6 Languages / tools / services** | Python 3, Bash, Buildroot, QEMU, SQLite, and TLA+ (formal model scope only) |
 | **C7 Compilation and execution** | Linux host, QEMU x86_64, Python 3, `debugfs`, `e2fsck`; Buildroot 2026.02 tree required only to rebuild compatible guest images; exact version matrix pending |
-| **C8 Documentation link** | This repository's `docs/` directory (in preparation); source software [AgentOS](https://github.com/zhoujune/AgentOS) |
+| **C8 Documentation link** | This repository's `docs/`, including [clean-host reproduction results](https://github.com/zhoujune/AgentOS-Software-Impacts/blob/work/controlled-polling-benchmark/docs/CLEAN_HOST_VALIDATION_20261101.md); source software [AgentOS](https://github.com/zhoujune/AgentOS) |
 | **C9 Support email** | **TBD**: confirm the appropriate contact and consent to publish it |
 
 ## 1. Software description
