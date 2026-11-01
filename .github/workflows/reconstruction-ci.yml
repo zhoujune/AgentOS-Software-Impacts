@@ -1,0 +1,15 @@
+name: Clean reconstruction checks
+on:
+  push:
+    branches: [work/controlled-polling-benchmark]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  source-integrity:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/verify_split_sources.py
+      - run: bash -n scripts/reconstruct_agentos_overlay.sh
+      - run: sha256sum patches/000*.patch overlay-files/scripts/build/*.py overlay-files/scripts/test/*.sh
