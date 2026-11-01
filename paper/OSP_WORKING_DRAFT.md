@@ -16,14 +16,14 @@ AgentOS is a compact Buildroot-based execution and evaluation environment for to
 
 | Field | Draft entry / outstanding action |
 | --- | --- |
-| **C1 Current code version** | Candidate: pinned original AgentOS commit `4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c`, companion source commit `62a231a73a7a354ef380407d28498c4fd2dec775`, three checked Git patches and four pinned source files (`patches/expected_sha256.txt`). Tagged release pending |
-| **C2 Permanent code/repository link for that version** | [AgentOS-Software-Impacts](https://github.com/zhoujune/AgentOS-Software-Impacts); replace with an immutable tag or release URL |
+| **C1 Current code version** | Untagged review candidate `0.1.0-rc.1` on `release-candidate/v0.1.0-rc1`, based on original AgentOS commit `4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c` and seven pinned overlay components; final immutable release commit/tag pending. |
+| **C2 Permanent code/repository link for that version** | [Integrated candidate branch](https://github.com/zhoujune/AgentOS-Software-Impacts/tree/release-candidate/v0.1.0-rc1); not a permanent release link. Replace with an immutable tag/archive URL after legal approval. |
 | **C3 Permanent reproducible capsule link** | **TBD**: publicly accessible, independently validated capsule/source archive |
-| **C4 Legal code license** | **TBD**: ASE described original work as MIT, but neither inspected tree contained a top-level LICENSE file; confirm authority and publish complete license terms |
+| **C4 Legal code license** | **BLOCKED**: MIT was described in the prior ASE publication, but original/journal trees lack a verified LICENSE. Copyright-owner approval, LICENSE/NOTICE and third-party review are required before final release. |
 | **C5 Code versioning** | Git/GitHub with immutable original upstream commit and a checksum-verified seven-component source overlay; a journal version tag is still pending |
 | **C6 Languages / tools / services** | Python 3, Bash, Buildroot, QEMU, SQLite, and TLA+ (formal model scope only) |
 | **C7 Compilation and execution** | Linux host, QEMU x86_64, Python 3, `debugfs`, `e2fsck`; Buildroot 2026.02 tree required only to rebuild compatible guest images; exact version matrix pending |
-| **C8 Documentation link** | This repository's `docs/`, including [clean-host reproduction results](https://github.com/zhoujune/AgentOS-Software-Impacts/blob/work/controlled-polling-benchmark/docs/CLEAN_HOST_VALIDATION_20261101.md); source software [AgentOS](https://github.com/zhoujune/AgentOS) |
+| **C8 Documentation link** | [RC reproducibility and release gates](../docs/RELEASE_CANDIDATE.md), [clean host one-checkout guide](../README.md), [independent-user protocol](../docs/INDEPENDENT_REPRODUCTION_PROTOCOL.md), and original [AgentOS](https://github.com/zhoujune/AgentOS) |
 | **C9 Support email** | **TBD**: confirm the appropriate contact and consent to publish it |
 
 ## 1. Software description
@@ -52,7 +52,7 @@ The offline benchmarking work also records per-case latency stages, machine sett
 
 VTRM's modeled enforcement scope includes typed filesystem, SQLite, and network operations. Arbitrary shell commands, unrestricted SQL, graphical interfaces, and other unmediated channels remain outside the claimed boundary. The available TLA+ check concerns an abstract typed decision path and is not an end-to-end implementation proof. WEJ observes only configured surfaces and task-specific effects. Offline replay does not test generation-time model robustness, adaptive prompting, or live-model latency. The constrained-memory results demonstrate compatibility with selected tasks at 128 MiB *configured guest RAM*, not the minimum possible configuration, total physical edge-device footprint, hardware energy efficiency, native ARM deployment, or a fair cross-sandbox performance advantage. The test host lacked KVM and used QEMU TCG.
 
-Before submission, this artifact must acquire a versioned source release, a clear license, a permanent reproducible capsule, complete developer instructions, and a successful independent reproduction check. Longer traces, broader exact replay coverage, additional models and effect adapters, and tests across more host environments remain potential extensions.
+Before submission, the integrated `0.1.0-rc.1` candidate must pass clean-host validation and independent human reproduction, and obtain copyright/license approval, a final immutable versioned tag, a permanent reproducible capsule, complete dependency pins and approved contact metadata. A branch label is not a release. Longer traces, broader exact replay coverage, additional models and effect adapters, and tests across more host environments remain potential extensions.
 
 **Prior research publication:** Jun Zhou and Tao Jia, *Introducing Safe LLM-Agent Execution via Typed Tool Mediation and World-Effect Evaluation*, Proceedings of ASE 2026, DOI [10.1145/3832783.3834637](https://doi.org/10.1145/3832783.3834637).
 
