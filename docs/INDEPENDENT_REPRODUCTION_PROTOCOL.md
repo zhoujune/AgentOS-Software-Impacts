@@ -1,5 +1,20 @@
 # Independent reproduction protocol (draft; no participants yet)
 
+## Release-candidate preparation status — November 1, 2026
+
+The untagged review candidate [v0.1.0-rc.1](../docs/RELEASE_CANDIDATE.md) now consolidates the verified source overlays, baseline replay and both new-task world-effect fixtures **into one public checkout**. The recommended baseline execution is:
+
+~~~bash
+git clone -b release-candidate/v0.1.0-rc1 \
+  https://github.com/zhoujune/AgentOS-Software-Impacts.git agentos-rc
+cd agentos-rc
+bash scripts/run_public_reproduction.sh "$PWD/../agentos-external-study-01"
+~~~
+
+Only invite a genuinely independent participant **after** legal license approval and clean-host CI for the exact candidate commit. The automated helper is a prerequisite check, **not** a replacement for a new person executing it on a separate environment.
+
+The participant should record unaided first-attempt failures and setup time *before* inspecting any maintainer-provided debugging. If they add an original new task, supply the task definition and evidence that it was not a copy of the provided demonstration.
+
 ## Objective
 
 Evaluate whether a person who did not develop AgentOS can reconstruct the journal software, execute the baseline offline test, and **add and evaluate a new task** using the host-side World Effect Judge without private server access or paid model API access.
