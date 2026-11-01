@@ -27,7 +27,7 @@ The *failure* in the second row is the expected evidence that the judge does not
 
 An x86_64 Linux host with Python 3, QEMU (qemu-system-x86_64), debugfs, e2fsck, and enough storage for disposable 60 MiB rootfs copies. The source requires the reviewed offline replay overlay, including scripts/build/make_offline_eval_image.py, not just the older original ASE GitHub checkout. No model API key or GPU is needed.
 
-The current GitHub material is split across two **draft** branches. The reconstruction patch on the core branch is undergoing an integrity check; **do not treat this as a release-certified setup path yet**.
+The software remains on two **draft** branches. The source is now delivered as three integrity-checked patches plus four individually pinned files; the clean-host CI run passed, but there is no tagged journal release yet.
 
 ### Step 1 — static fixture checks
 
