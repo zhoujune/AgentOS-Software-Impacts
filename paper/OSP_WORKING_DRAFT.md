@@ -2,13 +2,13 @@
 
 > **Not for submission:** Working manuscript content based on the original ASE 2026 paper and local reproducibility audit. The first-party MIT license is now committed (Copyright 2026 Jun Zhou), but a tagged release, third-party redistribution audit, permanent reproducible capsule, independent human reproduction, and support contact are still pending. Do not reuse the original ASE contribution as if it were a new research result.
 
-## AgentOS: A Compact, Auditable Execution and Evaluation Testbed for LLM Agents
+## AgentOS-RK: A Compact and Auditable Research Kit for LLM-Agent Execution
 
 **Authors / main developers (provisional, from ASE):** Jun Zhou and Tao Jia. Verify final affiliations, author list, corresponding author, and current email addresses before submission.
 
 ### Abstract (approximately 100 words)
 
-AgentOS is a compact Buildroot-based execution and evaluation environment for tool-using large language model agents. Its typed filesystem, SQLite, and network actions are mediated by a capability- and label-aware reference monitor, supported by a small abstract TLA+ model. A host-side World Effect Judge validates outcomes from observable effects rather than agent declarations. The software supports CPU-only deterministic replay and local-model evaluation. In controlled x86_64 QEMU experiments, 90/90 selected replay tasks passed across 128–512 MiB configured guest RAM, although the complete host evaluation stack required substantially more memory. We describe extensibility, reproducibility, applications, and explicit assurance and deployment limits.
+AgentOS-RK packages the AgentOS execution runtime as a reproducible research kit for evaluating tool-using large language model agents. It combines a compact Buildroot-based guest, typed tool-effect mediation, an abstract TLA+ policy model, and a host-side World Effect Judge that validates observable changes independently of agent claims. The kit provides CPU-only deterministic replay, extensible task oracles, and local-model evaluation. In controlled x86_64 QEMU tests, 90/90 selected replay executions passed at configured guest-memory allocations of 128–512 MiB; the complete emulated host stack required substantially more memory. AgentOS-RK enables repeatable studies of task utility, policy enforcement, and world effects, with explicit assurance and deployment limits.
 
 **Keywords:** LLM agents; execution safety; reference monitor; software reproducibility; world-effect evaluation; offline replay.
 
@@ -28,7 +28,7 @@ AgentOS is a compact Buildroot-based execution and evaluation environment for to
 
 ## 1. Software description
 
-Large language model agents can propose file edits, database operations, and network actions. AgentOS provides an execution boundary that separates generated requests from authorized effects. The software consists of a small Buildroot-based guest runtime, a typed request frontend, the Verified Toolchain Reference Monitor (VTRM), restricted effect adapters, a host-side proxy, and the World Effect Judge (WEJ).
+AgentOS-RK (AgentOS Research Kit) is the software distribution associated with this paper; the underlying execution system remains AgentOS, as introduced in the prior ASE 2026 publication. The kit adds a consolidated build/replay workflow, extensible effect-oracle examples, audited model results, and resource-footprint characterization. It is not a second-generation OS or a claim of newly invented VTRM, WEJ, or TLA+ mechanisms. Large language model agents can propose file edits, database operations, and network actions. AgentOS provides an execution boundary that separates generated requests from authorized effects. The software consists of a small Buildroot-based guest runtime, a typed request frontend, the Verified Toolchain Reference Monitor (VTRM), restricted effect adapters, a host-side proxy, and the World Effect Judge (WEJ).
 
 A tool request is extracted from model output, validated, classified by object and sink, and checked against derived capabilities and confidentiality labels. VTRM returns an allow, approval-required, or deny decision before an adapter performs an effect. Unlike a self-reported task success, a WEJ result is determined through configured observations of filesystem, SQLite, audit, and network state. The original ASE paper provides the underlying design and security evaluation; this manuscript documents software usage and reproducibility rather than reintroducing the same framework as novel research.
 
@@ -53,6 +53,10 @@ The offline benchmarking work also records per-case latency stages, machine sett
 VTRM's modeled enforcement scope includes typed filesystem, SQLite, and network operations. Arbitrary shell commands, unrestricted SQL, graphical interfaces, and other unmediated channels remain outside the claimed boundary. The available TLA+ check concerns an abstract typed decision path and is not an end-to-end implementation proof. WEJ observes only configured surfaces and task-specific effects. Offline replay does not test generation-time model robustness, adaptive prompting, or live-model latency. The constrained-memory results demonstrate compatibility with selected tasks at 128 MiB *configured guest RAM*, not the minimum possible configuration, total physical edge-device footprint, hardware energy efficiency, native ARM deployment, or a fair cross-sandbox performance advantage. The test host lacked KVM and used QEMU TCG.
 
 A **single-branch candidate with MIT-licensed first-party source code** now supplies a clean-host reconstruction script and host-side baseline/demo result validator. The third-party packages and guest binary distribution remain under separate licenses and review. Automated clean-host CI, even if successful, is not evidence of a non-maintainer reproducing and extending the software. Before submission, this artifact must acquire an immutable versioned source release, a properly licensed reproducible capsule, final support metadata, and a successful independent reproduction check. Longer traces, broader exact replay coverage, additional models and effect adapters, and tests across more host environments remain potential extensions.
+
+**Research-software naming:** AgentOS = underlying ASE runtime and policy/effect mechanisms; AgentOS-RK = this versioned, reproducible software distribution and evaluation toolkit. Rebranding does not imply a second OS or independent formal proof.
+
+**Manuscript preparation disclosure (draft; author review required):** During preparation of this manuscript, the authors used OpenAI ChatGPT for organization, drafting assistance, and editorial checks. The authors will review and edit all generated content and take full responsibility for the published work. Confirm the exact tool, scope and wording before submission, consistent with the journal's generative-AI policy.
 
 **Prior research publication:** Jun Zhou and Tao Jia, *Introducing Safe LLM-Agent Execution via Typed Tool Mediation and World-Effect Evaluation*, Proceedings of ASE 2026, DOI [10.1145/3832783.3834637](https://doi.org/10.1145/3832783.3834637).
 
