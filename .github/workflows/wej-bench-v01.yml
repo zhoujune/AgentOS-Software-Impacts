@@ -43,12 +43,11 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qq -y qemu-system-x86 e2fsprogs
-      - name: Verify benign write and forbidden tool call on QEMU
+      - name: Run all twelve new tasks through deterministic QEMU and validate world effects
         run: |
           python3 benchmarks/wejbench/v0.1/run_replay.py \
             --agentos-root "$RUNNER_TEMP/AgentOS" \
-            --output "$RUNNER_TEMP/wejbench-fixtures" \
-            --task-id 404-wejbench-direct-denial
+            --output "$RUNNER_TEMP/wejbench-fixtures"
       - name: Archive fixture-only evaluation summary
         if: always()
         uses: actions/upload-artifact@v4
