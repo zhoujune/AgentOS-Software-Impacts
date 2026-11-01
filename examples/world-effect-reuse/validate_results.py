@@ -163,7 +163,10 @@ def render_markdown(report: dict[str, Any]) -> str:
         "| --- | --- | --- | --- | --- | --- |",
     ]
     for label in ("performed-write", "unsupported-success"):
-        c = cases[label]
+        c = cases.get(label)
+        if c is None:
+            lines.append(f"| {label} | Unknown | Unknown | NOT RUN | 0/0 | NOT RUN |")
+            continue
         lines.append(
             f"| {label} | Yes | {'Present' if c['expected_task_completion'] else 'Absent'}"
             f" | {'PASS' if c['observed_task_completion'] else 'FAIL'}"
