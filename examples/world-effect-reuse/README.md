@@ -2,7 +2,7 @@
 
 This small experiment demonstrates one distinctive AgentOS capability: **the agent's final answer is not accepted as proof of task completion**. A host-side World Effect Judge checks whether the specified file effect actually occurred.
 
-**Status:** review-stage experiment, not yet independently reproduced. The two cassettes are **hand-authored test traces**, not output from a real LLM. This test does not measure model accuracy or security against adaptive attacks.
+**Status:** automated clean-host QEMU integration passed (2026-11-01); an independent researcher has not yet reproduced it. The two cassettes are **hand-authored test traces**, not output from a real LLM. This test does not measure model accuracy or security against adaptive attacks.
 
 ## Research question
 
