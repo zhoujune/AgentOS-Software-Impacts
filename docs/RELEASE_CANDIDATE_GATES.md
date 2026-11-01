@@ -15,7 +15,7 @@
 
 | Gate | State | Required action / evidence |
 | --- | --- | --- |
-| First-party MIT license | **COMPLETED IN STAGING** | Project owner confirmed MIT licensing and the copyright notice **Copyright (c) 2026 Jun Zhou**. [LICENSE](../LICENSE) is committed to the journal candidate; the corresponding [upstream original repo PR](https://github.com/zhoujune/AgentOS/pull/1) remains open. Continue auditing any other contributor-owned files. |
+| First-party MIT license | **COMPLETED IN STAGING** | Project owner confirmed MIT licensing and the copyright notice **Copyright (c) 2026 Jun Zhou**. [LICENSE](../LICENSE) is committed to the journal candidate; the corresponding [upstream original repo PR](https://github.com/zhoujune/AgentOS/pull/1) has been merged (`09326969884e35d0a3cd8633f94bb28eb90bc378`). Continue auditing any other contributor-owned files. |
 | Third-party and binary redistribution | **BLOCKED** | Review Buildroot, Linux/uClibc, QEMU, model weights, prepared images, third-party datasets, and generated binary licensing using the [inventory](LICENSE_AND_REDISTRIBUTION_REVIEW.md). Do not automatically redistribute pretrained models or built images. Respect source/notice obligations. |
 | Immutable version and archive | **BLOCKED** | After license clearance and clean CI, agree release version, create immutable annotated tag `v0.1.0`, check release commit/tree identities, archive authorized source/capsule (e.g. Zenodo version DOI), and retain SHA-256 checksums. Branch name is not a release identifier. |
 | Complete dependency provenance | **PARTIAL** | Current `manifests/manifest.lock` is explicitly partial. Record Buildroot exact source commit/package versions, dependency constraints and license notices; verify artifact rebuild procedure. |
