@@ -1,6 +1,6 @@
 # Independent reviewer one-page handoff — AgentOS
 
-**HOLD: source licensing is not yet cleared. Do not use this as an external recruitment invitation until [release gates](RELEASE_CANDIDATE_GATES.md) are resolved.**
+**FIRST-PARTY MIT LICENSE CONFIRMED; external distribution review still open.** The [MIT license](../LICENSE) covers first-party source (Copyright (c) 2026 Jun Zhou). Do not treat this as an approved binary/capsule distribution or recruit a formal independent reviewer before the remaining [release gates](RELEASE_CANDIDATE_GATES.md) are resolved.
 
 ## What we would like you to test
 
