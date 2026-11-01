@@ -27,44 +27,31 @@ The *failure* in the second row is the expected evidence that the judge does not
 
 An x86_64 Linux host with Python 3, QEMU (qemu-system-x86_64), debugfs, e2fsck, and enough storage for disposable 60 MiB rootfs copies. The source requires the reviewed offline replay overlay, including scripts/build/make_offline_eval_image.py, not just the older original ASE GitHub checkout. No model API key or GPU is needed.
 
-The software remains on two **draft** branches. The source is now delivered as three integrity-checked patches plus four individually pinned files; the clean-host CI run passed, but there is no tagged journal release yet.
+The integrated release candidate is available on the **untagged** branch `release-candidate/v0.1.0-rc1`. It has not yet passed copyright/license sign-off; see [release candidate status](../../docs/RELEASE_CANDIDATE.md).
 
-### Step 1 — static fixture checks
-
-~~~bash
-git clone -b work/world-effect-reuse-demo \
-  https://github.com/zhoujune/AgentOS-Software-Impacts.git osp-demo
-
-cd osp-demo
-python3 -m unittest discover \
-  -s examples/world-effect-reuse -p 'test_*.py' -v
-bash -n examples/world-effect-reuse/run_demo.sh
-~~~
-
-These checks do not run QEMU or prove an end-to-end outcome.
-
-### Step 2 — reconstruct the verified software candidate
+### Step 1 — use one public candidate checkout
 
 ~~~bash
-cd ..
-git clone -b work/controlled-polling-benchmark \
-  https://github.com/zhoujune/AgentOS-Software-Impacts.git osp-core
+git clone -b release-candidate/v0.1.0-rc1 \
+  https://github.com/zhoujune/AgentOS-Software-Impacts.git agentos-rc
+cd agentos-rc
+python3 -m unittest discover -s examples/world-effect-reuse -p 'test_*.py' -v
+python3 scripts/verify_split_sources.py
 
-bash osp-core/scripts/reconstruct_agentos_overlay.sh \
-  "$PWD/AgentOS-reconstructed"
+# One command reconstructs upstream + overlays, runs six baseline
+# tasks, and evaluates both world-effect demo traces in fresh VMs.
+bash scripts/run_public_reproduction.sh "$PWD/../agentos-rc-reproduction"
 ~~~
 
-The reconstruction script pins the original upstream commit, applies the experimental overlay, and runs its unit tests. The baseline Buildroot image is used as a read-only input; a new guest image is derived and validated when the demo runs. Do not overwrite the original ASE tree.
+The combined report is `../agentos-rc-reproduction/reproduction_summary.json`, and the detailed new-task evidence is `../agentos-rc-reproduction/world-effect-demo/impact_validation.json`.
 
-### Step 3 — new-task demonstration
+### Optional direct demo from an independently reconstructed checkout
 
 ~~~bash
-bash osp-demo/examples/world-effect-reuse/run_demo.sh \
-  "$PWD/AgentOS-reconstructed" \
-  "$PWD/reuse-study-run-01"
+bash scripts/reconstruct_agentos_overlay.sh "$PWD/../AgentOS-reconstructed"
+bash examples/world-effect-reuse/run_demo.sh \
+  "$PWD/../AgentOS-reconstructed" "$PWD/../reuse-study-run-01"
 ~~~
-
-Each trace gets its own VM rootfs copy, bridge directory, and run report. No guest NIC or VM-console root privileges are enabled. No external model service is contacted.
 
 The driver runs both traces and then invokes validate_results.py, which checks the host reports rather than process exit codes alone. The negative trace is **supposed** to fail the task oracle.
 
