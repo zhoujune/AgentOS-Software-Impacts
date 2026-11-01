@@ -2,7 +2,7 @@
 
 > **Not for submission:** Working manuscript content based on the original ASE 2026 paper and local reproducibility audit. The current code-version, release license, permanent reproducible capsule, and support contact still need confirmation. Do not reuse the original ASE contribution as if it were a new research result.
 
-## AgentOS: A Reproducible Execution and Evaluation Platform for Safe LLM Agents
+## AgentOS: An Open Testbed for World-Effect Evaluation of LLM Agents
 
 **Authors / main developers (provisional, from ASE):** Jun Zhou and Tao Jia. Verify final affiliations, author list, corresponding author, and current email addresses before submission.
 
