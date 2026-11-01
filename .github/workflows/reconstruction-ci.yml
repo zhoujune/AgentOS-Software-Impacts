@@ -25,3 +25,17 @@ jobs:
           bash scripts/reconstruct_agentos_overlay.sh "$RUNNER_TEMP/AgentOS"
           git -C "$RUNNER_TEMP/AgentOS" rev-parse HEAD
           python3 -m json.tool "$RUNNER_TEMP/AgentOS/manifests/manifest.lock" >/dev/null
+
+      - name: Install QEMU dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 e2fsprogs
+          qemu-system-x86_64 --version
+      - name: Build isolated guest and run smoke
+        run: |
+          cd "$RUNNER_TEMP/AgentOS"
+          sha256sum artifacts/images/rootfs.eval.clean.ext2
+          python3 scripts/build/make_offline_eval_image.py
+          e2fsck -fn runtime/offline-eval/rootfs.eval.offline.ext2
+          OUTPUT_ROOT="$RUNNER_TEMP/smoke" VM_BOOT_TIMEOUT=120 TASK_TIMEOUT=180             bash scripts/test/run_offline_smoke.sh
+          sha256sum artifacts/images/rootfs.eval.clean.ext2
