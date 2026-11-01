@@ -2,7 +2,7 @@
 # RC reproduction helper: reconstruct pinned AgentOS and exercise world effects.
 # AUTOMATED clean-check, not independent human replication.
 set -euo pipefail
-ROOT="$(cd "$(dirname "\${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ $# -ne 1 ]]; then
   echo "Usage: bash $0 /path/to/new-output-directory" >&2
   exit 2
