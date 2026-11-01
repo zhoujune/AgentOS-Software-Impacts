@@ -5,7 +5,6 @@ UPSTREAM_URL="https://github.com/zhoujune/AgentOS.git"
 UPSTREAM_COMMIT="4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PATCH_FILE="$SCRIPT_DIR/../patches/0001-agentos-offline-replay-overlay.patch"
-EXPECTED_PATCH_SHA256="dcae1c4abdf821dd357d0004ea0b4adf9376cac16879e21c1746d35c9f82488d"
 DESTINATION="${1:-}"
 
 if [[ -z "$DESTINATION" ]]; then
@@ -16,17 +15,7 @@ if [[ -e "$DESTINATION" ]]; then
   echo "Refusing to overwrite existing destination: $DESTINATION" >&2
   exit 2
 fi
-if [[ ! -f "$PATCH_FILE" ]]; then
-  echo "Missing overlay patch: $PATCH_FILE" >&2
-  exit 2
-fi
-# Verify BEFORE cloning, so a truncated/incomplete download fails immediately.
-if ! printf '%s  %s\n' "$EXPECTED_PATCH_SHA256" "$PATCH_FILE" | sha256sum --check --status -; then
-  echo "Invalid overlay patch hash. The release is NOT reproducible from this patch." >&2
-  echo "Expected SHA-256: $EXPECTED_PATCH_SHA256" >&2
-  echo "See https://github.com/zhoujune/AgentOS-Software-Impacts/issues/4" >&2
-  exit 1
-fi
+python3 "$SCRIPT_DIR/verify_split_sources.py"
 
 git clone "$UPSTREAM_URL" "$DESTINATION"
 git -C "$DESTINATION" checkout --detach "$UPSTREAM_COMMIT"
@@ -36,8 +25,24 @@ if [[ "$actual" != "$UPSTREAM_COMMIT" ]]; then
   exit 1
 fi
 
-git -C "$DESTINATION" apply --check "$PATCH_FILE"
-git -C "$DESTINATION" apply "$PATCH_FILE"
+for patch in \
+  0001-agentos-offline-replay-overlay.patch \
+  0002-offline-aggregation-and-fixtures.patch \
+  0003-offline-tests-and-validation.patch
+do
+  git -C "$DESTINATION" apply --check "$SCRIPT_DIR/../patches/$patch"
+  git -C "$DESTINATION" apply "$SCRIPT_DIR/../patches/$patch"
+done
+for file in \
+  scripts/build/make_offline_eval_image.py \
+  scripts/test/run_offline_smoke.sh \
+  scripts/test/run_offline_representative_suite.sh \
+  scripts/test/run_offline_repeated_benchmark.sh
+do
+  [[ ! -e "$DESTINATION/$file" ]] || { echo "Unexpected existing $file" >&2; exit 1; }
+  mkdir -p "$DESTINATION/$(dirname "$file")"
+  cp "$SCRIPT_DIR/../overlay-files/$file" "$DESTINATION/$file"
+done
 
 (
   cd "$DESTINATION"
@@ -53,5 +58,5 @@ fi
 
 echo "Reconstruction complete."
 echo "Upstream base: $UPSTREAM_COMMIT"
-echo "Overlay patch: $PATCH_FILE"
+echo "Overlay: three patches and four pinned standalone files"
 echo "Destination: $DESTINATION"
