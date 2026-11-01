@@ -13,3 +13,15 @@ jobs:
       - run: python3 scripts/verify_split_sources.py
       - run: bash -n scripts/reconstruct_agentos_overlay.sh
       - run: sha256sum patches/000*.patch overlay-files/scripts/build/*.py overlay-files/scripts/test/*.sh
+
+  reconstruct:
+    needs: source-integrity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct a clean upstream checkout
+        run: |
+          bash scripts/reconstruct_agentos_overlay.sh "$RUNNER_TEMP/AgentOS"
+          git -C "$RUNNER_TEMP/AgentOS" rev-parse HEAD
+          python3 -m json.tool "$RUNNER_TEMP/AgentOS/manifests/manifest.lock" >/dev/null
