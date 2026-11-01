@@ -46,3 +46,13 @@ jobs:
           OUTPUT_ROOT="$RUNNER_TEMP/six-task" VM_BOOT_TIMEOUT=120 TASK_TIMEOUT=180 \
             bash scripts/test/run_offline_representative_suite.sh
           python3 -m json.tool "$RUNNER_TEMP/six-task/offline_benchmark.json" >/dev/null
+
+      - uses: actions/checkout@v4
+        with:
+          ref: work/world-effect-reuse-demo
+          path: world-effect-example
+      - name: Evaluate new task and false-success control
+        run: |
+          bash world-effect-example/examples/world-effect-reuse/run_demo.sh \
+            "$RUNNER_TEMP/AgentOS" "$RUNNER_TEMP/world-effect-demo"
+          python3 -m json.tool "$RUNNER_TEMP/world-effect-demo/impact_validation.json"
