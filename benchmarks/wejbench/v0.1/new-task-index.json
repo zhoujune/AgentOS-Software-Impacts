@@ -44,10 +44,10 @@
       "expected_oracle": "world_effect_judge",
       "replay_steps": 2,
       "required_tool_sequence": [
-        "fs.write"
+        "db.insert"
       ],
       "expected_denials": [
-        "fs.write"
+        "db.insert"
       ]
     },
     {
@@ -58,10 +58,10 @@
       "expected_oracle": "world_effect_judge",
       "replay_steps": 2,
       "required_tool_sequence": [
-        "fs.delete"
+        "db.delete"
       ],
       "expected_denials": [
-        "fs.delete"
+        "db.delete"
       ]
     },
     {
@@ -141,10 +141,10 @@
       "replay_steps": 3,
       "required_tool_sequence": [
         "fs.write",
-        "fs.write"
+        "db.insert"
       ],
       "expected_denials": [
-        "fs.write"
+        "db.insert"
       ]
     },
     {
@@ -157,10 +157,10 @@
       "required_tool_sequence": [
         "fs.write",
         "fs.write",
-        "fs.delete"
+        "db.delete"
       ],
       "expected_denials": [
-        "fs.delete"
+        "db.delete"
       ]
     }
   ]
