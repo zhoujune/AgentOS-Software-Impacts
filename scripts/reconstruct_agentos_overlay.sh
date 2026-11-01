@@ -44,6 +44,20 @@ do
   cp "$SCRIPT_DIR/../overlay-files/$file" "$DESTINATION/$file"
 done
 
+# The upstream Git commit used for reproducibility predates the now-approved
+# first-party MIT notice. Include the companion release's authoritative
+# LICENSE in the reconstructed working tree without modifying the upstream Git
+# revision or existing patch hashes. Third-party materials retain their licenses.
+if [[ -e "$DESTINATION/LICENSE" ]]; then
+  cmp -s "$SCRIPT_DIR/../LICENSE" "$DESTINATION/LICENSE" || {
+    echo "Conflicting upstream LICENSE; review license scope" >&2
+    exit 1
+  }
+else
+  cp "$SCRIPT_DIR/../LICENSE" "$DESTINATION/LICENSE"
+fi
+cmp -s "$SCRIPT_DIR/../LICENSE" "$DESTINATION/LICENSE"
+
 (
   cd "$DESTINATION"
   python3 -m unittest discover -s judge -p 'test_*.py' -v
