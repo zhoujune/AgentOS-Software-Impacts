@@ -80,7 +80,7 @@ def gather_case(out: Path, example: Path, label: str, errors: list[str]) -> dict
     write_events = [event for event in task_events if event.get("tool") == "fs.write"]
     allowed_writes = [
         event for event in write_events
-        if str(event.get("decision", "")).lower() == "allow"
+        if str(event.get("decision", "")).lower() == "auto"
         and str(event.get("status", "")).lower() == "success"
     ]
     proxy_log_path = Path(case.get("llm_proxy_log", ""))
