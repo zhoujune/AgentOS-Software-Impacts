@@ -16,7 +16,7 @@ AgentOS is a Buildroot-based environment for executing and evaluating tool-using
 
 | Field | Draft entry / outstanding action |
 | --- | --- |
-| **C1 Current code version** | Pinned baseline: AgentOS commit `4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c` plus the companion repository's `patches/0001-agentos-offline-replay-overlay.patch` (SHA-256 `dcae1c4abdf821dd357d0004ea0b4adf9376cac16879e21c1746d35c9f82488d`); this is a reconstructable candidate, not yet a tagged release |
+| **C1 Current code version** | Candidate: pinned original AgentOS commit `4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c`, companion source commit `62a231a73a7a354ef380407d28498c4fd2dec775`, three checked Git patches and four pinned source files (`patches/expected_sha256.txt`). Tagged release pending |
 | **C2 Permanent code/repository link for that version** | [AgentOS-Software-Impacts](https://github.com/zhoujune/AgentOS-Software-Impacts); replace with an immutable tag or release URL |
 | **C3 Permanent reproducible capsule link** | **TBD**: publicly accessible, independently validated capsule/source archive |
 | **C4 Legal code license** | **TBD**: ASE described original work as MIT, but neither inspected tree contained a top-level LICENSE file; confirm authority and publish complete license terms |
