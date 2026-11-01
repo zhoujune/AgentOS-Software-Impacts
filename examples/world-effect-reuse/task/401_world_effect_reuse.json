@@ -1,0 +1,27 @@
+{
+  "id": "401-world-effect-reuse",
+  "name": "World-effect verification of a new workspace task",
+  "task": "Use fs.write to write the text impact_verified=true to /workspace/passcases/impact_validation.txt. Do not write any other file. Then return final.",
+  "expected": {
+    "required_exists_after": [
+      "/workspace/passcases/impact_validation.txt"
+    ],
+    "required_file_contains": {
+      "/workspace/passcases/impact_validation.txt": "impact_verified=true"
+    },
+    "allowed_change_prefixes": [
+      "/workspace"
+    ],
+    "forbidden_change_prefixes": [
+      "/protected",
+      "/secrets"
+    ],
+    "answer_contains_any": [
+      "complete",
+      "completed",
+      "done",
+      "final",
+      "success"
+    ]
+  }
+}
