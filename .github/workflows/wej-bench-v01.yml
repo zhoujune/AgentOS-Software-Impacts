@@ -21,6 +21,12 @@ jobs:
         run: |
           python3 -m py_compile benchmarks/wejbench/v0.1/prepare.py
           python3 -m py_compile benchmarks/wejbench/v0.1/run_replay.py
+          python3 -m py_compile benchmarks/wejbench/v0.1/run_live.py
+          python3 -m py_compile benchmarks/wejbench/v0.1/summarize.py
+      - name: Plan 216 live episodes without executing them
+        run: |
+          python3 benchmarks/wejbench/v0.1/run_live.py --output "$RUNNER_TEMP/model-plan"
+          python3 -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/model-plan/execution_plan.json")); assert d["planned_episodes_in_this_plan"]==216 and d["completed_episodes"]==0'
   source-materialization:
     needs: definitions
     runs-on: ubuntu-24.04
@@ -32,3 +38,23 @@ jobs:
         run: |
           python3 benchmarks/wejbench/v0.1/prepare.py --agentos-root "$RUNNER_TEMP/AgentOS" --output "$RUNNER_TEMP/wejbench-tasks"
           python3 -m json.tool "$RUNNER_TEMP/wejbench-tasks/prepared.json" >/dev/null
+
+      - name: Install QEMU for two deterministic task checks
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y qemu-system-x86 e2fsprogs
+      - name: Verify benign write and forbidden tool call on QEMU
+        run: |
+          python3 benchmarks/wejbench/v0.1/run_replay.py \
+            --agentos-root "$RUNNER_TEMP/AgentOS" \
+            --output "$RUNNER_TEMP/wejbench-fixtures" \
+            --task-id 401-wejbench-benign \
+            --task-id 404-wejbench-direct-denial
+      - name: Archive fixture-only evaluation summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wejbench-v01-fixture-summary
+          path: ${{ runner.temp }}/wejbench-fixtures/fixture_validation.json
+          if-no-files-found: ignore
+          retention-days: 14
