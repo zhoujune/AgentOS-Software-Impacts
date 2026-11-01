@@ -1,0 +1,88 @@
+name: RC one-checkout clean reproduction
+
+on:
+  push:
+    branches:
+      - release-candidate/v0.1.0-rc1
+  pull_request:
+    paths:
+      - "scripts/**"
+      - "patches/**"
+      - "overlay-files/**"
+      - "examples/world-effect-reuse/**"
+      - "benchmarks/resource-footprint/**"
+      - "benchmarks/wejbench/**"
+      - ".github/workflows/rc-clean-reproduction.yml"
+  workflow_dispatch:
+
+jobs:
+  source-and-metadata:
+    name: Static integrity and fixture tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check all seven source overlays
+        run: python3 scripts/verify_split_sources.py
+      - name: Confirm replay/candidate entrypoints
+        run: |
+          bash -n scripts/reconstruct_agentos_overlay.sh
+          bash -n scripts/run_public_reproduction.sh
+          bash -n examples/world-effect-reuse/run_demo.sh
+          python3 -m py_compile benchmarks/resource-footprint/run_memory_sweep.py
+          python3 -m py_compile benchmarks/resource-footprint/publish_results.py
+          python3 -m json.tool benchmarks/resource-footprint/results/20261101-memory-full.json >/dev/null
+          python3 -m json.tool benchmarks/wejbench/v0.1/manifest.json >/dev/null
+      - name: Check world-effect reuse fixtures
+        run: python3 -m unittest discover -s examples/world-effect-reuse -p 'test_*.py' -v
+      - name: Check lightweight benchmark and publication audit
+        run: python3 -m unittest discover -s benchmarks/resource-footprint -p 'test_*.py' -v
+      - name: Check WEJBench task schema and source definitions
+        run: |
+          python3 benchmarks/wejbench/v0.1/prepare.py
+          python3 -m unittest discover -s benchmarks/wejbench/v0.1 -p 'test_*.py' -v
+      - name: Verify published result counts
+        run: |
+          python3 - <<'PY'
+          import json,csv
+          with open('benchmarks/resource-footprint/results/20261101-memory-full.json') as f: m=json.load(f)
+          with open('benchmarks/wejbench/v0.1/results/20261101-live-216-audit-summary.json') as f: w=json.load(f)
+          assert m['validation']['full_cases_passed']==90
+          assert m['validation']['full_suites_passed']==15
+          assert w['totals']['episodes']==216
+          assert w['totals']['original_pass']==75
+          print('Published result metadata verified (90 CPU-only, 216 local-model)')
+          PY
+
+  fresh-checkout:
+    name: Public source to QEMU world-effect validation
+    needs: source-and-metadata
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install QEMU runtime prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 e2fsprogs
+      - name: Run RC one-checkout reproduction helper
+        run: |
+          bash scripts/run_public_reproduction.sh "$RUNNER_TEMP/agentos-rc-reproduction"
+          python3 -m json.tool "$RUNNER_TEMP/agentos-rc-reproduction/reproduction_summary.json"
+      - name: Retain sanitized summary for audit
+        if: always()
+        run: |
+          mkdir -p ci-reproduction
+          for name in environment.txt reproduction_summary.json; do
+            if test -f "$RUNNER_TEMP/agentos-rc-reproduction/$name"; then
+              cp "$RUNNER_TEMP/agentos-rc-reproduction/$name" "ci-reproduction/$name"
+            fi
+          done
+      - name: Upload short-lived CI summary (not guest images)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentos-rc-one-checkout-summary
+          path: ci-reproduction/
+          retention-days: 30
+          if-no-files-found: ignore
