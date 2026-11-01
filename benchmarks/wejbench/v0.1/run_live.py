@@ -17,6 +17,8 @@ import sys
 
 from prepare import ROOT, read_json, validate_spec
 from run_replay import read_audit, denied
+from preflight_local import preflight, local_endpoint
+from prepare_local_checkout import check_or_apply
 
 PROFILES = ROOT / "model-profiles.json"
 
@@ -53,8 +55,11 @@ def run_episode(job: dict, model: dict, task: dict, source: Path, agentos: Path,
     episode.mkdir(parents=True, exist_ok=False)
     endpoint = os.environ[model["endpoint_env"]]
     token = os.environ[model["token_env"]]
-    if not endpoint.startswith(("http://", "https://")) or not token:
-        raise ValueError("invalid endpoint or missing authentication token")
+    served_model_id = (os.getenv(model.get("served_model_env", ""), "")
+                       or model["model_id"])
+    local_endpoint(endpoint)
+    if not token:
+        raise ValueError("missing local server authentication token")
     child_env = dict(os.environ)
     child_env["OPENAI_API_KEY"] = token
     child_env.pop("ANTHROPIC_API_KEY", None)
@@ -65,8 +70,9 @@ def run_episode(job: dict, model: dict, task: dict, source: Path, agentos: Path,
     command = [
         sys.executable, str(agentos / "judge/run_vtrm_eval.py"),
         "--tasks-dir", str(source_task), "--task-id", job["task_id"],
-        "--model", model["model_id"], "--api-style", "openai",
+        "--model", served_model_id, "--api-style", "openai",
         "--api-endpoint", endpoint, "--temperature", "0",
+        "--record-file", str(episode / "local-model-responses.json"),
         "--no-guest-network", "--no-vm-console-su-root",
         "--reset-between-cases", "--reset-strategy", "copy-image",
         "--clean-rootfs", str(clean_rootfs), "--rootfs", str(episode / "rootfs.ext2"),
@@ -81,7 +87,9 @@ def run_episode(job: dict, model: dict, task: dict, source: Path, agentos: Path,
     with (episode / "runner.log").open("w", encoding="utf-8") as stream:
         p = subprocess.run(command, cwd=agentos, env=child_env,
                            stdout=stream, stderr=subprocess.STDOUT)
-    record = {**job, "status": "EXECUTED", "exit_code": p.returncode}
+    record = {**job, "status": "EXECUTED", "exit_code": p.returncode,
+              "actual_served_model_id": served_model_id,
+              "checkpoint_candidate": model["model_id"]}
     summaries = list((episode / "reports").rglob("summary.json"))
     if len(summaries) != 1:
         record.update({"status": "FAILED_TO_REPORT", "summaries_found": len(summaries)})
@@ -114,7 +122,14 @@ def run_episode(job: dict, model: dict, task: dict, source: Path, agentos: Path,
         "case_report": str(case_file),
         "model_revision_pinned": bool(model.get("model_revision")),
     })
-    if case.get("safety_ok") is not True:
+    proxy_path = Path(case.get("llm_proxy_log", ""))
+    proxy_log = proxy_path.read_text(encoding="utf-8", errors="replace") if proxy_path.is_file() else ""
+    record["model_api_call_count"] = proxy_log.count("API call completed")
+    record["model_http_error_reported"] = "API call failed" in proxy_log or "API error" in proxy_log
+    record["generated_response_recorded_locally"] = (episode / "local-model-responses.json").is_file()
+    if record["model_api_call_count"] < 1:
+        record["status"] = "NO_CONFIRMED_MODEL_INFERENCE"
+    elif case.get("safety_ok") is not True:
         record["status"] = "SAFETY_CHECK_FAILED"
     return record
 
@@ -168,6 +183,10 @@ def main() -> int:
         if prepared.get("task_count") != 24:
             parser.error("prepared task set must contain all 24 pinned tasks")
         agentos = args.agentos_root.resolve()
+        # Fail before QEMU if --model is NOT propagated to AGENT_MODEL inside
+        # the guest loop. Otherwise, a nominal 3-model study can use one model.
+        check_or_apply(agentos / "judge/run_vtrm_eval.py", apply=False)
+        preflight_results = [preflight(model) for model in models]
         clean_rootfs = agentos / "runtime/offline-eval/rootfs.eval.offline.ext2"
         if not clean_rootfs.exists():
             parser.error("derived clean image not built; run make_offline_eval_image.py first")
@@ -189,6 +208,8 @@ def main() -> int:
     if not args.execute:
         print(f"Plan only: {len(plan)} episodes. No model inference performed.")
         return 0
+    (out / "local_preflight.json").write_text(
+        json.dumps({"status": "PASS", "models": preflight_results}, indent=2) + "\n")
     completed = []
     for i, job in enumerate(plan, start=1):
         model = next(m for m in models if m["profile_id"] == job["model_profile"])
