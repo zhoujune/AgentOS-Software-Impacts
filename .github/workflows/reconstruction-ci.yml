@@ -1,4 +1,4 @@
-name: Clean reconstruction checks
+name: RC clean reconstruction and world-effect validation
 on:
   push:
     branches: [work/controlled-polling-benchmark]
@@ -47,13 +47,9 @@ jobs:
             bash scripts/test/run_offline_representative_suite.sh
           python3 -m json.tool "$RUNNER_TEMP/six-task/offline_benchmark.json" >/dev/null
 
-      - uses: actions/checkout@v4
-        with:
-          ref: 6d0519cdd109b8944eed9d9a5dea0a4feac5ad6f
-          path: world-effect-example
-      - name: Evaluate new task and false-success control
+      - name: Evaluate new task and false-success control using the SAME candidate checkout
         run: |
-          bash world-effect-example/examples/world-effect-reuse/run_demo.sh \
+          bash examples/world-effect-reuse/run_demo.sh \
             "$RUNNER_TEMP/AgentOS" "$RUNNER_TEMP/world-effect-demo"
           python3 -m json.tool "$RUNNER_TEMP/world-effect-demo/impact_validation.json"
 
