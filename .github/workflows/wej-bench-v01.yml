@@ -8,6 +8,10 @@ on:
       - ".github/workflows/wej-bench-v01.yml"
   workflow_dispatch:
 
+concurrency:
+  group: wej-bench-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   definitions:
     runs-on: ubuntu-24.04
@@ -28,6 +32,7 @@ jobs:
           python3 benchmarks/wejbench/v0.1/run_live.py --output "$RUNNER_TEMP/model-plan"
           python3 -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/model-plan/execution_plan.json")); assert d["planned_episodes_in_this_plan"]==216 and d["completed_episodes"]==0'
   source-materialization:
+    timeout-minutes: 25
     needs: definitions
     runs-on: ubuntu-24.04
     steps:
