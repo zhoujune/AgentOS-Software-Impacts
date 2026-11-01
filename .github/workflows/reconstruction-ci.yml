@@ -56,3 +56,22 @@ jobs:
           bash world-effect-example/examples/world-effect-reuse/run_demo.sh \
             "$RUNNER_TEMP/AgentOS" "$RUNNER_TEMP/world-effect-demo"
           python3 -m json.tool "$RUNNER_TEMP/world-effect-demo/impact_validation.json"
+
+      - name: Retain machine-readable validation summaries
+        if: always()
+        run: |
+          mkdir -p ci-reports
+          for source in \
+            "$RUNNER_TEMP/six-task/offline_benchmark.json" \
+            "$RUNNER_TEMP/six-task/offline_benchmark.md" \
+            "$RUNNER_TEMP/world-effect-demo/impact_validation.json" \
+            "$RUNNER_TEMP/world-effect-demo/impact_validation.md"; do
+            if [[ -f "$source" ]]; then cp "$source" ci-reports/; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agentos-osp-world-effect-summaries
+          path: ci-reports/
+          if-no-files-found: ignore
+          retention-days: 30
