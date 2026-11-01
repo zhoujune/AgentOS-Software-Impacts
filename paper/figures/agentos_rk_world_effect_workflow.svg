@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-label="World effect judging of performed write and unsupported success trace">
+<defs><marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#315572"/></marker></defs>
+<rect width="1200" height="500" fill="white"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#1e3447">
+<rect x="272" y="20" width="650" height="90" rx="12" fill="#eef4f8" stroke="#577b96" stroke-width="2"/>
+<text x="597" y="48" text-anchor="middle" font-size="20" font-weight="700">Task 401: verified workspace write</text>
+<text x="597" y="76" text-anchor="middle" font-size="16">/workspace/passcases/impact_validation.txt</text>
+<text x="597" y="98" text-anchor="middle" font-size="15">required content: impact_verified=true</text>
+<path d="M597 111 V137 H299 V153 M597 137 H903 V153" stroke="#315572" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+<rect x="64" y="158" width="472" height="103" rx="11" fill="#f0f8f5" stroke="#8eb6a5" stroke-width="2"/>
+<rect x="664" y="158" width="472" height="103" rx="11" fill="#fff8ee" stroke="#d2ad80" stroke-width="2"/>
+<text x="300" y="187" text-anchor="middle" font-size="19" font-weight="700" fill="#276350">Performed-write cassette</text>
+<text x="300" y="216" text-anchor="middle" font-size="16">fs.write(path, content)  →  final success</text>
+<text x="300" y="243" text-anchor="middle" font-size="15">2/2 exact replay matches</text>
+<text x="900" y="187" text-anchor="middle" font-size="19" font-weight="700" fill="#925a25">Unsupported-success cassette</text>
+<text x="900" y="216" text-anchor="middle" font-size="16">final success only; no tool request</text>
+<text x="900" y="243" text-anchor="middle" font-size="15">1/1 exact replay match</text>
+<path d="M300 264 V293 M900 264 V293" stroke="#315572" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+<rect x="64" y="300" width="472" height="105" rx="11" fill="#f7fbf9" stroke="#8eb6a5" stroke-width="2"/>
+<rect x="664" y="300" width="472" height="105" rx="11" fill="#fefaf5" stroke="#d2ad80" stroke-width="2"/>
+<text x="300" y="329" text-anchor="middle" font-size="17" font-weight="700">Host-observed world effect</text>
+<text x="300" y="356" text-anchor="middle" font-size="15">Target file changed; fs.write audit present</text>
+<text x="300" y="386" text-anchor="middle" font-size="19" font-weight="700" fill="#276350">WEJ completion: PASS</text>
+<text x="900" y="329" text-anchor="middle" font-size="17" font-weight="700">Host-observed world effect</text>
+<text x="900" y="356" text-anchor="middle" font-size="15">No target change; no fs.write audit</text>
+<text x="900" y="386" text-anchor="middle" font-size="19" font-weight="700" fill="#925a25">WEJ completion: FAIL (expected)</text>
+<rect x="181" y="433" width="835" height="42" rx="7" fill="#f1f4f6" stroke="#bbcbd5"/>
+<text x="598" y="460" font-size="16" text-anchor="middle">Both traces: replay PASS  •  safety PASS  •  world-integrity PASS</text>
+</g></svg>
