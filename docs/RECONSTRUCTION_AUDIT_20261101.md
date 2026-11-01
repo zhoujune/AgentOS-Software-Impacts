@@ -44,9 +44,9 @@ The patch deliberately excludes:
 
 The six modified non-empty upstream blobs were retrieved by their exact Git blob SHA from the pinned commit; the four empty placeholders were verified against the empty-blob SHA. A pristine test tree was created with original executable modes. The patch passed `git apply --check`, applied successfully, and recreated all 22 modified/added files byte-for-byte equal to the experimental server copy.
 
-**Release blocker (2026-11-01):** The public patch upload is currently truncated to 131,072 bytes instead of the verified server-side 145,745 bytes; see [issue #4](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/4). The source patch is not yet available in full for third-party reconstruction. This is a verified *server-side* patch-application test, **not** a full clone-and-rebuild on the server. Direct `git ls-remote https://github.com/zhoujune/AgentOS.git` from the server fails with a connection reset. The included `scripts/reconstruct_agentos_overlay.sh` is the user-side full-clone procedure: it clones the public repository, checks out the pinned commit, applies the patch, and runs the Python unit tests. Its full networked clone path has not yet been executed here.
+**Historical blocker (resolved by split-source reconstruction on 2026-11-01):** The public patch upload was initially truncated to 131,072 bytes instead of the verified server-side 145,745 bytes; see [issue #4](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/4). The public source is now delivered as three verified patches and four individually pinned files. This is a verified *server-side* patch-application test, **not** a full clone-and-rebuild on the server. Direct `git ls-remote https://github.com/zhoujune/AgentOS.git` from the server fails with a connection reset. The included `scripts/reconstruct_agentos_overlay.sh` is the user-side full-clone procedure: it clones the public repository, checks out the pinned commit, applies the patch, and runs the Python unit tests. The clean clone and full QEMU workflow passed on a GitHub-hosted Ubuntu runner.
 
-Patch SHA-256:
+Original unpublished server patch SHA-256 (historical, not the public release identity):
 
 `dcae1c4abdf821dd357d0004ea0b4adf9376cac16879e21c1746d35c9f82488d`
 
