@@ -13,7 +13,7 @@
 **Approval and remaining scope questions:**
 
 - [x] The project owner specified MIT terms and the copyright notice `Jun Zhou` for original AgentOS and journal first-party code. Any unidentified contributor-owned material still requires a provenance check before release.
-- [x] MIT terms were specified for the journal first-party changes as well as original AgentOS; the candidate includes a top-level LICENSE. The upstream repository's [license PR](https://github.com/zhoujune/AgentOS/pull/1) is open.
+- [x] MIT terms were specified for the journal first-party changes as well as original AgentOS; the candidate includes a top-level LICENSE. The upstream repository's [license PR](https://github.com/zhoujune/AgentOS/pull/1) has been merged into `main`.
 - [ ] Are there any institutional, employment, collaboration, or previously assigned rights requiring additional approval?
 - [x] Copyright notice confirmed by the project owner: `Copyright (c) 2026 Jun Zhou`.
 - [ ] Should any third-party files remain subject to their existing licenses instead of an MIT blanket statement?
@@ -45,7 +45,7 @@ The staging [PR #12](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/1
 
 | Field | Required value |
 | --- | --- |
-| Grant authorized for original AgentOS first-party source? | **MIT specified by project owner; upstream LICENSE PR open** |
+| Grant authorized for original AgentOS first-party source? | **MIT confirmed by project owner; upstream LICENSE merged into `main`** |
 | Grant authorized for journal companion first-party code? | **MIT specified and committed in staging LICENSE** |
 | Intended license / scope | **MIT first-party code**, other components excluded from blanket grant |
 | Name(s) of copyright holder(s) | **Jun Zhou** (per owner confirmation) |
@@ -58,7 +58,7 @@ Record final approval in an appropriate maintained repository review/issue or si
 
 ## Next release sequence
 
-1. **Completed for first-party code:** MIT license with 2026 Jun Zhou copyright notice committed to the journal candidate; upstream PR proposed.
+1. **Completed for first-party code:** MIT license with 2026 Jun Zhou copyright notice committed to the journal candidate; upstream PR merged.
 2. **Outstanding:** review other contributor rights and third-party/binary notices; complete package/source inventory and Buildroot pin.
 3. Re-run a clean CI workflow against the *new commit*.
 4. Recruit and document one non-maintainer independent reproduction (issue #6).
