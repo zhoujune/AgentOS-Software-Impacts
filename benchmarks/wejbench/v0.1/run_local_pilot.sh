@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON="${PYTHON:-python3}"
 
 if [[ "$#" -ne 4 ]]; then
-  echo "Usage: bash $0 /path/to/reconstructed-AgentOS /path/to/prepared-24-tasks /new/output/dir {llama3-8b|qwen25-7b|mistral7b-v03}" >&2
+  echo "Usage: bash $0 /path/to/reconstructed-AgentOS /path/to/prepared-24-tasks /new/output/dir {llama3-8b|qwen3-14b|mistral7b-v03}" >&2
   exit 2
 fi
 AGENTOS="$(realpath "$1")"
@@ -14,7 +14,7 @@ PREPARED="$(realpath "$2")"
 OUTPUT="$3"
 PROFILE="$4"
 case "$PROFILE" in
-  llama3-8b|qwen25-7b|mistral7b-v03) ;;
+  llama3-8b|qwen3-14b|mistral7b-v03) ;;
   *) echo "Unknown profile: $PROFILE" >&2; exit 2 ;;
 esac
 [[ ! -e "$OUTPUT" ]] || { echo "Refusing to overwrite output: $OUTPUT" >&2; exit 2; }
