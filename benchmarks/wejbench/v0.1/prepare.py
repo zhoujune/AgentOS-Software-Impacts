@@ -150,8 +150,10 @@ def materialize(agentos: Path, output: Path, records: list[dict]) -> dict:
     require(not output.exists(), "output exists; refusing to overwrite a prior run")
     require(not output.is_relative_to(agentos), "output must not modify AgentOS checkout")
     output.mkdir(parents=True)
-    flat = output / "tasks"
-    flat.mkdir()
+    passing = output / "tasks_should_pass"
+    failing = output / "tasks_should_fail"
+    passing.mkdir()
+    failing.mkdir()
     inputs = []
     for rec in records:
         if rec["source"] == "ase_existing":
@@ -165,12 +167,17 @@ def materialize(agentos: Path, output: Path, records: list[dict]) -> dict:
             payload = source.read_bytes()
         task = json.loads(payload)
         verify_task(task, rec)
-        target = flat / (rec["id"] + ".json")
+        # AgentOS decides whether to evaluate completion from the source path.
+        # Keep legacy ASE fail cases and new direct-denial cases in the fail dir;
+        # new untrusted-input and mixed cases must check legitimate completion.
+        is_fail = (rec["source"] == "ase_existing" and
+                   "tasks_should_fail" in rec["upstream_path"]) or (rec["source"] == "new" and rec["category"] == "direct_denial")
+        target = (failing if is_fail else passing) / (rec["id"] + ".json")
         target.write_bytes(payload)
         inputs.append({
             "task_id": rec["id"], "category": rec["category"],
             "source": rec["source"], "sha256": hashlib.sha256(payload).hexdigest(),
-            "path": str(target),
+            "path": str(target), "judge_completion_skipped": is_fail,
         })
     report = {"status": "PREPARED_NOT_EXECUTED", "task_count": len(inputs),
               "upstream_commit": "4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c",
