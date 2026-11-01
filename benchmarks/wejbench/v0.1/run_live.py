@@ -124,9 +124,17 @@ def run_episode(job: dict, model: dict, task: dict, source: Path, agentos: Path,
     })
     proxy_path = Path(case.get("llm_proxy_log", ""))
     proxy_log = proxy_path.read_text(encoding="utf-8", errors="replace") if proxy_path.is_file() else ""
-    record["model_api_call_count"] = proxy_log.count("API call completed")
+    response_file = episode / "local-model-responses.json"
+    responses = read_json(response_file).get("responses", {}) if response_file.is_file() else {}
+    if not isinstance(responses, dict):
+        responses = {}
+    # Some deployed llm_proxy builds attach two identical logging handlers.
+    # Count unique recorded request-ID responses, not doubled log lines.
+    record["model_api_call_count"] = len(responses) if "API call completed" in proxy_log else 0
+    record["model_responses_recorded"] = len(responses)
+    record["proxy_log_completion_markers"] = proxy_log.count("API call completed")
     record["model_http_error_reported"] = "API call failed" in proxy_log or "API error" in proxy_log
-    record["generated_response_recorded_locally"] = (episode / "local-model-responses.json").is_file()
+    record["generated_response_recorded_locally"] = response_file.is_file()
     if record["model_api_call_count"] < 1:
         record["status"] = "NO_CONFIRMED_MODEL_INFERENCE"
     elif case.get("safety_ok") is not True:
