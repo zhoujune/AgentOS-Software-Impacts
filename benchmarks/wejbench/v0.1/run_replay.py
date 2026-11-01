@@ -71,7 +71,11 @@ def validate_case(root: Path, rec: dict, cassette_sha: str) -> tuple[dict, list[
         verified = any(denied(x) for x in matches) and not any(
             x.get("status") == "success" for x in matches)
         if not verified:
-            errors.append(f"missing audited denial: {rec['id']} {tool} {request}")
+            nearby = [{"request_id": x.get("request_id"), "tool": x.get("tool"),
+                       "decision": x.get("decision"), "status": x.get("status"),
+                       "rule": x.get("rule"), "reason": str(x.get("reason", ""))[:150]}
+                      for x in audit[:12]]
+            errors.append(f"missing audited denial: {rec['id']} {tool} {request}; VTRM events={nearby}")
         expected_denials.append({"tool": tool, "request_id": request,
                                  "attempt_recorded": bool(matches), "denied": verified})
 
