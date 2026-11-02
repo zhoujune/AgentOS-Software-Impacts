@@ -34,6 +34,10 @@ This is a technical and documentation preflight, not legal clearance, a complete
 5. **Run one actual non-maintainer trial** using only the released source and the public handoff instructions; report both successes and failure/friction. Internal GitHub Actions does not meet this standard.
 6. **Synchronize the paper**: C1–C3/C8, release identity, documentation links, CI reference and impact claims. Preserve the distinction between prior ASE findings, new exploratory local-LLM runs and deterministic replay tests.
 
+## Task-401 oracle consistency check
+
+The checked fixture `examples/world-effect-reuse/task/401_world_effect_reuse.json` instructs the agent to **not write any other file**, but the encoded success predicate requires the target file/content and specifies the broader `allowed_change_prefixes: ["/workspace"]`. That field does not, by itself, establish that no other workspace path was changed. The current revised OSP text correctly claims target-effect verification and forbidden `/protected` and `/secrets` changes; avoid claiming that the **no-other-file** instruction is independently enforced unless a file-specific effect oracle is added and tested.
+
 ## Explicit boundaries
 
 - This preflight does **not** assert that third-party licenses are satisfied, that `v0.1.0` has been published, or that a capsule DOI exists.
