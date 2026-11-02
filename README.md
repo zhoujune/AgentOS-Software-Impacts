@@ -2,13 +2,13 @@
 
 **Working journal title:** *AgentOS-RK: A Compact and Auditable Research Kit for LLM-Agent Execution*.
 
-**Manuscript for author review:** [Software Impacts Original Software Publication draft](paper/AGENTOS_RK_OSP_AUTHOR_REVIEW.md), including the [editable architecture schematic](paper/figures/agentos_rk_architecture.svg). The journal-format Word/PDF proofs are author-review artifacts, not an approved submission. The software tag, reproducible-capsule DOI, corresponding email and author declarations remain to be completed.
+**Manuscript for author review:** [Software Impacts Original Software Publication draft](paper/AGENTOS_RK_OSP_AUTHOR_REVIEW.md), including the [editable architecture schematic](paper/figures/agentos_rk_architecture.svg). The journal-format Word/PDF proofs are author-review artifacts, not an approved submission. Consult the journal manuscript for the final author-approved declarations and released-artifact metadata.
 
 **AgentOS-RK is the reproducible research-software distribution of AgentOS, not a second-generation operating system.** The underlying AgentOS runtime (introduced at ASE 2026) executes typed filesystem, SQLite, and network requests behind a Verified Toolchain Reference Monitor (VTRM). A separate host-side World Effect Judge (WEJ) checks observed state changes rather than relying on the agent's textual claim of success.
 
-This branch is the **MIT-licensed AgentOS-RK first-party source release candidate, not a tagged or archived published release**. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
+This repository provides the **MIT-licensed AgentOS-RK first-party research-kit source**. Select a version tag or immutable commit for reproducible citations. Its source is reconstructed from a pinned upstream commit and seven integrity-checked companion components.
 
-**Source license:** First-party AgentOS and journal-specific code is licensed under the [MIT License](LICENSE), **Copyright (c) 2026 Jun Zhou**, as confirmed by the project copyright holder. The same notice has been merged into the [original AgentOS repository](https://github.com/zhoujune/AgentOS/blob/main/LICENSE) through [upstream PR #1](https://github.com/zhoujune/AgentOS/pull/1) (merge commit `09326969884e35d0a3cd8633f94bb28eb90bc378`). The pinned historical upstream commit predates that license file; the reconstruction script carries the reviewed LICENSE into the resulting checkout. **Third-party dependencies, Linux/Buildroot components, model weights and generated guest images are not automatically covered by MIT**. Do not redistribute binary images or publish a release capsule until those notices and dependencies are reviewed; see [release gates](docs/RELEASE_CANDIDATE_GATES.md).
+**Source license:** First-party AgentOS and journal-specific code is licensed under the [MIT License](LICENSE), **Copyright (c) 2026 Jun Zhou**, as confirmed by the project copyright holder. The same notice has been merged into the [original AgentOS repository](https://github.com/zhoujune/AgentOS/blob/main/LICENSE) through [upstream PR #1](https://github.com/zhoujune/AgentOS/pull/1) (merge commit `09326969884e35d0a3cd8633f94bb28eb90bc378`). The pinned historical upstream commit predates that license file; the reconstruction script carries the reviewed LICENSE into the resulting checkout. **Third-party dependencies, Linux/Buildroot components, model weights and generated guest images are not automatically covered by MIT**. The source package excludes guest images and model weights. Reproduction fetches a pinned upstream checkout containing guest artifacts; these are separate dependencies with their own terms. See the [source release scope](docs/SOURCE_RELEASE_SCOPE.md).
 
 ## Prior research
 
@@ -16,14 +16,14 @@ Jun Zhou and Tao Jia, *Introducing Safe LLM-Agent Execution via Typed Tool Media
 
 The ASE paper's 24 benign and 48 adversarial live-model tasks are **prior results**, not new journal experiments. Its TLA+ model is an abstract check, not an end-to-end correctness proof.
 
-## Release candidate: one-checkout CPU-only reproduction
+## CPU-only reproduction
 
-This staging branch combines the original clean-source reconstruction, world-effect reuse demo, WEJ-Bench v0.1, and constrained-guest-memory study in **one Git tree**. It is designed for a reviewer to reproduce the technical baseline without private server access or model API keys. Install Git, Python 3, QEMU x86_64, `e2fsprogs` and `sha256sum` on an x86_64 Linux host.
+This source tree combines the original clean-source reconstruction, world-effect reuse demo, WEJ-Bench v0.1, and constrained-guest-memory study in **one Git tree**. It is designed for a reviewer to reproduce the technical baseline without private server access or model API keys. Install Git, Python 3, QEMU x86_64, `e2fsprogs` and `sha256sum` on an x86_64 Linux host.
 
 ```bash
-git clone --branch release-candidate/agentos-v0.1.0-prelicense \
-  https://github.com/zhoujune/AgentOS-Software-Impacts.git agentos-rc
+git clone https://github.com/zhoujune/AgentOS-Software-Impacts.git agentos-rc
 cd agentos-rc
+git checkout <release-tag-or-commit>
 bash scripts/reproduce_release_candidate.sh "$PWD/../agentos-rc-results"
 python3 -m json.tool ../agentos-rc-results/reproduction_summary.json
 ```
@@ -47,4 +47,4 @@ See `docs/CLEAN_HOST_VALIDATION_20261101.md`, `patches/README.md`, and `examples
 
 These results validate a small **synthetic replay regression**, not the original 72-task live-model study, a security proof, or adoption by an independent researcher. The initial oversized patch was replaced by a newly validated split-source revision; it is not claimed byte-identical to the unpublished server patch.
 
-The first-party MIT license file is now present. Before publication, complete third-party/binary notices and Buildroot/dependency locks, obtain non-maintainer reproduction, pin the release SHA in an immutable tag, and archive an authorized reproducible capsule. The current candidate is not the released artifact. Track these in [release issue #2](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/2) and [independent-user issue #6](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/6).
+The source distribution does not include an independently executable capsule. A full guest rebuild does not have a complete pinned dependency and license manifest. External non-maintainer reproduction remains unreported. Historical preflight and release-gate records document earlier project status; consult [source release scope](docs/SOURCE_RELEASE_SCOPE.md) for the current boundaries. Track further work in [release issue #2](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/2) and [independent-user issue #6](https://github.com/zhoujune/AgentOS-Software-Impacts/issues/6).
