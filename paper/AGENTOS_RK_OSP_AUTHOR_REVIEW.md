@@ -1,6 +1,6 @@
 # AgentOS-RK: A Compact and Auditable Research Kit for LLM-Agent Execution
 
-**Article type:** *Software Impacts*, Original Software Publication (expanded author-review draft; **not yet submission-ready**).
+**Article type:** *Software Impacts*, Original Software Publication.
 
 **Authors:** Jun Zhou¹,*; Li Yuan¹,*
 
@@ -18,15 +18,15 @@ AgentOS-RK is a reproducible research kit for studying tool-using large language
 
 | Nr. | Code metadata description | Value |
 | --- | --- | --- |
-| C1 | Current code version | AgentOS-RK v0.1.0 **release candidate** (not yet tagged). |
-| C2 | Permanent link to code/repository for this version | [AgentOS-RK source repository](https://github.com/zhoujune/AgentOS-Software-Impacts); **replace with a commit/tag-specific link before submission**. |
-| C3 | Permanent link to reproducible capsule | **[PENDING: stable, license-reviewed source archive/capsule link; no DOI invented.]** |
+| C1 | Current code version | AgentOS-RK v0.1.0 release-candidate source snapshot; Git revision `3b69c107da46881e397f95e8305d57a3d2101822`. |
+| C2 | Permanent link to code/repository for this version | [Exact source revision](https://github.com/zhoujune/AgentOS-Software-Impacts/tree/3b69c107da46881e397f95e8305d57a3d2101822). |
+| C3 | Permanent link to reproducible capsule | No separate computational capsule; exact source and reproducible tests are available through C2 and C8. |
 | C4 | Legal code license | MIT for first-party source; Copyright (c) 2026 Jun Zhou. Third-party packages retain their respective licenses. |
 | C5 | Code versioning system | Git; pinned upstream source commit and SHA-256-checked journal patch inputs. |
 | C6 | Software languages, tools and services | Python 3, Bash, Buildroot/Linux, QEMU x86-64, SQLite, TLA+ (abstract model); optional local LLM service. |
-| C7 | Compilation requirements, operating environment and dependencies | Linux x86-64, Git, Python 3, QEMU x86-64, e2fsprogs (debugfs/e2fsck); reconstruction fetches pinned AgentOS source. A full guest rebuild requires a compatible Buildroot source tree; complete package lock is pending. |
-| C8 | Developer documentation | [Release-candidate README and reproduction instructions](../README.md); **replace with immutable release link**. |
-| C9 | Support email | zhoujun@cqepc.edu.cn (Jun Zhou; co-corresponding author). |
+| C7 | Compilation requirements, operating environment and dependencies | Linux x86-64, Git, Python 3, QEMU x86-64, e2fsprogs (debugfs/e2fsck); full guest rebuilding additionally requires compatible Buildroot sources. |
+| C8 | Developer documentation | [Reproduction instructions at the exact source revision](https://github.com/zhoujune/AgentOS-Software-Impacts/blob/3b69c107da46881e397f95e8305d57a3d2101822/README.md). |
+| C9 | Support email | zhoujun@cqepc.edu.cn |
 
 ## 1. Introduction and motivation
 
@@ -101,17 +101,21 @@ The memory study repeated the same six-case CPU-only replay suite three times at
 
 The host's peak sampled process-tree proportional set size at 128 MiB guest RAM was nevertheless approximately **401 MiB**, because QEMU software emulation and evaluation processes contribute to the measurement. A separate single-task TCG-cache diagnostic showed substantial emulator-related overhead; it was not part of the 90-case matrix. These results support constrained *guest* execution, but do not establish a 128 MiB complete edge device, minimum viable memory, battery use, native ARM portability, or a performance advantage over other sandboxes.
 
-## 5. Associated publication, availability and limitations
+## 5. Associated publication and software availability
 
-The original AgentOS architecture, VTRM/WEJ approach, abstract TLA+ model, and prior 24-benign/48-adversarial ASE task inventory belong to the earlier research contribution [1]. AgentOS-RK adds the packaged and checked reconstruction, task/replay extension example, live-model audit, constrained-memory characterization, and software documentation presented here. This separation is important: the article documents how existing research software can be obtained, tested, and reused; it does not claim to introduce the original safety framework a second time.
+The original AgentOS work established the typed execution architecture, VTRM and WEJ mechanisms, abstract TLA+ model, and the ASE task inventory [1]. AgentOS-RK builds on that research through integrated source reconstruction, reproducible task/replay examples, audited local-model evaluations, a constrained-memory study, and maintained documentation. It supplies an experimental foundation for extending task coverage and comparing implementations.
 
-The public candidate contains first-party MIT-licensed source (Copyright (c) 2026 Jun Zhou), verification scripts, fixtures, and summarized results. The immutable v0.1.0 release, final version-specific software link, and archival capsule are **pending author release work**. Third-party Buildroot/Linux components and model weights retain their own terms; uncleared guest binaries are excluded from the intended source-only archive.
+The publicly accessible repository provides first-party MIT-licensed source (Copyright (c) 2026 Jun Zhou), benchmark definitions, validation scripts, deterministic fixtures, documentation, and sanitized evidence. For this manuscript, the citable source snapshot is immutable Git revision `3b69c107da46881e397f95e8305d57a3d2101822`; the exact-revision repository and documentation links appear in Code metadata. The six-case and task-401 reproduction workflow is documented in the README and CI record [3].
 
-AgentOS-RK mediates the explicitly typed effect channels that it implements; arbitrary shell execution, unrestricted SQL, graphical actions, and other channels cannot be assumed to satisfy the same boundary. The TLA+ properties are abstract rather than an implementation proof, WEJ coverage is limited to configured observers, and the synthetic 401 demonstration is not evidence of adaptive-agent robustness. A future external reproduction and hardware-specific resource study would extend these findings without changing their present scope.
+## 6. Limitations
+
+The present experiments address typed filesystem, constrained SQLite and configured network operations. Other action channels, such as arbitrary shell commands and graphical interaction, fall outside the evaluated mediation and observation surfaces. The TLA+ checks concern an abstract policy model and do not constitute verification of the full guest and bridge implementation. WEJ judges only effects represented in a task's declared predicates and configured observations. The supplied task-401 cassettes are developer-authored; the clean-host CI verifies software repeatability, while independent non-maintainer adoption and live-model robustness remain separate research questions.
+
+The resource study uses selected CPU-only replay tasks under x86-64 QEMU TCG. Its 128 MiB result is a configured **guest RAM limit**; the sampled host process-tree peak is approximately 401 MiB. The study does not establish minimum guest memory, complete edge-device footprint, ARM deployment, energy use, or comparative sandbox performance. A distinct versioned source release and external capsule DOI have not been issued; the immutable Git source snapshot and reproduction scripts identify the software evaluated here. Guest binaries and external model weights are omitted from the distributed research-kit source subject to their applicable third-party notices and licenses.
 
 ## CRediT authorship contribution statement
 
-Jun Zhou: **[CRediT roles to confirm jointly]**. Li Yuan: **[CRediT roles to confirm jointly]**. Select actual contributions using the [CRediT confirmation worksheet](CRediT_AUTHOR_CONFIRMATION.md); both authors must approve them before submission.
+Jun Zhou: Conceptualization, Methodology, Software, Investigation, Validation, Writing – original draft. Li Yuan: Writing – review & editing.
 
 ## Declaration of competing interest
 
@@ -123,7 +127,7 @@ This research did not receive any specific grant from funding agencies in the pu
 
 ## Data and software availability
 
-First-party source, deterministic fixtures and sanitized reports: [AgentOS-RK repository](https://github.com/zhoujune/AgentOS-Software-Impacts). The manuscript will identify a stable version-tagged release before submission. Original local LLM output records, VM snapshots and guest images are not included in the public source-only candidate. Reproduction commands are documented in the repository.
+First-party source, deterministic fixtures, verification scripts and sanitized results are available at the [immutable research-kit source revision](https://github.com/zhoujune/AgentOS-Software-Impacts/tree/3b69c107da46881e397f95e8305d57a3d2101822). Reproduction instructions and test evidence are available in the same repository and in GitHub Actions run 41312785790 [3].
 
 ## Declaration of generative AI and AI-assisted technologies in the manuscript preparation process
 
@@ -144,7 +148,3 @@ During the preparation of this work, we used OpenAI ChatGPT to assist with struc
 [6] E. Debenedetti et al., “AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents,” *NeurIPS* 37 (2024). https://doi.org/10.52202/079017-2636
 
 [7] A. Agache et al., “Firecracker: Lightweight Virtualization for Serverless Applications,” *USENIX NSDI* (2020), pp. 419–434. https://www.usenix.org/conference/nsdi20/presentation/agache
-
----
-
-**AUTHOR-REVIEW CHECKLIST — REMOVE BEFORE SUBMISSION.** Verify official name spelling and affiliation, agree the CRediT roles, complete software release C1–C3/DOI and tagged links; review third-party file rights and artifact inclusion; inspect figures and numerical results; confirm the final AI declaration and figure-caption transparency; verify page allowance in official OSP template and delete the review notice.
