@@ -2,7 +2,11 @@
 
 **Article type:** *Software Impacts*, Original Software Publication (expanded author-review draft; **not yet submission-ready**).
 
-**Authors / main developers (provisional):** Jun Zhou; Tao Jia. **[Authors to confirm order, affiliations, addresses, and corresponding email.]**
+**Authors:** Jun Zhou¹; Li Yuan¹,*
+
+¹ Chongqing Electric Power College, Chongqing, Chongqing, China.
+
+*Corresponding author:* Li Yuan (yuanli@cqepc.edu.cn). First author: Jun Zhou (zhoujun@cqepc.edu.cn).
 
 ## Abstract
 
@@ -22,7 +26,7 @@ AgentOS-RK is a reproducible research kit for studying tool-using large language
 | C6 | Software languages, tools and services | Python 3, Bash, Buildroot/Linux, QEMU x86-64, SQLite, TLA+ (abstract model); optional local LLM service. |
 | C7 | Compilation requirements, operating environment and dependencies | Linux x86-64, Git, Python 3, QEMU x86-64, e2fsprogs (debugfs/e2fsck); reconstruction fetches pinned AgentOS source. A full guest rebuild requires a compatible Buildroot source tree; complete package lock is pending. |
 | C8 | Developer documentation | [Release-candidate README and reproduction instructions](../README.md); **replace with immutable release link**. |
-| C9 | Support email | **[PENDING: author-approved support address.]** |
+| C9 | Support email | yuanli@cqepc.edu.cn (corresponding author: Li Yuan). |
 
 ## 1. Introduction and motivation
 
@@ -113,7 +117,7 @@ AgentOS-RK mediates the explicitly typed effect channels that it implements; arb
 
 ## Funding
 
-**[PENDING: Authors to confirm funding source(s) or absence of specific support.]**
+This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors.
 
 ## Data and software availability
 
@@ -141,4 +145,4 @@ During preparation of this manuscript, the authors used OpenAI ChatGPT to assist
 
 ---
 
-**AUTHOR-REVIEW CHECKLIST — REMOVE BEFORE SUBMISSION.** Confirm full author metadata/CRediT, support email, funding, interests, software release C1–C3/DOI and tagged links; review third-party file rights and artifact inclusion; inspect figures and numerical results; approve generative-AI declaration; verify page allowance in official OSP template and delete the review notice.
+**AUTHOR-REVIEW CHECKLIST — REMOVE BEFORE SUBMISSION.** Verify official name spelling and affiliation, agree CRediT roles and competing-interest declaration, complete software release C1–C3/DOI and tagged links; review third-party file rights and artifact inclusion; inspect figures and numerical results; approve generative-AI declaration; verify page allowance in official OSP template and delete the review notice.
