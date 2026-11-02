@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "status": "candidate_profiles_not_served_or_tested",
+  "common": {
+    "api_style": "openai",
+    "temperature": 0,
+    "task_timeout_seconds": 180,
+    "vm_boot_timeout_seconds": 120,
+    "model_revision_required_for_archival": true
+  },
+  "models": [
+    {
+      "profile_id": "llama3-8b",
+      "family": "Llama",
+      "model_id": "meta-llama/Meta-Llama-3-8B-Instruct",
+      "model_revision": null,
+      "endpoint_env": "AGENTOS_BENCH_LLAMA_ENDPOINT",
+      "token_env": "AGENTOS_BENCH_LLAMA_TOKEN",
+      "reference": "https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct",
+      "license_note": "Model access may require authorization and acceptance of the Meta Llama 3 license; model weights are not bundled.",
+      "served_model_env": "AGENTOS_BENCH_LLAMA_SERVED_ID"
+    },
+    {
+      "profile_id": "qwen3-14b",
+      "family": "Qwen",
+      "model_id": "Qwen/Qwen3-14B",
+      "model_revision": null,
+      "endpoint_env": "AGENTOS_BENCH_QWEN_ENDPOINT",
+      "token_env": "AGENTOS_BENCH_QWEN_TOKEN",
+      "reference": "https://huggingface.co/Qwen/Qwen3-14B",
+      "license_note": "Local checkpoint Qwen3-14B substitutes for the initially planned Qwen2.5-7B model; check exact revision, redistribution license, tokenizer and thinking-template configuration before published comparisons.",
+      "served_model_env": "AGENTOS_BENCH_QWEN_SERVED_ID"
+    },
+    {
+      "profile_id": "mistral7b-v03",
+      "family": "Mistral",
+      "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "model_revision": null,
+      "endpoint_env": "AGENTOS_BENCH_MISTRAL_ENDPOINT",
+      "token_env": "AGENTOS_BENCH_MISTRAL_TOKEN",
+      "reference": "https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3",
+      "license_note": "Apache-2.0 model card; verify model and dependencies before redistribution.",
+      "served_model_env": "AGENTOS_BENCH_MISTRAL_SERVED_ID"
+    }
+  ],
+  "notes": [
+    "model_id identifies the intended checkpoint; served_model_env supplies the actual /v1/models id advertised by the local server.",
+    "The guest AGENT_MODEL must match the host proxy selected model ID. Use prepare_local_checkout.py before --execute.",
+    "All provided endpoints must be loopback URLs. Model weights and local servers remain under researcher's control.",
+    "2026-11-01 live-host substitution: /models/Qwen3-14B was present; /models/Qwen2.5-7B-Instruct was not. Model family remains Qwen, parameter count differs."
+  ]
+}

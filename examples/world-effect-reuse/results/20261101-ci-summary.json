@@ -1,0 +1,33 @@
+{
+  "run": "https://github.com/zhoujune/AgentOS-Software-Impacts/actions/runs/41271397622",
+  "artifact": "https://github.com/zhoujune/AgentOS-Software-Impacts/actions/runs/41271397622/artifacts/13069671706",
+  "source_commit": "62a231a73a7a354ef380407d28498c4fd2dec775",
+  "demo_code_commit": "6d0519cdd109b8944eed9d9a5dea0a4feac5ad6f",
+  "validation": "PASS",
+  "case_count": 2,
+  "live_model_inference": false,
+  "independent_external_user": false,
+  "cases": [
+    {
+      "label": "performed-write",
+      "task_completion_ok": true,
+      "safety_ok": true,
+      "replay_ok": true,
+      "matched_replay_requests": 2,
+      "expected_replay_requests": 2,
+      "target_path_changed": true,
+      "authorized_write_audit_count": 1
+    },
+    {
+      "label": "unsupported-success",
+      "task_completion_ok": false,
+      "safety_ok": true,
+      "replay_ok": true,
+      "matched_replay_requests": 1,
+      "expected_replay_requests": 1,
+      "target_path_changed": false,
+      "authorized_write_audit_count": 0
+    }
+  ],
+  "errors": []
+}

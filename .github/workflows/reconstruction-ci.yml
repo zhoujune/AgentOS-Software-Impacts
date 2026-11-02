@@ -1,0 +1,77 @@
+name: Clean reconstruction checks
+on:
+  push:
+    branches: [work/controlled-polling-benchmark]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  source-integrity:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/verify_split_sources.py
+      - run: bash -n scripts/reconstruct_agentos_overlay.sh
+      - run: sha256sum patches/000*.patch overlay-files/scripts/build/*.py overlay-files/scripts/test/*.sh
+
+  reconstruct:
+    needs: source-integrity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct a clean upstream checkout
+        run: |
+          bash scripts/reconstruct_agentos_overlay.sh "$RUNNER_TEMP/AgentOS"
+          git -C "$RUNNER_TEMP/AgentOS" rev-parse HEAD
+          python3 -m json.tool "$RUNNER_TEMP/AgentOS/manifests/manifest.lock" >/dev/null
+
+      - name: Install QEMU dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 e2fsprogs
+          qemu-system-x86_64 --version
+      - name: Build isolated guest and run smoke
+        run: |
+          cd "$RUNNER_TEMP/AgentOS"
+          sha256sum artifacts/images/rootfs.eval.clean.ext2
+          python3 scripts/build/make_offline_eval_image.py
+          e2fsck -fn runtime/offline-eval/rootfs.eval.offline.ext2
+          OUTPUT_ROOT="$RUNNER_TEMP/smoke" VM_BOOT_TIMEOUT=120 TASK_TIMEOUT=180             bash scripts/test/run_offline_smoke.sh
+          sha256sum artifacts/images/rootfs.eval.clean.ext2
+
+      - name: Run six baseline world-effect tasks
+        run: |
+          cd "$RUNNER_TEMP/AgentOS"
+          OUTPUT_ROOT="$RUNNER_TEMP/six-task" VM_BOOT_TIMEOUT=120 TASK_TIMEOUT=180 \
+            bash scripts/test/run_offline_representative_suite.sh
+          python3 -m json.tool "$RUNNER_TEMP/six-task/offline_benchmark.json" >/dev/null
+
+      - uses: actions/checkout@v4
+        with:
+          ref: 6d0519cdd109b8944eed9d9a5dea0a4feac5ad6f
+          path: world-effect-example
+      - name: Evaluate new task and false-success control
+        run: |
+          bash world-effect-example/examples/world-effect-reuse/run_demo.sh \
+            "$RUNNER_TEMP/AgentOS" "$RUNNER_TEMP/world-effect-demo"
+          python3 -m json.tool "$RUNNER_TEMP/world-effect-demo/impact_validation.json"
+
+      - name: Retain machine-readable validation summaries
+        if: always()
+        run: |
+          mkdir -p ci-reports
+          for source in \
+            "$RUNNER_TEMP/six-task/offline_benchmark.json" \
+            "$RUNNER_TEMP/six-task/offline_benchmark.md" \
+            "$RUNNER_TEMP/world-effect-demo/impact_validation.json" \
+            "$RUNNER_TEMP/world-effect-demo/impact_validation.md"; do
+            if [[ -f "$source" ]]; then cp "$source" ci-reports/; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agentos-osp-world-effect-summaries
+          path: ci-reports/
+          if-no-files-found: ignore
+          retention-days: 30

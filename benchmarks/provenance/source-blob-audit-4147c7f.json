@@ -1,0 +1,342 @@
+{
+  "upstream_repository": "zhoujune/AgentOS",
+  "upstream_commit": "4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c",
+  "upstream_tree_sha": "a19299570fa796795c8e0cf787f29c41718ae960",
+  "checked_blobs": 279,
+  "upstream_tracked_bytes": 239002958,
+  "counts": {
+    "identical": 248,
+    "content_changed": 31
+  },
+  "non_identical": [
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "sha": "5bde9962ba7a9c70ab535f4b311c9efacaa6c9d8",
+      "size": 9541,
+      "status": "content_changed",
+      "local_sha": "9a593fd35435d3c91232d9c5069372c24214dd25",
+      "local_mode": "100644",
+      "local_size": 12120
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh",
+      "mode": "100755",
+      "sha": "1f5a0992cc123b7d2228233d0d5e1fdd29e906d3",
+      "size": 11547,
+      "status": "content_changed",
+      "local_sha": "6253918e5a7ff6ceefc0c3782356ec3bd24f75d0",
+      "local_mode": "100755",
+      "local_size": 12026
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh",
+      "mode": "100755",
+      "sha": "3438ef8f1c2fa9950b94502466cec45cc5f1e402",
+      "size": 3492,
+      "status": "content_changed",
+      "local_sha": "59b5581f3bb9b454dc09409b5e6871df2b1c92cf",
+      "local_mode": "100755",
+      "local_size": 3688
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py",
+      "mode": "100755",
+      "sha": "f6a097fd62e209f4d1ee9e5a1c65f718ae44598a",
+      "size": 20562,
+      "status": "content_changed",
+      "local_sha": "5b0ba227179e9816759f5ef6c5029f47447eb0b3",
+      "local_mode": "100755",
+      "local_size": 20625
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/__init__.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "9b33aaf42c79ee47ac64c46ac7cd603a95be5e5b",
+      "size": 3121,
+      "status": "content_changed",
+      "local_sha": "82786557caf1df56b885e600fc24020f281ac91d",
+      "local_mode": "100644",
+      "local_size": 3126
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/approval_store.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "cca4e17f5ea3f4b0146e08a53bc6ffe810ed64e0",
+      "size": 24040,
+      "status": "content_changed",
+      "local_sha": "3daf34981a6093ad9a511fc05c6ee2420bbe44f1",
+      "local_mode": "100644",
+      "local_size": 24024
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/audit_logger.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "49aeeb0dbf9afbd16ff22a16495ba40c56ff10df",
+      "size": 13569,
+      "status": "content_changed",
+      "local_sha": "7a9236b3cbb846eeab64c4cf32132fa5e3ff940d",
+      "local_mode": "100644",
+      "local_size": 13614
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/authorization_policy.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "a9aca259e148628ba0308ee97bb2356673b03ea0",
+      "size": 12900,
+      "status": "content_changed",
+      "local_sha": "cb5f6378205a7ccaf8b7f08915730a5ac62d7ddb",
+      "local_mode": "100644",
+      "local_size": 13095
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/capability_deriver.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "d730f08b47a92d8e4ea5787c9ba97c2375b5c0a0",
+      "size": 11967,
+      "status": "content_changed",
+      "local_sha": "f002e3564d49d3fb129c1f4e450500cc9c28df6f",
+      "local_mode": "100644",
+      "local_size": 11996
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/db_classifier.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "326535c180911dd9e4a159e09155a34e96d59d0e",
+      "size": 7239,
+      "status": "content_changed",
+      "local_sha": "2fe8057a75fd6d9957fbd68c6e4964181dfa9135",
+      "local_mode": "100644",
+      "local_size": 7330
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/db_ops.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "f702cdc5d8fa337fa368c370be056c0b52ffbd26",
+      "size": 11511,
+      "status": "content_changed",
+      "local_sha": "2b1b1f55e606a469aa7bceedd181382df4219ca2",
+      "local_mode": "100644",
+      "local_size": 11664
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/label_model.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "babf597e5dcebef7b35c67b370f0d186473cf174",
+      "size": 9474,
+      "status": "content_changed",
+      "local_sha": "b938578aef4a466f0a6c3cc658387266fba389a4",
+      "local_mode": "100644",
+      "local_size": 9529
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/path_classifier.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "c346ed02e84a22b10f15e5a5791a5891876a5b03",
+      "size": 9020,
+      "status": "content_changed",
+      "local_sha": "65f866729adf0d626507354fcb86ad8ad817b5d1",
+      "local_mode": "100644",
+      "local_size": 9100
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/policy.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "1d3eb4411114522bcef1ea0986b69c3e260fd31b",
+      "size": 22719,
+      "status": "content_changed",
+      "local_sha": "8ef93f67466ae1a7e89a253a725afbf93b0b3807",
+      "local_mode": "100644",
+      "local_size": 22873
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/sink_classifier.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "b4d5b6e7da55ae656564ff02a21d6f97b969a532",
+      "size": 5628,
+      "status": "content_changed",
+      "local_sha": "6059566f88e82eecdb58ff5ece9090071c52e56d",
+      "local_mode": "100644",
+      "local_size": 5662
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/vtrm_core.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "02f2db389358a7813e250a9309c0a598276144c9",
+      "size": 60022,
+      "status": "content_changed",
+      "local_sha": "296a0dac469996525cbacd9878835f75a64d164c",
+      "local_mode": "100644",
+      "local_size": 60197
+    },
+    {
+      "path": "docs/ARTIFACT.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "544441c553acfb1c833125d78542c1f860c4cac4",
+      "local_mode": "100644",
+      "local_size": 5087
+    },
+    {
+      "path": "docs/DESIGN.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "a98bcf5daa60c0f1ae7780c1c1f15961855bc5d6",
+      "local_mode": "100644",
+      "local_size": 5641
+    },
+    {
+      "path": "docs/THREAT_MODEL.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "b1dd217959848770b0081952543af000e148a1f2",
+      "local_mode": "100644",
+      "local_size": 4989
+    },
+    {
+      "path": "host_ui/__pycache__/__init__.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "b65d4778083f3f79f6e9db426ae9a4aafd1726c9",
+      "size": 223,
+      "status": "content_changed",
+      "local_sha": "314e34957de46f7a6aace7127638e2d169ec1091",
+      "local_mode": "100644",
+      "local_size": 241
+    },
+    {
+      "path": "host_ui/__pycache__/app_support.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "76a4bdaa161353b9d17a840c258121491b8c3080",
+      "size": 12970,
+      "status": "content_changed",
+      "local_sha": "16418ca7200bb29e993dbdfaf5c2d0c65d2cab2f",
+      "local_mode": "100644",
+      "local_size": 12988
+    },
+    {
+      "path": "judge/__pycache__/buildroot_vtrm_snapshot.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "c6fe3e387dafca114f2a5261a0c10053eb8cef08",
+      "size": 17306,
+      "status": "content_changed",
+      "local_sha": "c06f31b9b63befde614b28b5037947b71a9b0859",
+      "local_mode": "100644",
+      "local_size": 17351
+    },
+    {
+      "path": "judge/__pycache__/run_vtrm_eval.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "26110d0a340453c4a9c9c96343db4d66e8ebd279",
+      "size": 49910,
+      "status": "content_changed",
+      "local_sha": "d50d8694753d1ca18564460a9306f5c9978ebd7c",
+      "local_mode": "100644",
+      "local_size": 68306
+    },
+    {
+      "path": "judge/judge_system/__pycache__/__init__.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "76a32dd07f8930c18195a2787929291b21675938",
+      "size": 201,
+      "status": "content_changed",
+      "local_sha": "15d21bc5a9c45c226455bcb1f634c6aee4344fab",
+      "local_mode": "100644",
+      "local_size": 219
+    },
+    {
+      "path": "judge/judge_system/__pycache__/diffing.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "3a8b6c699a2d820161a946d0f6938ac38214b423",
+      "size": 6569,
+      "status": "content_changed",
+      "local_sha": "9903852ea6d2eec6e67c6ded9389b63cecc49776",
+      "local_mode": "100644",
+      "local_size": 6587
+    },
+    {
+      "path": "judge/judge_system/__pycache__/mock_http_sink.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "b083b0d4310eed7c6cba398292aeb012aea6e135",
+      "size": 6118,
+      "status": "content_changed",
+      "local_sha": "9eaede73d4b8e9b5b0d80f051657a197e4e9993c",
+      "local_mode": "100644",
+      "local_size": 6136
+    },
+    {
+      "path": "judge/judge_system/__pycache__/snapshot.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "1dc667bad06417771be9f942d4788ad34c7dfa0b",
+      "size": 6047,
+      "status": "content_changed",
+      "local_sha": "801941daf6711a3187244dafcae4236a1f5d5949",
+      "local_mode": "100644",
+      "local_size": 6065
+    },
+    {
+      "path": "judge/judge_system/__pycache__/utils.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "bd89cb88017a812b9339c72da25646b95af49eec",
+      "size": 854,
+      "status": "content_changed",
+      "local_sha": "a6e3497fbc6466f89587ece7fc1b20dd24aac438",
+      "local_mode": "100644",
+      "local_size": 872
+    },
+    {
+      "path": "judge/run_vtrm_eval.py",
+      "mode": "100644",
+      "sha": "896a63f42ecdf41b7d4326475baaf8724b40975b",
+      "size": 39716,
+      "status": "content_changed",
+      "local_sha": "d550e9dd83da16c9fb404a8ef94a0cef642ce3a2",
+      "local_mode": "100644",
+      "local_size": 52647
+    },
+    {
+      "path": "llm_proxy.py",
+      "mode": "100644",
+      "sha": "0d392199a409d8a15bfef714215a70d671d92ce9",
+      "size": 12517,
+      "status": "content_changed",
+      "local_sha": "d24c962a6d82530e24a72eae2b2fd0e23ea8ee87",
+      "local_mode": "100644",
+      "local_size": 18989
+    },
+    {
+      "path": "manifests/manifest.lock",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "status": "content_changed",
+      "local_sha": "10da1558bed7d0ac4f0a21d8009f75ce4c4f5e4e",
+      "local_mode": "100644",
+      "local_size": 2435
+    }
+  ],
+  "interpretation": {
+    "generated_bytecode_differences": 21,
+    "tracked_text_source_and_manifest_differences": [
+      "README.md",
+      "br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh",
+      "br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh",
+      "br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py",
+      "docs/ARTIFACT.md",
+      "docs/DESIGN.md",
+      "docs/THREAT_MODEL.md",
+      "judge/run_vtrm_eval.py",
+      "llm_proxy.py",
+      "manifests/manifest.lock"
+    ],
+    "patch_reconstructs_modified_and_added_files": 22,
+    "new_overlay_files": 12,
+    "tracked_modified_files": 10
+  },
+  "overlay_patch_sha256": "dcae1c4abdf821dd357d0004ea0b4adf9376cac16879e21c1746d35c9f82488d"
+}

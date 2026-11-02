@@ -1,0 +1,27 @@
+name: World-effect reuse fixture checks
+
+on:
+  push:
+    paths:
+      - "examples/world-effect-reuse/**"
+      - ".github/workflows/world-effect-reuse.yml"
+  pull_request:
+    paths:
+      - "examples/world-effect-reuse/**"
+      - ".github/workflows/world-effect-reuse.yml"
+
+jobs:
+  fixture-checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate task and replay fixtures
+        run: python3 -m unittest discover -s examples/world-effect-reuse -p 'test_*.py' -v
+      - name: Check shell entrypoint syntax
+        run: bash -n examples/world-effect-reuse/run_demo.sh
+      - name: Check Python source syntax
+        run: |
+          python3 -m py_compile examples/world-effect-reuse/validate_results.py
+          python3 -m py_compile examples/world-effect-reuse/test_fixtures.py
+      - name: Explicit test boundary
+        run: echo "Fixture checks only; this workflow does not run QEMU or claim independent reproduction."

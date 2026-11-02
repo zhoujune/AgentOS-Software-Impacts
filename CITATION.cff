@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite the exact AgentOS-RK software version when using this research kit. Cite the associated ASE publication when referring to the underlying AgentOS architecture."
+type: software
+title: "AgentOS-RK: A Compact and Auditable Research Kit for LLM-Agent Execution"
+abstract: "A research kit for reproducible evaluation of tool-using LLM agents, combining pinned AgentOS source reconstruction, deterministic replay, task-specific world-effect judging, and auditable research results."
+authors:
+  - family-names: Zhou
+    given-names: Jun
+    affiliation: "Chongqing Electric Power College"
+repository-code: "https://github.com/zhoujune/AgentOS-Software-Impacts"
+license: MIT
+keywords:
+  - research software
+  - LLM agents
+  - reproducibility
+  - world-effect evaluation
+  - typed tool mediation

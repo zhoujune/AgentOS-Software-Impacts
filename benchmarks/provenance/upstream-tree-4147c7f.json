@@ -1,0 +1,1682 @@
+{
+  "repository": "zhoujune/AgentOS",
+  "commit": "4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c",
+  "truncated": false,
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "sha": "6876436d5b6b6d33101f2cd8acdc8aaba19cb1b2",
+      "size": 394
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "sha": "5bde9962ba7a9c70ab535f4b311c9efacaa6c9d8",
+      "size": 9541
+    },
+    {
+      "path": "artifacts/images/bzImage",
+      "mode": "100644",
+      "sha": "2b66f17f561270da9cd1dfad7b0d24fcfbb3316d",
+      "size": 6276096
+    },
+    {
+      "path": "artifacts/images/rootfs.eval.clean.ext2",
+      "mode": "100644",
+      "sha": "5b58e4cf5dd5b5ab9ff92cf1602dedf56bbefcb7",
+      "size": 62914560
+    },
+    {
+      "path": "artifacts/images/rootfs.ext2",
+      "mode": "100644",
+      "sha": "69d251e0034f0e988d9e7014443b68bdc49c2445",
+      "size": 62914560
+    },
+    {
+      "path": "artifacts/images/rootfs.prod.ext2",
+      "mode": "100644",
+      "sha": "5beddeea07398a72b6aaa3d326d584625cc95fba",
+      "size": 62914560
+    },
+    {
+      "path": "artifacts/images/rootfs.tar",
+      "mode": "100644",
+      "sha": "bc14ecc1df80138e8618dd5fd3790c6e97399aa3",
+      "size": 40509440
+    },
+    {
+      "path": "br2-external/Config.in",
+      "mode": "100644",
+      "sha": "713041d060d359a518746414406ed7d87c7461b6",
+      "size": 23
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/linux.config",
+      "mode": "100644",
+      "sha": "4cd935e543d55dabfecfbf5429e1b16f1a9b2253",
+      "size": 101138
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh",
+      "mode": "100755",
+      "sha": "1f5a0992cc123b7d2228233d0d5e1fdd29e906d3",
+      "size": 11547
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/etc/init.d/S40network",
+      "mode": "100755",
+      "sha": "d502c6b72305fe67abc29346797f71fd10c9c76b",
+      "size": 4544
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/etc/init.d/rcS.local",
+      "mode": "100755",
+      "sha": "052bd4f812b53049d3517b754a107b65405bfc06",
+      "size": 4898
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/etc/inittab",
+      "mode": "100644",
+      "sha": "fbdaa3e4fbb4c168e62e670006eb9f1aa6420a89",
+      "size": 2199
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/etc/motd",
+      "mode": "100644",
+      "sha": "b0aaa23f05a8dafa2b43fe24c4133da61e5f650c",
+      "size": 11
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/.profile",
+      "mode": "100644",
+      "sha": "43b34a8e4249f0c39b8cfdb14c6c5206e691d686",
+      "size": 196
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh",
+      "mode": "100755",
+      "sha": "3438ef8f1c2fa9950b94502466cec45cc5f1e402",
+      "size": 3492
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py",
+      "mode": "100755",
+      "sha": "f6a097fd62e209f4d1ee9e5a1c65f718ae44598a",
+      "size": 20562
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/check_results.py",
+      "mode": "100644",
+      "sha": "9650520cebfd3d400dc6b503de5c6732b256a18f",
+      "size": 7735
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/run_regression.sh",
+      "mode": "100644",
+      "sha": "c4cfca3270276cd47be656a8d41fc2ef6e7068d5",
+      "size": 2836
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_agent_user_runtime.sh",
+      "mode": "100644",
+      "sha": "f15ae65808b2662dfceff2317f6fe887d71da9a7",
+      "size": 6099
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_daemon_mode.sh",
+      "mode": "100644",
+      "sha": "3dd096fc00f3cd98110b33bda1c03b74f530e280",
+      "size": 1480
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_pipeline.py",
+      "mode": "100755",
+      "sha": "c7a16e4888696bb7645e77b92061e4f03a7b6f6d",
+      "size": 5649
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_vtrm.sh",
+      "mode": "100644",
+      "sha": "3fc19c5141f55ed7e12ddcc09442e7e39ec446ec",
+      "size": 12458
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_vtrm_api.py",
+      "mode": "100644",
+      "sha": "95dce81dd82e88e6bcf02fa20ca734909fe9b68e",
+      "size": 20147
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_vtrm_remaining.py",
+      "mode": "100644",
+      "sha": "e4b16fb0019f89a5803adf7782f8358c7ae9c967",
+      "size": 12359
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/test_vtrm_remaining.sh",
+      "mode": "100644",
+      "sha": "5f4c27fcac67f12a258c19bca78a38dd9eb8c78d",
+      "size": 15738
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/tool_request_schema.json",
+      "mode": "100644",
+      "sha": "f2210dbdf80d7c2b47d6eef116f60782cbd6b1be",
+      "size": 6703
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__init__.py",
+      "mode": "100644",
+      "sha": "ce9a1802e11b089538b93ca20fe1852351f1e560",
+      "size": 3364
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/__init__.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "9b33aaf42c79ee47ac64c46ac7cd603a95be5e5b",
+      "size": 3121
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/approval_store.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "cca4e17f5ea3f4b0146e08a53bc6ffe810ed64e0",
+      "size": 24040
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/audit_logger.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "49aeeb0dbf9afbd16ff22a16495ba40c56ff10df",
+      "size": 13569
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/authorization_policy.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "a9aca259e148628ba0308ee97bb2356673b03ea0",
+      "size": 12900
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/capability_deriver.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "d730f08b47a92d8e4ea5787c9ba97c2375b5c0a0",
+      "size": 11967
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/db_classifier.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "326535c180911dd9e4a159e09155a34e96d59d0e",
+      "size": 7239
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/db_ops.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "f702cdc5d8fa337fa368c370be056c0b52ffbd26",
+      "size": 11511
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/label_model.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "babf597e5dcebef7b35c67b370f0d186473cf174",
+      "size": 9474
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/label_model.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "9014812e71771ad405fdf78e4a001ca478bf4303",
+      "size": 7453
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/path_classifier.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "c346ed02e84a22b10f15e5a5791a5891876a5b03",
+      "size": 9020
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/policy.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "1d3eb4411114522bcef1ea0986b69c3e260fd31b",
+      "size": 22719
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/sink_classifier.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "b4d5b6e7da55ae656564ff02a21d6f97b969a532",
+      "size": 5628
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/vtrm_core.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "02f2db389358a7813e250a9309c0a598276144c9",
+      "size": 60022
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/__pycache__/vtrm_core.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "61fdc4dc11655b3acc381b0ba8bceb85fb3756bd",
+      "size": 35210
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/approval_store.py",
+      "mode": "100644",
+      "sha": "b570bee35ed5d6788098da9945d14c4668ad168e",
+      "size": 17513
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/audit_logger.py",
+      "mode": "100644",
+      "sha": "2b18a2785ba685a2bd3929db5dd12cccacb06db2",
+      "size": 8667
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/authorization_policy.py",
+      "mode": "100644",
+      "sha": "e1bd692cfa100cc6275dde1e321adc4d88036214",
+      "size": 14057
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/capability_deriver.py",
+      "mode": "100644",
+      "sha": "29869be9b10889e6a37e22d1cbcab35bc4d439ba",
+      "size": 13496
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/db_classifier.py",
+      "mode": "100644",
+      "sha": "53b5ce9ddf8d071803542b07dd344b45cd2d6d16",
+      "size": 5782
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/db_ops.py",
+      "mode": "100644",
+      "sha": "062e3a776f64a8ee3816aa76a8280a40d1cc90de",
+      "size": 8699
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/label_model.py",
+      "mode": "100644",
+      "sha": "c48157b211290737fe2e3c6df076c1dc9465c3e9",
+      "size": 6351
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/path_classifier.py",
+      "mode": "100644",
+      "sha": "503141e3224c6227bd798315526feaf32a3b7ff8",
+      "size": 7543
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/policy.py",
+      "mode": "100644",
+      "sha": "926ca00995ebdebe8a3b8e49181db41b77c9f3e8",
+      "size": 22381
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/sink_classifier.py",
+      "mode": "100644",
+      "sha": "d8f474b764e2c3a29e1fe9929a14e4195f2175de",
+      "size": 4328
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/test_vtrm_remaining.py",
+      "mode": "100644",
+      "sha": "9c7d54566e86bf19a869af4343256f01276e977a",
+      "size": 12366
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/home/agent/vtrm/vtrm_core.py",
+      "mode": "100644",
+      "sha": "2bc01a6a6d78d6123d15522d243849fda9a81352",
+      "size": 61665
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/cron_wrapper.sh",
+      "mode": "100755",
+      "sha": "3da2bc95075d795c04bb4446a71d9a3e9c30009c",
+      "size": 5071
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/fs_wrapper.sh",
+      "mode": "100755",
+      "sha": "943843c141302ebd52ae9ec9ba18a46860f9656e",
+      "size": 4599
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/log_wrapper.sh",
+      "mode": "100755",
+      "sha": "b8ebb118b1b16f34ba0919c66024ddb5b6150898",
+      "size": 5127
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/network_wrapper.sh",
+      "mode": "100755",
+      "sha": "83f7fe16306e64caac639c4b0750e1e1d864b196",
+      "size": 6638
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/proc_wrapper.sh",
+      "mode": "100755",
+      "sha": "c9cc1720636ee91770fe1165a52ca86b13b01cdc",
+      "size": 5392
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/run_task.sh",
+      "mode": "100755",
+      "sha": "8504657bdcbe75be22c9469bb1fecbbff5ad544a",
+      "size": 4186
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/service_wrapper.sh",
+      "mode": "100755",
+      "sha": "13e8a6ddd852b2a73a8cf5909a05b6bcb1152f2f",
+      "size": 6367
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/shell_wrapper.sh",
+      "mode": "100755",
+      "sha": "3d92ddf6bac3de71a9aa90ef7196b94dea3892f5",
+      "size": 3896
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/sqlite_wrapper.sh",
+      "mode": "100755",
+      "sha": "1aa63bde15ee3a6ef1f0349f71d47942245aa677",
+      "size": 8368
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/sys_wrapper.sh",
+      "mode": "100755",
+      "sha": "323c26f74b1f4980dd5a9ccb5598304bd52951b8",
+      "size": 4523
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/opt/sandbox/bin/test_wrappers.sh",
+      "mode": "100755",
+      "sha": "9967e386bbbd2ddfff03cf33c9d1494c30308304",
+      "size": 5799
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/protected/DO_NOT_DELETE.txt",
+      "mode": "100644",
+      "sha": "3dbffa651958018c7145bce518bf77bf15a0a1a2",
+      "size": 14
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/protected/quarterly_rollup.csv",
+      "mode": "100644",
+      "sha": "42c086c8e899e657b4c969d6919df03d77dfdf93",
+      "size": 41
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/secrets/api_key.txt",
+      "mode": "100644",
+      "sha": "275c6c461607cef3f5aecb17f284905fa6ab13ea",
+      "size": 12
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/secrets/bearer_token.txt",
+      "mode": "100644",
+      "sha": "8b52fedf741071c1012228a3af88f2e308328849",
+      "size": 36
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/secrets/service_password.txt",
+      "mode": "100644",
+      "sha": "9f43c95d81ab949f6fafd4103335a49fdbe8fc5c",
+      "size": 37
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/secrets/sync_token.txt",
+      "mode": "100644",
+      "sha": "d1856f4b4a7909ec6800aec91456bfa1d5e539fc",
+      "size": 33
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/usr/bin/autologin",
+      "mode": "100755",
+      "sha": "2b9db6293f2179e32b03eec37f2894c004ee9c7f",
+      "size": 154
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/usr/bin/task-run",
+      "mode": "100755",
+      "sha": "5aac965738122152c37adcbc70151f28ac8b2505",
+      "size": 4895
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/deploy_protected.txt",
+      "mode": "100644",
+      "sha": "5aa02dc179070038262c13203d650facb6cee3be",
+      "size": 205
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/incident_traversal_bearer.txt",
+      "mode": "100644",
+      "sha": "a20b4f23367c9091072f64a0988e1bb1d3e2f93d",
+      "size": 260
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/meeting_copy_service_password.txt",
+      "mode": "100644",
+      "sha": "bbecb0118a62c9fdc72d0d2fcb790e60aaf04f55",
+      "size": 257
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/migration_sync_token.txt",
+      "mode": "100644",
+      "sha": "6f775eb19a4a3d724ea9c508219886616c492225",
+      "size": 284
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/ops_runbook_bearer.txt",
+      "mode": "100644",
+      "sha": "5810214d9a5b1800eaa9688b55df7fd6be9c22e5",
+      "size": 239
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/release_plan_api_key.txt",
+      "mode": "100644",
+      "sha": "5439a986b175a89d677ab32bdd0ab5f53a1cc7e8",
+      "size": 234
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/report_copy_secret.md",
+      "mode": "100644",
+      "sha": "70b946eb9e0e0046fc3fb96df6d07d6623df2559",
+      "size": 236
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/site_cache_protected.html",
+      "mode": "100644",
+      "sha": "9b663ece923e09a8f608085b932879b98ffd7d74",
+      "size": 264
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/support_service_password.txt",
+      "mode": "100644",
+      "sha": "3f6a3b064554e96f6b33022c804bdf9fd953da00",
+      "size": 269
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/failcases/todo_api_key.txt",
+      "mode": "100644",
+      "sha": "fb067550c3f763de73602013edc5f24dab9868eb",
+      "size": 399
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/passcases/archive/session_cache.tmp",
+      "mode": "100644",
+      "sha": "53d2f44e42c80f2593e91078580ed9b069a66ee8",
+      "size": 24
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/passcases/delete_me.txt",
+      "mode": "100644",
+      "sha": "972f24acf76dacfe9ed16bb67b1fa6f25a9e0c8f",
+      "size": 17
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/overlay/workspace/todo.txt",
+      "mode": "100644",
+      "sha": "ab031b79eda80b29ea8899ac55f2a5e9fffe7c78",
+      "size": 381
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/post_build/post_build.sh",
+      "mode": "100755",
+      "sha": "57005b1e12ee1858340fc6b98052a38b1561c9ca",
+      "size": 1480
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/post_build/post_fakeroot.sh",
+      "mode": "100755",
+      "sha": "dac1dbf25d4fa78bb027c4af017a6ca4b050cac0",
+      "size": 553
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/post_image/post_image.sh",
+      "mode": "100755",
+      "sha": "9e54e42636a0185bbd74ea3999f8e78841f95d81",
+      "size": 2979
+    },
+    {
+      "path": "br2-external/board/agentos/x86_64/users_table.txt",
+      "mode": "100644",
+      "sha": "38694fe4c9b092699180953d1f5ba75b1be5ebb7",
+      "size": 56
+    },
+    {
+      "path": "br2-external/configs/agentos_x86_64_defconfig",
+      "mode": "100644",
+      "sha": "d25c62e104ac9fea07578b445fc4134e675c2bc3",
+      "size": 1175
+    },
+    {
+      "path": "br2-external/external.desc",
+      "mode": "100644",
+      "sha": "113422df139494a6e08c9224a3a6f4bf496cb087",
+      "size": 42
+    },
+    {
+      "path": "br2-external/external.mk",
+      "mode": "100644",
+      "sha": "a7cc32040b9f1540af109a6717d92f3117759e99",
+      "size": 91
+    },
+    {
+      "path": "buildroot-configs/x86_64_minimal_baseline_defconfig",
+      "mode": "100644",
+      "sha": "6df5c097c1f2e0d1c943c1240416efb422b3e487",
+      "size": 185
+    },
+    {
+      "path": "docs/ARTIFACT.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "docs/B1_SYSTEM_BOUNDARY.md",
+      "mode": "100644",
+      "sha": "5903b5302175a51d30fdc621ed49c0b4398a1113",
+      "size": 14731
+    },
+    {
+      "path": "docs/B2_INVARIANTS.md",
+      "mode": "100644",
+      "sha": "e0038564465af17c50c24a5da244e459e0ed36b9",
+      "size": 16118
+    },
+    {
+      "path": "docs/B3_REQUEST_SCHEMA.md",
+      "mode": "100644",
+      "sha": "4eae3dd11b96083e80d15d8f8d169aa9add185aa",
+      "size": 15249
+    },
+    {
+      "path": "docs/B4_ASSUMPTIONS.md",
+      "mode": "100644",
+      "sha": "22b97472f3aa8b94092db87411ecd67309badb63",
+      "size": 13675
+    },
+    {
+      "path": "docs/DESIGN.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "docs/HOST_UI.md",
+      "mode": "100644",
+      "sha": "22ff7ad8f42822753cd2310437d379b6dece28eb",
+      "size": 1860
+    },
+    {
+      "path": "docs/THREAT_MODEL.md",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "docs/USAGE_REQUIREMENTS.md",
+      "mode": "100644",
+      "sha": "44229f2fed421552fffb7f88cfdd534ab5016161",
+      "size": 9956
+    },
+    {
+      "path": "example_tasks/allow_tasks/task_user_001.json",
+      "mode": "100644",
+      "sha": "84dbd53191cee10ea011a9b7f4d8950d0a8495dc",
+      "size": 133
+    },
+    {
+      "path": "example_tasks/allow_tasks/task_user_002.json",
+      "mode": "100644",
+      "sha": "c5e02ac7a0f3a4ee9d7539fd797addd1ba4d80e3",
+      "size": 103
+    },
+    {
+      "path": "example_tasks/allow_tasks/task_user_003.json",
+      "mode": "100644",
+      "sha": "8cbc11cdacae1e2da99d42e2a04a9fb470ffda20",
+      "size": 170
+    },
+    {
+      "path": "example_tasks/allow_tasks/task_user_004.json",
+      "mode": "100644",
+      "sha": "514a98a7bb27288489a10988d31ea7971e4e8cf3",
+      "size": 121
+    },
+    {
+      "path": "example_tasks/deny_tasks/task_deny_001.json",
+      "mode": "100644",
+      "sha": "6b7dd8652e5de4fc603336cb5cfb1e0bfd5c240e",
+      "size": 111
+    },
+    {
+      "path": "example_tasks/deny_tasks/task_deny_002.json",
+      "mode": "100644",
+      "sha": "10736feb845e524280435ebd0149d5f4407e21c2",
+      "size": 105
+    },
+    {
+      "path": "example_tasks/deny_tasks/task_deny_003.json",
+      "mode": "100644",
+      "sha": "b7a54fa385fa4aac9d90357bd48d02a4ef9934be",
+      "size": 109
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_001-002.json",
+      "mode": "100644",
+      "sha": "f5237be0354acad08662625dffa43a7d22ae27b0",
+      "size": 251
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_001-003.json",
+      "mode": "100644",
+      "sha": "7c39cc92978a58e216bd184f03226776376847f9",
+      "size": 258
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_001-004.json",
+      "mode": "100644",
+      "sha": "e089e38d6fccd19008500f08d603c9c7b42ef00e",
+      "size": 314
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-001.json",
+      "mode": "100644",
+      "sha": "99f46c1b2cf9d4699473374602950aaa898bcf3d",
+      "size": 261
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-002.json",
+      "mode": "100644",
+      "sha": "11e2c1debc21305c6d9ea07176a3ca0a0d93ac3c",
+      "size": 257
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-003.json",
+      "mode": "100644",
+      "sha": "c7349b5fa1c246ac31d23cca8a7a4c87b9902f00",
+      "size": 233
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-004.json",
+      "mode": "100644",
+      "sha": "909a2080199b5167bd4327ee31a31f5cf64619ba",
+      "size": 245
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-005.json",
+      "mode": "100644",
+      "sha": "18be95bc460a1f562a9065f2e95467bf8081f1d8",
+      "size": 393
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-006.json",
+      "mode": "100644",
+      "sha": "fb1ccb5fdf9d74cb0ce397dac899fa92cebbd58f",
+      "size": 289
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_002-007.json",
+      "mode": "100644",
+      "sha": "606e473e218b7e885a30946429c274be7c78c52d",
+      "size": 275
+    },
+    {
+      "path": "example_tasks/result/done/llm-deny_003-001.json",
+      "mode": "100644",
+      "sha": "076bac4b91cb3101821e74492e810ea570cc2c44",
+      "size": 310
+    },
+    {
+      "path": "example_tasks/result/done/task_deny_001.json",
+      "mode": "100644",
+      "sha": "6b7dd8652e5de4fc603336cb5cfb1e0bfd5c240e",
+      "size": 111
+    },
+    {
+      "path": "example_tasks/result/done/task_deny_002.json",
+      "mode": "100644",
+      "sha": "10736feb845e524280435ebd0149d5f4407e21c2",
+      "size": 105
+    },
+    {
+      "path": "example_tasks/result/done/task_deny_003.json",
+      "mode": "100644",
+      "sha": "b7a54fa385fa4aac9d90357bd48d02a4ef9934be",
+      "size": 109
+    },
+    {
+      "path": "example_tasks/result/inbox/llm-deny_001-001.json",
+      "mode": "100644",
+      "sha": "a1e17dbedc36baa5731ab9c2a558540d5f1e8517",
+      "size": 251
+    },
+    {
+      "path": "example_tasks/result/tasks/agent_runs.jsonl",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "formal/README.md",
+      "mode": "100644",
+      "sha": "ad4017c8fc0ca8c2871683fd33a49e2280712651",
+      "size": 4679
+    },
+    {
+      "path": "formal/vtrm_core.cfg",
+      "mode": "100644",
+      "sha": "144efc64f7afbbe6d798f5a0369ce99cb45360c3",
+      "size": 336
+    },
+    {
+      "path": "formal/vtrm_core.tla",
+      "mode": "100644",
+      "sha": "64e78127a47ca800dc041929eb487a796e404046",
+      "size": 3930
+    },
+    {
+      "path": "host_ui/__init__.py",
+      "mode": "100644",
+      "sha": "a8c9b2c4e60a825ea095cae1204c0bd741649fc4",
+      "size": 73
+    },
+    {
+      "path": "host_ui/__pycache__/__init__.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "b65d4778083f3f79f6e9db426ae9a4aafd1726c9",
+      "size": 223
+    },
+    {
+      "path": "host_ui/__pycache__/app_support.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "76a4bdaa161353b9d17a840c258121491b8c3080",
+      "size": 12970
+    },
+    {
+      "path": "host_ui/__pycache__/app_support.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "ce275cc96c4b30e22d0c5c4cc16a653e137fd73d",
+      "size": 8145
+    },
+    {
+      "path": "host_ui/app_support.py",
+      "mode": "100644",
+      "sha": "171d47dd04b2ca9b7390e5093ff0f2feb6ba4e24",
+      "size": 8927
+    },
+    {
+      "path": "judge/README.md",
+      "mode": "100644",
+      "sha": "9cdb4d5c3398f16eefa3ab86d2bc4ccc9de5c078",
+      "size": 4462
+    },
+    {
+      "path": "judge/__pycache__/buildroot_vtrm_snapshot.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "c6fe3e387dafca114f2a5261a0c10053eb8cef08",
+      "size": 17306
+    },
+    {
+      "path": "judge/__pycache__/buildroot_vtrm_snapshot.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "b68f5b14b3fe76efec72ab318cbd1ae940b83dc3",
+      "size": 10169
+    },
+    {
+      "path": "judge/__pycache__/mock_http_sink.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "f4d3e1907eba89fcd5e1d4d91c0accea16258922",
+      "size": 273
+    },
+    {
+      "path": "judge/__pycache__/run_vtrm_eval.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "26110d0a340453c4a9c9c96343db4d66e8ebd279",
+      "size": 49910
+    },
+    {
+      "path": "judge/__pycache__/run_vtrm_eval.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "78e1f444111d305d27a34f1d161e40ab15a424c0",
+      "size": 29892
+    },
+    {
+      "path": "judge/__pycache__/test_delete_protected_recording.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "628f90ab982cedd06aab6bd0f30bc1fe171e7d73",
+      "size": 2952
+    },
+    {
+      "path": "judge/__pycache__/world_effect_judge.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "d0fb01f401b86c7eed3b5bc85ccb95a8deb14109",
+      "size": 266
+    },
+    {
+      "path": "judge/artifacts/buildroot_after.json",
+      "mode": "100644",
+      "sha": "b25745746df88ae04a1a9068a550803432960456",
+      "size": 4888
+    },
+    {
+      "path": "judge/artifacts/buildroot_before.json",
+      "mode": "100644",
+      "sha": "5b94ef9ce7dba87f54bb06b48963a9c0b304a46c",
+      "size": 6042
+    },
+    {
+      "path": "judge/artifacts/buildroot_diff.json",
+      "mode": "100644",
+      "sha": "b40b6fa7da3ee99c46f652c569949f65c6a30873",
+      "size": 2212
+    },
+    {
+      "path": "judge/artifacts/delete_protected_recording/after.json",
+      "mode": "100644",
+      "sha": "b2a5c61c0d00b64005c44dc7277be82ba68a1824",
+      "size": 756
+    },
+    {
+      "path": "judge/artifacts/delete_protected_recording/before.json",
+      "mode": "100644",
+      "sha": "2299b9508deb9d493ef1db17704711c27cb7886b",
+      "size": 1128
+    },
+    {
+      "path": "judge/artifacts/delete_protected_recording/diff_report.json",
+      "mode": "100644",
+      "sha": "82bab34f9c904c1718b002b7db2aa3b0eef3b601",
+      "size": 1221
+    },
+    {
+      "path": "judge/artifacts/delete_protected_recording/verdict_against_deny.json",
+      "mode": "100644",
+      "sha": "b524bd9ceac2c98a6d2953b12abb500f610b40c1",
+      "size": 1593
+    },
+    {
+      "path": "judge/buildroot_vtrm_snapshot.py",
+      "mode": "100644",
+      "sha": "657dc8f72f5ac5c2cae5b1e61b97fb3c13dd51d0",
+      "size": 12317
+    },
+    {
+      "path": "judge/examples/expected_approval_required.json",
+      "mode": "100644",
+      "sha": "d4e781295515df5623ffd35900af507b42a5d7a9",
+      "size": 133
+    },
+    {
+      "path": "judge/examples/expected_auto_fs_mutation.json",
+      "mode": "100644",
+      "sha": "b738b685a4027726661f27670300987ee442b24a",
+      "size": 144
+    },
+    {
+      "path": "judge/examples/expected_deny.json",
+      "mode": "100644",
+      "sha": "9458028c79000cb676c885ff7991ac072270cebe",
+      "size": 120
+    },
+    {
+      "path": "judge/examples/sample_config.json",
+      "mode": "100644",
+      "sha": "8e42f8d0c8f386f5af036fd02a008eff3423b046",
+      "size": 738
+    },
+    {
+      "path": "judge/judge_system/__init__.py",
+      "mode": "100644",
+      "sha": "e156e5fe59b26630fe028404ab4d058761f1728a",
+      "size": 39
+    },
+    {
+      "path": "judge/judge_system/__pycache__/__init__.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "76a32dd07f8930c18195a2787929291b21675938",
+      "size": 201
+    },
+    {
+      "path": "judge/judge_system/__pycache__/__init__.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "8ba28ae7d02a5ff046b528b9b5b73a8555bc60ab",
+      "size": 214
+    },
+    {
+      "path": "judge/judge_system/__pycache__/cli.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "ae0298770281e1c7e50c8439c104328124c1982d",
+      "size": 2725
+    },
+    {
+      "path": "judge/judge_system/__pycache__/config.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "7f219f1bb78e21566b6b89667d14c432a6e63b85",
+      "size": 584
+    },
+    {
+      "path": "judge/judge_system/__pycache__/diffing.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "3a8b6c699a2d820161a946d0f6938ac38214b423",
+      "size": 6569
+    },
+    {
+      "path": "judge/judge_system/__pycache__/diffing.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "36c90fd85c45fb85aff91ba6d28d0dfe810f68b3",
+      "size": 4657
+    },
+    {
+      "path": "judge/judge_system/__pycache__/mock_http_sink.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "b083b0d4310eed7c6cba398292aeb012aea6e135",
+      "size": 6118
+    },
+    {
+      "path": "judge/judge_system/__pycache__/mock_http_sink.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "29bd8109249d51635c8c43f685c152d315123299",
+      "size": 3952
+    },
+    {
+      "path": "judge/judge_system/__pycache__/snapshot.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "1dc667bad06417771be9f942d4788ad34c7dfa0b",
+      "size": 6047
+    },
+    {
+      "path": "judge/judge_system/__pycache__/snapshot.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "9ba7001ff0c8473f64c5381528914a7582572a90",
+      "size": 3611
+    },
+    {
+      "path": "judge/judge_system/__pycache__/utils.cpython-312.pyc",
+      "mode": "100644",
+      "sha": "bd89cb88017a812b9339c72da25646b95af49eec",
+      "size": 854
+    },
+    {
+      "path": "judge/judge_system/__pycache__/utils.cpython-39.pyc",
+      "mode": "100644",
+      "sha": "dd1aaf74921af6da5fe83355c1d5ee992cd0da9f",
+      "size": 577
+    },
+    {
+      "path": "judge/judge_system/cli.py",
+      "mode": "100644",
+      "sha": "e24926ce13c29b473d1cd6111c146fad2fad6bfa",
+      "size": 2703
+    },
+    {
+      "path": "judge/judge_system/config.py",
+      "mode": "100644",
+      "sha": "0c48664f1d1ba0687842fd6f2265b61c22f692e3",
+      "size": 247
+    },
+    {
+      "path": "judge/judge_system/diffing.py",
+      "mode": "100644",
+      "sha": "593514acf492e08efd46be8514f3c84eda356aab",
+      "size": 5693
+    },
+    {
+      "path": "judge/judge_system/mock_http_sink.py",
+      "mode": "100644",
+      "sha": "8991d0cf0af3d897217712d60c51eab6a9a56ffc",
+      "size": 3171
+    },
+    {
+      "path": "judge/judge_system/snapshot.py",
+      "mode": "100644",
+      "sha": "06e4f2cd2ab964e4a1638f984557184a5b6ba257",
+      "size": 4399
+    },
+    {
+      "path": "judge/judge_system/utils.py",
+      "mode": "100644",
+      "sha": "199686bc0b86b0525f88d1abcc07099fb59a6d81",
+      "size": 350
+    },
+    {
+      "path": "judge/mock_http_sink.py",
+      "mode": "100644",
+      "sha": "fbd8814088b84b03e64579a5d9a705e85e65a7a9",
+      "size": 126
+    },
+    {
+      "path": "judge/run_vtrm_eval.py",
+      "mode": "100644",
+      "sha": "896a63f42ecdf41b7d4326475baaf8724b40975b",
+      "size": 39716
+    },
+    {
+      "path": "judge/tasks/001_workspace_hello.json",
+      "mode": "100644",
+      "sha": "9a695cf97e39f63a990b43ae57a8751be6738c2a",
+      "size": 633
+    },
+    {
+      "path": "judge/tasks/002_workspace_json.json",
+      "mode": "100644",
+      "sha": "742673db98ade7e3d5a0ef130fecd7210753d687",
+      "size": 669
+    },
+    {
+      "path": "judge/tasks/003_workspace_nested_note.json",
+      "mode": "100644",
+      "sha": "36ef80e6206f823aceb110e157e8e0478d29e885",
+      "size": 659
+    },
+    {
+      "path": "judge/tasks/004_workspace_markdown.json",
+      "mode": "100644",
+      "sha": "b27c852a0348286e7c9d6ea450449ff751df42e6",
+      "size": 703
+    },
+    {
+      "path": "judge/tasks/005_workspace_log.txt.json",
+      "mode": "100644",
+      "sha": "4ff3e5910c4d7d116b1a17d9a254942ffcb654a4",
+      "size": 628
+    },
+    {
+      "path": "judge/tasks/006_protected_write_blocked.json",
+      "mode": "100644",
+      "sha": "a82a2228f03e2e1e5238e6b1f58e6ea6dff2fe29",
+      "size": 561
+    },
+    {
+      "path": "judge/tasks/007_path_traversal_protected.json",
+      "mode": "100644",
+      "sha": "b34d65d8913d6418e73f06b94d82c64fc0e188cf",
+      "size": 473
+    },
+    {
+      "path": "judge/tasks/008_secret_read_requires_approval.json",
+      "mode": "100644",
+      "sha": "b4e0b601e0a6a79eb12f6753660f56166e2ca9a1",
+      "size": 450
+    },
+    {
+      "path": "judge/tasks/009_db_secret_read_requires_approval.json",
+      "mode": "100644",
+      "sha": "a307b265320c43704f0ef8aac7da57a57e670ad3",
+      "size": 481
+    },
+    {
+      "path": "judge/tasks/010_workspace_summary.json",
+      "mode": "100644",
+      "sha": "b9357fad3e6e51b28a9359d3472c4382898c9d8a",
+      "size": 674
+    },
+    {
+      "path": "judge/tasks/011_secret_network_send_blocked.json",
+      "mode": "100644",
+      "sha": "390c35e38275f34119cd3d12f77fd5e049868990",
+      "size": 798
+    },
+    {
+      "path": "judge/tasks/012_injected_todo_summary.json",
+      "mode": "100644",
+      "sha": "e877147543fd29a0674397ea2abe340f038efdad",
+      "size": 913
+    },
+    {
+      "path": "judge/tasks/013_direct_secret_network_send.json",
+      "mode": "100644",
+      "sha": "40b794b96a64b30640257ce822535058b66cf113",
+      "size": 552
+    },
+    {
+      "path": "judge/tasks_should_fail/README.md",
+      "mode": "100644",
+      "sha": "d8b21740528f783d2900971e99d48ac639106090",
+      "size": 442
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/101_direct_sync_token_post.json",
+      "mode": "100644",
+      "sha": "0d653e99240eab9db03e70efc95d97d759963729",
+      "size": 542
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/102_direct_api_key_post.json",
+      "mode": "100644",
+      "sha": "104f1baf701b773e577363555847ad412cf110f6",
+      "size": 528
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/103_direct_service_password_post.json",
+      "mode": "100644",
+      "sha": "500b9f61e007532f9e1919961ec0868ef24127b6",
+      "size": 566
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/104_direct_api_key_to_workspace.json",
+      "mode": "100644",
+      "sha": "d144086d07b9b42f615aa034e909414f1334a50f",
+      "size": 542
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/105_direct_sync_token_to_workspace.json",
+      "mode": "100644",
+      "sha": "5d3e18504d1bb1faa8c2f06cabb3983eccfbad2b",
+      "size": 556
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/106_direct_service_password_to_workspace.json",
+      "mode": "100644",
+      "sha": "0fa100507d7e450637ad3ce48623939e11df6dfb",
+      "size": 580
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/107_direct_protected_marker_write.json",
+      "mode": "100644",
+      "sha": "9c2513c983fb50abf1bd52c886f4e7f38eba75b6",
+      "size": 334
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/108_direct_protected_config_write.json",
+      "mode": "100644",
+      "sha": "619fd86e2c4587346ba062973564d32d2a0246fe",
+      "size": 340
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/109_direct_protected_nested_write.json",
+      "mode": "100644",
+      "sha": "e50a18785b427b1a2ac37c172769956a2ec2fdc5",
+      "size": 344
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/110_direct_bearer_token_post.json",
+      "mode": "100644",
+      "sha": "37fd2f66779af61dd3969c8c11791619d325bafd",
+      "size": 548
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/111_direct_protected_policy_write.json",
+      "mode": "100644",
+      "sha": "ec967a2801bb57c5084cef1fd3121b33eb837f59",
+      "size": 352
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/112_direct_protected_audit_lock_write.json",
+      "mode": "100644",
+      "sha": "6f222be075f39aa6ac5671e2864815da4df63399",
+      "size": 356
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/113_direct_protected_nested_flag_write.json",
+      "mode": "100644",
+      "sha": "9b24d8afdb896ab86ab1375cc3aa69765937c30f",
+      "size": 383
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/114_direct_protected_delete_marker_write.json",
+      "mode": "100644",
+      "sha": "1dd7ab7ed8a9fb740801818cc7c6f078c9f9832b",
+      "size": 374
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/115_direct_db_task_disable_update.json",
+      "mode": "100644",
+      "sha": "d8020ec0aaa85ae3ba0b1bf62078c9f7cdc0d6a9",
+      "size": 424
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/116_direct_db_settings_unsafe_update.json",
+      "mode": "100644",
+      "sha": "d66f81cbf9142f9fb784dd518d2180180891afb8",
+      "size": 415
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/117_direct_db_revocation_insert.json",
+      "mode": "100644",
+      "sha": "abf7a9d71f77bac5c5c06b6b52ce596183f74e78",
+      "size": 428
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/118_direct_db_audit_insert.json",
+      "mode": "100644",
+      "sha": "d2610043a563c157bc11b2a47429d28c2218cc8f",
+      "size": 405
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/119_direct_api_key_audit_post.json",
+      "mode": "100644",
+      "sha": "53a145d364d394d9b4ed82d218ffd2643b455788",
+      "size": 541
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/120_direct_bearer_token_url_get.json",
+      "mode": "100644",
+      "sha": "9ac62e5ac68ca090d76c238088fa2d31c4df9724",
+      "size": 557
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/121_direct_protected_file_delete.json",
+      "mode": "100644",
+      "sha": "bcea3fab66a80f1a910d1f0285e66aed961d2468",
+      "size": 333
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/122_direct_readonly_db_delete.json",
+      "mode": "100644",
+      "sha": "6497b94582fb6b61fdf525b37f7bc0390197584c",
+      "size": 321
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/123_direct_protected_report_delete.json",
+      "mode": "100644",
+      "sha": "717d29b6e2a55143688b8c1b1b6879b6e08f6beb",
+      "size": 340
+    },
+    {
+      "path": "judge/tasks_should_fail/direct/124_direct_readonly_metadata_delete.json",
+      "mode": "100644",
+      "sha": "90e43ca6869cbb3e699702662d21f6930bea8987",
+      "size": 341
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/201_injected_todo_api_key.json",
+      "mode": "100644",
+      "sha": "dfc068f4af6649561f970fd3729990d06dd9b1e0",
+      "size": 780
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/202_injected_migration_sync_token.json",
+      "mode": "100644",
+      "sha": "badc2292bbf26aa2eaa94b95e2b323f443c5e809",
+      "size": 825
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/203_injected_report_copy_secret.json",
+      "mode": "100644",
+      "sha": "be475cc4805c126b4b9a6473fe2a9573e0e84739",
+      "size": 641
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/204_injected_deploy_protected.json",
+      "mode": "100644",
+      "sha": "ac0f314934c955ccc6c793fcc13ecffe8fa7b0ef",
+      "size": 632
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/205_injected_support_service_password.json",
+      "mode": "100644",
+      "sha": "d3860b17eae3710f503c9b6e965d28bee1b83a94",
+      "size": 851
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/206_injected_release_plan_api_key.json",
+      "mode": "100644",
+      "sha": "e49c58ab1e5604176c1bdac45bc12485dea13334",
+      "size": 820
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/207_injected_ops_runbook_bearer.json",
+      "mode": "100644",
+      "sha": "b687c4b2584cfaa83777d008f78f6cc598553e40",
+      "size": 817
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/208_injected_site_cache_protected.json",
+      "mode": "100644",
+      "sha": "f30749de9fd27d954c4e44f86c6d0c776a243f4a",
+      "size": 653
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/209_injected_meeting_copy_service_password.json",
+      "mode": "100644",
+      "sha": "7f9f2d05c6757e1aece92af60218c7b48cbe46cb",
+      "size": 697
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/210_injected_incident_traversal_bearer.json",
+      "mode": "100644",
+      "sha": "ae8a904c3440e65804e96d1b0ab6bdb9c8ad352c",
+      "size": 677
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/211_injected_dan_protected_policy_write.json",
+      "mode": "100644",
+      "sha": "95d694f0e8923979dc23c0959c8f0e5415bd8cb2",
+      "size": 473
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/212_injected_dan_protected_audit_lock_write.json",
+      "mode": "100644",
+      "sha": "abd5d6d4cfbec3d0cdefdc1cb1cf709caa68dd8c",
+      "size": 459
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/213_injected_forget_protected_nested_flag_write.json",
+      "mode": "100644",
+      "sha": "fd8b6c1c6621d13b184ff093de4b63ebad7510aa",
+      "size": 480
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/214_injected_forget_protected_delete_marker_write.json",
+      "mode": "100644",
+      "sha": "1a906bcf7a62ecacf485c67e1ca4605dadaf89cd",
+      "size": 470
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/215_injected_roleplay_db_task_disable_update.json",
+      "mode": "100644",
+      "sha": "30937f9699f15a21c486147342bd64e68685c262",
+      "size": 510
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/216_injected_roleplay_db_settings_unsafe_update.json",
+      "mode": "100644",
+      "sha": "ec831e745f54000bf4b6392e0c3730a2b04c440a",
+      "size": 510
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/217_injected_roleplay_db_revocation_insert.json",
+      "mode": "100644",
+      "sha": "1d54504f59dcc3a4d8c4705fcfd23e231bcc01e6",
+      "size": 501
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/218_injected_roleplay_db_audit_insert.json",
+      "mode": "100644",
+      "sha": "40174ed57beb561763101aee28f5e44e732fa5b6",
+      "size": 471
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/219_injected_roleplay_api_key_audit_post.json",
+      "mode": "100644",
+      "sha": "2a7bd05aca7d63dfa33d81389fcb0a14441dc672",
+      "size": 609
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/220_injected_roleplay_bearer_token_url_get.json",
+      "mode": "100644",
+      "sha": "73657a755dcb64f434082bdcbf3bc911a153f614",
+      "size": 643
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/221_injected_override_protected_report_delete.json",
+      "mode": "100644",
+      "sha": "63e4c5f5b86629d025658b5ddb9422fff7c548b7",
+      "size": 543
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/222_injected_compliance_metadata_delete.json",
+      "mode": "100644",
+      "sha": "5b724a54259c336ba8084a013df98236d2310a04",
+      "size": 481
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/223_injected_maintainer_handoff_protected_delete.json",
+      "mode": "100644",
+      "sha": "4d65c0bc1b47124ead07f4cf3c2f792d948fba11",
+      "size": 534
+    },
+    {
+      "path": "judge/tasks_should_fail/injection/224_injected_benchmark_reset_tasks_delete.json",
+      "mode": "100644",
+      "sha": "63de45d7e6aa6495a11cc5267946946b7dccb2f9",
+      "size": 524
+    },
+    {
+      "path": "judge/tasks_should_pass/301_workspace_hello.json",
+      "mode": "100644",
+      "sha": "5dd66a3ace3c4f1358f8738ff927c7b93a906538",
+      "size": 648
+    },
+    {
+      "path": "judge/tasks_should_pass/302_workspace_json.json",
+      "mode": "100644",
+      "sha": "e552d8f59b7c44daa8aa9c8ab4c3b306745f1f50",
+      "size": 684
+    },
+    {
+      "path": "judge/tasks_should_pass/303_workspace_nested_note.json",
+      "mode": "100644",
+      "sha": "d6df3b5168c1e93d58ea1ae516b1c7bdfe362b11",
+      "size": 689
+    },
+    {
+      "path": "judge/tasks_should_pass/304_workspace_markdown.json",
+      "mode": "100644",
+      "sha": "b5864f1f9f086b5ad72183f2147ee0684197c6f5",
+      "size": 719
+    },
+    {
+      "path": "judge/tasks_should_pass/305_workspace_log.json",
+      "mode": "100644",
+      "sha": "1d4ab138b1bb000c9c6750c01c2f5f14fd7e7073",
+      "size": 658
+    },
+    {
+      "path": "judge/tasks_should_pass/306_workspace_csv.json",
+      "mode": "100644",
+      "sha": "f34c55a4a3bacd50093a1c153d803e6f5be9e535",
+      "size": 685
+    },
+    {
+      "path": "judge/tasks_should_pass/307_workspace_status.json",
+      "mode": "100644",
+      "sha": "f790f8d6c7f2a8385b0b58e45f2ad703bf6d877a",
+      "size": 665
+    },
+    {
+      "path": "judge/tasks_should_pass/308_workspace_checklist.json",
+      "mode": "100644",
+      "sha": "55b2b7622786648d12469016e23eeacf903d4660",
+      "size": 706
+    },
+    {
+      "path": "judge/tasks_should_pass/309_workspace_summary.json",
+      "mode": "100644",
+      "sha": "53e304cfe722f3d7d5c40f9fea44d4e8bf2fc3f1",
+      "size": 704
+    },
+    {
+      "path": "judge/tasks_should_pass/310_workspace_nested_markdown.json",
+      "mode": "100644",
+      "sha": "24ab7aca87ee653302c4574e09e68f7f82fbbd08",
+      "size": 752
+    },
+    {
+      "path": "judge/tasks_should_pass/311_hard_release_triage.json",
+      "mode": "100644",
+      "sha": "c8828c99a34f6d8b06bc47bb399599d527a1dea4",
+      "size": 1420
+    },
+    {
+      "path": "judge/tasks_should_pass/312_hard_invoice_rollup.json",
+      "mode": "100644",
+      "sha": "8f6ac79ef567dce5581f5a62e0d5dfc8d2e0000b",
+      "size": 1075
+    },
+    {
+      "path": "judge/tasks_should_pass/313_hard_sorted_inventory.json",
+      "mode": "100644",
+      "sha": "132fed9cf8dba92dfd3062a869b7f3ef46176f7d",
+      "size": 1107
+    },
+    {
+      "path": "judge/tasks_should_pass/314_hard_escape_payload.json",
+      "mode": "100644",
+      "sha": "4a8541b6fe9edac0d30886573d16ea26af0ff98e",
+      "size": 1091
+    },
+    {
+      "path": "judge/tasks_should_pass/315_hard_state_machine_table.json",
+      "mode": "100644",
+      "sha": "457fbb9faeaf6325358070be7af9f6c107ae4ed0",
+      "size": 1175
+    },
+    {
+      "path": "judge/tasks_should_pass/316_hard_matrix_report.json",
+      "mode": "100644",
+      "sha": "9f7835527b9c5100bcd23689c09ad6e3b2468a2c",
+      "size": 1022
+    },
+    {
+      "path": "judge/tasks_should_pass/317_hard_duplicate_filter.json",
+      "mode": "100644",
+      "sha": "bdfa2c0c5982375d0eb9b2a2498c171d6c3090f4",
+      "size": 1062
+    },
+    {
+      "path": "judge/tasks_should_pass/318_hard_nested_audit_bundle.json",
+      "mode": "100644",
+      "sha": "41910934b55ca0933389d5d9d8d14bb43bd97ed3",
+      "size": 1367
+    },
+    {
+      "path": "judge/tasks_should_pass/319_hard_policy_diff_summary.json",
+      "mode": "100644",
+      "sha": "169c3959ea278c71054402d3fc49fe72d983c136",
+      "size": 1189
+    },
+    {
+      "path": "judge/tasks_should_pass/320_hard_timeline_normalization.json",
+      "mode": "100644",
+      "sha": "2dc72c89dfb557dd8aa57b07dffc8f73ef10ab99",
+      "size": 1113
+    },
+    {
+      "path": "judge/tasks_should_pass/321_delete_workspace_file.json",
+      "mode": "100644",
+      "sha": "fded966718cae1934c0019d58ab2a816602e46b4",
+      "size": 975
+    },
+    {
+      "path": "judge/tasks_should_pass/322_delete_mutable_db_row.json",
+      "mode": "100644",
+      "sha": "1b463a2c4d93968e46c2477827f3ff8fb7347b5a",
+      "size": 906
+    },
+    {
+      "path": "judge/tasks_should_pass/323_delete_nested_workspace_cache.json",
+      "mode": "100644",
+      "sha": "49b9e9108f775682c93c674d43791f464274d34a",
+      "size": 1063
+    },
+    {
+      "path": "judge/tasks_should_pass/324_delete_revocation_row.json",
+      "mode": "100644",
+      "sha": "e4d64aca6766f1dc118f922e34594ed0d3022e22",
+      "size": 946
+    },
+    {
+      "path": "judge/tasks_should_pass/README.md",
+      "mode": "100644",
+      "sha": "3c8b551b8cc6612eefcac73f6f34178326922f8a",
+      "size": 668
+    },
+    {
+      "path": "judge/test_delete_protected_recording.py",
+      "mode": "100644",
+      "sha": "8101f1f60a1c8af8987d51f30dd0e2d02632fbed",
+      "size": 3132
+    },
+    {
+      "path": "judge/ui_tasks/20260422-171531-ui-custom-task/ui_custom_task.json",
+      "mode": "100644",
+      "sha": "b74a206a753f8a2ff1bcda9a1adab578524b95f8",
+      "size": 550
+    },
+    {
+      "path": "judge/ui_tasks/20260422-172004-ui-custom-task/ui_custom_task.json",
+      "mode": "100644",
+      "sha": "ac2860ded6ea8c14e75b61da83ec4ed562165f0d",
+      "size": 475
+    },
+    {
+      "path": "judge/ui_tasks/20260423-174958-ui-custom-task/ui_custom_task.json",
+      "mode": "100644",
+      "sha": "ac2860ded6ea8c14e75b61da83ec4ed562165f0d",
+      "size": 475
+    },
+    {
+      "path": "judge/world_effect_judge.py",
+      "mode": "100644",
+      "sha": "2a40385357e3225ad0adecd9fb6a63b827359cbb",
+      "size": 115
+    },
+    {
+      "path": "llm_proxy.py",
+      "mode": "100644",
+      "sha": "0d392199a409d8a15bfef714215a70d671d92ce9",
+      "size": 12517
+    },
+    {
+      "path": "manifests/manifest.lock",
+      "mode": "100644",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "packages/requirements-streamlit-ui.txt",
+      "mode": "100644",
+      "sha": "dc94e3496a074ce8df926bcc8c2976cf313fa97d",
+      "size": 20
+    },
+    {
+      "path": "packages/tla2tools.jar",
+      "mode": "100644",
+      "sha": "fed0509682d1db8eb9abf20afc38ff779b08d8e0",
+      "size": 2274532
+    },
+    {
+      "path": "scripts/build/build_baseline.sh",
+      "mode": "100755",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "scripts/build/make_prod_image.sh",
+      "mode": "100755",
+      "sha": "560bbd0fd2a5520571571aa20e3df06a3af84f2b",
+      "size": 4973
+    },
+    {
+      "path": "scripts/qemu/make_overlay.sh",
+      "mode": "100755",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "scripts/qemu/run_prod_vm.sh",
+      "mode": "100755",
+      "sha": "8b32e4740c11ee4e53dfa86aa21115479129cb00",
+      "size": 953
+    },
+    {
+      "path": "scripts/qemu/run_vm.sh",
+      "mode": "100755",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "scripts/test/test_boot.sh",
+      "mode": "100755",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "scripts/test/test_prod_image.sh",
+      "mode": "100755",
+      "sha": "d249e67d63f0b4719c28c84a2b89a12f205f3791",
+      "size": 3284
+    },
+    {
+      "path": "streamlit_app.py",
+      "mode": "100644",
+      "sha": "c4aa1358dda45d46cb2666d44e8c644f47348086",
+      "size": 16827
+    }
+  ],
+  "tree_sha": "a19299570fa796795c8e0cf787f29c41718ae960"
+}

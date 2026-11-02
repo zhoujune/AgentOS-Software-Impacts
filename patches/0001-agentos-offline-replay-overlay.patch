@@ -1,0 +1,1297 @@
+diff --git a/README.md b/README.md
+index 5bde9962ba7a9c70ab535f4b311c9efacaa6c9d8..9a593fd35435d3c91232d9c5069372c24214dd25 100644
+--- a/README.md
++++ b/README.md
+@@ -227,6 +227,55 @@
+ - `--task-timeout <seconds>`
+ - `--vm-boot-timeout <seconds>`
+ 
++## Offline Replay and Reproducible Runs
++
++The evaluator can replay a request-ID-keyed LLM response cassette without an API key. Replay mode fails closed on any request ID that is absent from the cassette and disables the guest NIC by default.
++
++Run the checked-in end-to-end smoke fixture (QEMU + VTRM + World Effect Judge, no model API calls):
++
++```bash
++bash scripts/test/run_offline_smoke.sh
++```
++
++To record a live run for future replay, configure the normal model credentials and pass `--record-file`:
++
++```bash
++python3 judge/run_vtrm_eval.py \
++  --tasks-dir judge/tasks_should_pass \
++  --task-id 301-workspace-hello \
++  --record-file runtime/replays/301-workspace-hello.json
++```
++
++Then replay it offline:
++
++```bash
++python3 judge/run_vtrm_eval.py \
++  --tasks-dir judge/tasks_should_pass \
++  --task-id 301-workspace-hello \
++  --replay-file runtime/replays/301-workspace-hello.json \
++  --no-guest-network
++```
++
++See [`judge/replays/README.md`](judge/replays/README.md) for cassette format, audit logs, and networking caveats. Replay runs write `replay_ok` into `summary.json` and record the cassette SHA-256 in `run_manifest.json`.
++
++### Representative offline benchmark
++
++Run a six-task deterministic suite covering three benign workspace operations and three security-denial cases (read-only database update, audit-log insert, and read-only database delete):
++
++```bash
++PYTHON=/path/to/python bash scripts/test/run_offline_representative_suite.sh
++```
++
++The script runs the benign and denial groups separately so the evaluator preserves its existing `tasks_should_fail` classification, disables guest networking, verifies VTRM denial audit records, and writes `runtime/offline-representative/offline_benchmark.json` plus a Markdown summary. Timing statistics are derived from terminal VTRM audit events and exclude model inference latency; they are not full end-to-end task latency. See `judge/replays/README.md` for cassette and report details.
++
++For a repeated performance study (three repetitions by default), use:
++
++```bash
++PYTHON=/path/to/python bash scripts/test/run_offline_repeated_benchmark.sh
++```
++
++This records separate QEMU launch/readiness, guest-agent bootstrap, initial image copy, per-case image reset, task-wait, and terminal VTRM audit timings. It writes a host/environment manifest and aggregates mean, median, p95, minimum, and maximum to `runtime/offline-repeated/<study-id>/repeated_benchmark.md` and `.json`. Override `REPETITIONS=5` for a larger sample. Boot readiness uses one-second log polling; VTRM timings exclude model inference and full end-to-end task latency.
++
+ ## Common Workflows
+ 
+ ### Custom demo through the UI
+diff --git a/br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh b/br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh
+index 1f5a0992cc123b7d2228233d0d5e1fdd29e906d3..e2385483ce585c41a8b37b142653c1d3f565f4ca 100755
+--- a/br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh
++++ b/br2-external/board/agentos/x86_64/overlay/etc/autologin-agent.sh
+@@ -39,7 +39,10 @@
+     done
+ 
+     if [ -z "$dev" ] && command -v ip >/dev/null 2>&1; then
+-        dev=$(ip -o link show 2>/dev/null | awk -F': ' '$2 != "lo" {print $2; exit}')
++        # Ignore tunnel pseudo-devices such as sit0@NONE. In offline replay
++        # QEMU intentionally has no NIC, and treating a tunnel as one adds
++        # pointless DHCP attempts before the agent bridge can be used.
++        dev=$(ip -o link show 2>/dev/null | awk -F': ' '$2 != "lo" && /link\/ether/ {print $2; exit}')
+     fi
+ 
+     if [ -z "$dev" ]; then
+@@ -90,7 +93,13 @@
+     # /workspace (local, fallback when 9P mount fails)
+     mkdir -p /workspace
+     chmod 755 /workspace 2>/dev/null || true
+-    chown 1000:1000 /workspace 2>/dev/null || true
++    # Keep the workspace parent root-owned so the agent cannot replace or
++    # rename sibling fixture directories. Only benign fixture roots are writable.
++    chown root:root /workspace 2>/dev/null || true
++    chmod 755 /workspace 2>/dev/null || true
++    mkdir -p /workspace/passcases /workspace/passcases_hard
++    chown -R 1000:1000 /workspace/passcases /workspace/passcases_hard 2>/dev/null || true
++    chmod 755 /workspace/passcases /workspace/passcases_hard 2>/dev/null || true
+ 
+     # Local log directories
+     mkdir -p /var/log/sandbox/tasks
+@@ -127,7 +136,8 @@
+     # mount agent_bridge as root if it is not already mounted by init
+     mkdir -p /mnt/agent_bridge
+     if ! mountpoint -q /mnt/agent_bridge 2>/dev/null; then
+-        mount -t 9p -o trans=virtio,cache=loose agent_bridge /mnt/agent_bridge || true
++        # Avoid stale host-to-guest directory entries for tasks created after boot.
++        mount -t 9p -o trans=virtio,cache=none agent_bridge /mnt/agent_bridge || true
+     fi
+     # /mnt/agent_bridge (9P mount point)
+     if [ ! -d "$BRIDGE_DIR" ]; then
+diff --git a/br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh b/br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh
+index 3438ef8f1c2fa9950b94502466cec45cc5f1e402..59b5581f3bb9b454dc09409b5e6871df2b1c92cf 100755
+--- a/br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh
++++ b/br2-external/board/agentos/x86_64/overlay/home/agent/agent_main_loop.sh
+@@ -10,6 +10,9 @@
+ DONE_DIR="$BRIDGE_DIR/done"
+ RUNS_LOG="/var/log/sandbox/tasks/agent_runs.jsonl"
+ TRACE_JSONL="/var/log/sandbox/trace/trace.jsonl"
++AGENT_LOOP_POLL_INTERVAL="${AGENT_LOOP_POLL_INTERVAL:-5}"
++AGENT_LLM_POLL_INTERVAL="${AGENT_LLM_POLL_INTERVAL:-1}"
++export AGENT_LOOP_POLL_INTERVAL AGENT_LLM_POLL_INTERVAL
+ 
+ get_next_seq() {
+     local seq_file="$BRIDGE_DIR/.agent_seq"
+@@ -107,7 +110,7 @@
+ 
+     # 持续监听
+     while true; do
+-        sleep 5
++        sleep "$AGENT_LOOP_POLL_INTERVAL"
+         process_inbox || true
+     done
+ }
+diff --git a/br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py b/br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py
+index f6a097fd62e209f4d1ee9e5a1c65f718ae44598a..5b0ba227179e9816759f5ef6c5029f47447eb0b3 100755
+--- a/br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py
++++ b/br2-external/board/agentos/x86_64/overlay/home/agent/agent_runner.py
+@@ -34,7 +34,7 @@
+ 
+ MAX_STEPS = 8
+ REQUEST_TIMEOUT = 60
+-POLL_INTERVAL = 1
++POLL_INTERVAL = max(0.01, float(os.environ.get("AGENT_LLM_POLL_INTERVAL", "1")))
+ 
+ AGENT_CAPABILITIES = {
+     "fs.read.workspace",
+diff --git a/judge/run_vtrm_eval.py b/judge/run_vtrm_eval.py
+index 896a63f42ecdf41b7d4326475baaf8724b40975b..d550e9dd83da16c9fb404a8ef94a0cef642ce3a2 100644
+--- a/judge/run_vtrm_eval.py
++++ b/judge/run_vtrm_eval.py
+@@ -5,6 +5,7 @@
+ import hashlib
+ import json
+ import os
++import re
+ import shlex
+ import signal
+ import socket
+@@ -12,6 +13,7 @@
+ import sys
+ import time
+ from dataclasses import dataclass
++from datetime import datetime
+ from pathlib import Path
+ from typing import Any
+ 
+@@ -53,10 +55,11 @@
+     "/var/lib/agentos/approvals",
+     "/var/lib/agentos/agent.db",
+ ]
++# Wait for the guest startup script to finish root-side setup (including the
++# 9P bridge mount) before sending console commands. Network/crond messages occur
++# earlier and are not a reliable signal that the agent environment is ready.
+ DEFAULT_VM_READY_PHRASES = [
+     "[agent-startup] Switching to agent user...",
+-    "[network] Starting network initialization...",
+-    "Starting crond: OK",
+ ]
+ DEFAULT_AGENT_MODE = "agentos"
+ DEFAULT_HTTP_SINK_LISTEN_HOST = "0.0.0.0"
+@@ -90,6 +93,23 @@
+ 
+ def clone_json(payload: dict[str, Any]) -> dict[str, Any]:
+     return json.loads(json.dumps(payload, ensure_ascii=False))
++
++
++def validate_replay_cassette(path: Path) -> dict[str, Any]:
++    payload = load_json(path)
++    if not isinstance(payload, dict) or payload.get("format_version") != 1:
++        raise ValueError("cassette must be a JSON object with format_version=1")
++    responses = payload.get("responses")
++    if not isinstance(responses, dict) or not responses:
++        raise ValueError("cassette must contain a non-empty 'responses' object")
++    for request_id, response in responses.items():
++        if not isinstance(request_id, str) or not request_id.strip():
++            raise ValueError("cassette response keys must be non-empty request IDs")
++        if not isinstance(response, dict) or not isinstance(response.get("assistant_text"), str):
++            raise ValueError(f"cassette response {request_id!r} must contain string assistant_text")
++        if not isinstance(response.get("finish_reason", "stop"), str):
++            raise ValueError(f"cassette response {request_id!r} finish_reason must be a string")
++    return payload
+ 
+ 
+ def ensure_dir(path: Path) -> None:
+@@ -202,7 +222,9 @@
+     if args.vm_console_start_agent_loop:
+         command = (
+             f"AGENT_MODE={shlex.quote(args.agent_mode)} "
+-            "sh /home/agent/agent_main_loop.sh >/var/log/sandbox/agent/judge_main_loop.log 2>&1 &"
++            f"AGENT_LOOP_POLL_INTERVAL={shlex.quote(str(args.agent_loop_poll_interval))} "
++            f"AGENT_LLM_POLL_INTERVAL={shlex.quote(str(args.agent_llm_poll_interval))} "
++            f"sh {shlex.quote(args.agent_loop_script)} >/var/log/sandbox/agent/judge_main_loop.log 2>&1 &"
+         )
+         if send_console_command(managed, command):
+             result["summary_notes"].append(f"sent agent_main_loop start command to VM console (mode={args.agent_mode})")
+@@ -239,8 +261,19 @@
+ 
+ 
+ def create_bridge_layout(bridge_dir: Path) -> None:
+-    for sub in ["inbox", "outbox", "done", "error", "tasks"]:
+-        ensure_dir(bridge_dir / sub)
++    # The guest agent runs as UID/GID 1000 and the shared 9P mount uses
++    # access=client. Give it write access to the temporary bridge itself and
++    # each protocol directory; otherwise it can see queued tasks but cannot
++    # create outbox requests or move inbox files to done/.
++    ensure_dir(bridge_dir)
++    for path in [bridge_dir, *(bridge_dir / sub for sub in ["inbox", "outbox", "done", "error", "tasks"])]:
++        ensure_dir(path)
++        try:
++            os.chown(path, 1000, 1000)
++            path.chmod(0o775)
++        except OSError:
++            # Preserve best-effort setup on hosts where ownership changes are unavailable.
++            path.chmod(0o777)
+ 
+ 
+ def clean_bridge(bridge_dir: Path) -> None:
+@@ -277,8 +310,16 @@
+     return tasks
+ 
+ 
++def guest_network_enabled(args: argparse.Namespace) -> bool:
++    if args.guest_network is not None:
++        return bool(args.guest_network)
++    # Replay mode is offline by default. Opt in only when a test needs a local
++    # host sink or another guest network service.
++    return args.replay_file is None
++
++
+ def build_qemu_argv(args: argparse.Namespace) -> list[str]:
+-    return [
++    argv = [
+         args.qemu_bin,
+         "-m",
+         str(args.memory_mb),
+@@ -292,12 +333,16 @@
+         f"local,id=bridge_dev,path={args.bridge_dir},security_model=mapped,multidevs=remap",
+         "-device",
+         "virtio-9p-pci,fsdev=bridge_dev,mount_tag=agent_bridge",
+-        "-netdev",
+-        "user,id=net0",
+-        "-device",
+-        "virtio-net-pci,netdev=net0",
+-        "-nographic",
+     ]
++    if guest_network_enabled(args):
++        argv.extend([
++            "-netdev",
++            "user,id=net0",
++            "-device",
++            "virtio-net-pci,netdev=net0",
++        ])
++    argv.append("-nographic")
++    return argv
+ 
+ 
+ def start_qemu(args: argparse.Namespace, case_dir: Path) -> ManagedProcess:
+@@ -318,17 +363,23 @@
+         str(args.bridge_dir),
+         "--model",
+         args.model,
+-        "--api-style",
+-        args.api_style,
+-        "--temperature",
+-        str(args.temperature),
+     ]
+-    if args.api_endpoint:
+-        argv.extend(["--api-endpoint", args.api_endpoint])
+-    if args.anthropic_version:
+-        argv.extend(["--anthropic-version", args.anthropic_version])
+-    if args.api_key_file:
+-        argv.extend(["--api-key-file", str(args.api_key_file)])
++    if args.replay_file:
++        env["LLM_REPLAY_LOG"] = str(case_dir / "replay_events.jsonl")
++        argv.extend(["--replay-file", str(args.replay_file)])
++    else:
++        argv.extend([
++            "--api-style", args.api_style,
++            "--temperature", str(args.temperature),
++        ])
++        if args.api_endpoint:
++            argv.extend(["--api-endpoint", args.api_endpoint])
++        if args.anthropic_version:
++            argv.extend(["--anthropic-version", args.anthropic_version])
++        if args.api_key_file and args.api_key_file.exists():
++            argv.extend(["--api-key-file", str(args.api_key_file)])
++        if args.record_file:
++            argv.extend(["--record-file", str(args.record_file)])
+     return start_logged_process("llm_proxy", argv, cwd=args.agentos_root, log_path=log_path, env=env)
+ 
+ 
+@@ -699,20 +750,60 @@
+     return path
+ 
+ 
+-def wait_for_task_result(bridge_dir: Path, task_id: str, task_file: Path, timeout: int) -> tuple[dict[str, Any] | None, str]:
++def task_proxy_timing_diagnostics(log_path: Path, task_id: str, enqueue_wall_time: float, wait_seconds: float) -> dict[str, Any]:
++    """Extract request/response milestones from the per-case proxy log."""
++    request_pattern = re.compile(
++        rf"^(?P<ts>\d{{4}}-\d{{2}}-\d{{2}} \d{{2}}:\d{{2}}:\d{{2}},\d{{3}}) \[INFO\] Processing request: (?P<id>llm-{re.escape(task_id)}-\d+)$"
++    )
++    response_pattern = re.compile(
++        rf"^(?P<ts>\d{{4}}-\d{{2}}-\d{{2}} \d{{2}}:\d{{2}}:\d{{2}},\d{{3}}) \[INFO\] Response written: .*/(?P<id>llm-{re.escape(task_id)}-\d+)\.json$"
++    )
++    requests: dict[str, float] = {}
++    responses: dict[str, float] = {}
++    try:
++        lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines() if log_path.exists() else []
++    except OSError:
++        lines = []
++    for line in lines:
++        for pattern, bucket in ((request_pattern, requests), (response_pattern, responses)):
++            match = pattern.match(line.strip())
++            if not match:
++                continue
++            event_time = datetime.strptime(match.group("ts"), "%Y-%m-%d %H:%M:%S,%f").timestamp()
++            bucket.setdefault(match.group("id"), event_time)
++    ordered_requests = sorted(requests.items(), key=lambda item: item[1])
++    enqueue_to_first_request = max(0.0, ordered_requests[0][1] - enqueue_wall_time) if ordered_requests else None
++    request_gaps = [round(b[1] - a[1], 6) for a, b in zip(ordered_requests, ordered_requests[1:])]
++    response_latencies = [round(responses[rid] - started, 6) for rid, started in ordered_requests if rid in responses]
++    last_response_time = max(responses.values()) if responses else None
++    response_to_result = max(0.0, wait_seconds - (last_response_time - enqueue_wall_time)) if last_response_time else None
++    return {
++        "first_proxy_request_after_enqueue_seconds": round(enqueue_to_first_request, 6) if enqueue_to_first_request is not None else None,
++        "proxy_request_count": len(requests),
++        "proxy_response_count": len(responses),
++        "proxy_request_start_gaps_seconds": request_gaps,
++        "proxy_request_response_latencies_seconds": response_latencies,
++        "last_proxy_response_to_task_result_seconds": round(response_to_result, 6) if response_to_result is not None else None,
++    }
++
++
++def wait_for_task_result(bridge_dir: Path, task_id: str, task_file: Path, timeout: int, poll_interval: float = 1.0) -> tuple[dict[str, Any] | None, str]:
+     deadline = time.time() + timeout
+     done_path = bridge_dir / "done" / task_file.name
+     saw_done = False
+     while time.time() < deadline:
++        # Prefer the guest-written run record. An LLM final response can appear
++        # before the guest has executed the final tool call and persisted world
++        # changes; returning it immediately races the world snapshot/shutdown.
+         run = read_agent_run(bridge_dir, task_id)
+         if run is not None:
+             return run, "agent_runs"
+         inferred = infer_task_result_from_llm_files(bridge_dir, task_id)
+-        if inferred is not None and inferred.get("status") == "success":
+-            return inferred, "llm_done_files"
+         if done_path.exists():
+             saw_done = True
+-        time.sleep(1.0)
++            if inferred is not None:
++                return inferred, "llm_done_files"
++        time.sleep(max(0.01, poll_interval))
+     inferred = infer_task_result_from_llm_files(bridge_dir, task_id)
+     if inferred is not None:
+         return inferred, "llm_done_files"
+@@ -767,6 +858,8 @@
+     task_id = task["id"]
+     case_dir = run_dir / task_id
+     ensure_dir(case_dir)
++    case_started_perf = time.perf_counter()
++    phase_timings: dict[str, float] = {}
+     qemu_proc: ManagedProcess | None = None
+     proxy_proc: ManagedProcess | None = None
+     sink_proc: ManagedProcess | None = None
+@@ -779,12 +872,15 @@
+         "task_id": task_id,
+         "name": task.get("name", task_id),
+         "task_source": task.get("_source"),
++        "llm_mode": "replay" if args.replay_file else ("record" if args.record_file else "live"),
+         "started_at": now_utc(),
+         "summary_notes": [],
+     }
+ 
+     try:
++        phase_start = time.perf_counter()
+         clean_bridge(args.bridge_dir)
++        phase_timings["bridge_cleanup_seconds"] = time.perf_counter() - phase_start
+ 
+         if task_uses_http_sink(task):
+             kill_stale_http_sink(args.http_sink_port)
+@@ -798,31 +894,50 @@
+             sink_before_snapshot = http_sink_snapshot(sink_events_path)
+             write_json(case_dir / "http_sink_before.json", sink_before_snapshot)
+ 
++        phase_start = time.perf_counter()
+         qemu_proc = start_qemu(args, case_dir)
++        phase_timings["qemu_launch_seconds"] = time.perf_counter() - phase_start
+         result["qemu_log"] = str(qemu_proc.log_path)
++        phase_start = time.perf_counter()
+         ready_phrase = wait_for_any_log_phrase(qemu_proc.log_path, DEFAULT_VM_READY_PHRASES, args.vm_boot_timeout)
++        phase_timings["vm_boot_to_ready_seconds"] = time.perf_counter() - phase_start
+         if ready_phrase is None:
+             result["summary_notes"].append("VM readiness phrase not observed before timeout")
+         else:
+             result["summary_notes"].append(f"VM ready phrase observed: {ready_phrase}")
++        phase_start = time.perf_counter()
+         bootstrap_guest_agent(args, qemu_proc, result)
+-
++        phase_timings["guest_agent_bootstrap_seconds"] = time.perf_counter() - phase_start
++
++        phase_start = time.perf_counter()
+         proxy_proc = start_llm_proxy(args, case_dir)
+         result["llm_proxy_log"] = str(proxy_proc.log_path)
+         time.sleep(args.proxy_warmup_seconds)
+-
++        phase_timings["proxy_startup_and_warmup_seconds"] = time.perf_counter() - phase_start
++
++        phase_start = time.perf_counter()
+         if baseline_snapshot is not None:
+             before_snapshot = clone_json(baseline_snapshot)
+             write_json(case_dir / "buildroot_before.json", before_snapshot)
+         else:
+             before_snapshot = snapshot_guest(args, case_dir / "buildroot_before.json")
++        phase_timings["before_snapshot_seconds"] = time.perf_counter() - phase_start
+         rendered_task = dict(task)
+         rendered_task["task"] = render_task_text(args, task)
+         result["rendered_task"] = rendered_task["task"]
++        phase_start = time.perf_counter()
++        task_enqueue_wall_time = time.time()
+         task_file = enqueue_task_file(args.bridge_dir, rendered_task)
+         result["enqueued_task_file"] = str(task_file)
+ 
+-        agent_run, source = wait_for_task_result(args.bridge_dir, task_id, task_file, args.task_timeout)
++        agent_run, source = wait_for_task_result(
++            args.bridge_dir, task_id, task_file, args.task_timeout, poll_interval=args.result_poll_interval
++        )
++        phase_timings["task_enqueue_and_wait_seconds"] = time.perf_counter() - phase_start
++        result["task_wait_diagnostics"] = task_proxy_timing_diagnostics(
++            case_dir / "llm_proxy.log", task_id, task_enqueue_wall_time,
++            phase_timings["task_enqueue_and_wait_seconds"],
++        )
+         result["task_result_source"] = source
+         if agent_run is None:
+             result["agent_run"] = None
+@@ -834,17 +949,63 @@
+             result["task_answer"] = str(agent_run.get("answer", ""))
+             result["run_status"] = str(agent_run.get("status", "unknown"))
+ 
++        if args.capture_guest_bridge_state:
++            diagnostic_command = (
++                "echo '---BRIDGE_MOUNTS---'; mount; "
++                "echo '---BRIDGE_INBOX---'; ls -la /mnt/agent_bridge/inbox; "
++                "echo '---AGENT_LOOP_LOG---'; cat /var/log/sandbox/agent/judge_main_loop.log 2>&1; "
++                "echo '---AGENT_PROCESSES---'; ps"
++            )
++            send_console_command(qemu_proc, diagnostic_command)
++            time.sleep(0.5)
++
+         # Flush guest-side filesystem state before stopping the VM, then snapshot
++        phase_start = time.perf_counter()
+         send_console_command(qemu_proc, "sync")
+         time.sleep(args.post_task_settle_seconds)
++        phase_timings["sync_and_settle_seconds"] = time.perf_counter() - phase_start
+ 
+     finally:
++        phase_start = time.perf_counter()
+         stop_process(sink_proc)
+         stop_process(proxy_proc)
+         stop_process(qemu_proc)
++        phase_timings["process_shutdown_seconds"] = time.perf_counter() - phase_start
++
++    if args.replay_file:
++        replay_log = case_dir / "replay_events.jsonl"
++        replay_events: list[dict[str, Any]] = []
++        if replay_log.exists():
++            for line in replay_log.read_text(encoding="utf-8", errors="replace").splitlines():
++                try:
++                    event = json.loads(line)
++                except json.JSONDecodeError:
++                    continue
++                if isinstance(event, dict):
++                    replay_events.append(event)
++        missing_ids = [str(event.get("request_id", "")) for event in replay_events if not event.get("matched")]
++        replay_validation = {
++            "ok": bool(replay_events) and not missing_ids,
++            "cassette": str(args.replay_file),
++            "event_log": str(replay_log),
++            "request_count": len(replay_events),
++            "matched_count": sum(1 for event in replay_events if event.get("matched")),
++            "missing_request_ids": missing_ids,
++        }
++        result["replay_validation"] = replay_validation
++        result["replay_log"] = str(replay_log)
++        if not replay_events:
++            result["summary_notes"].append("replay mode recorded no LLM requests")
++        elif missing_ids:
++            result["summary_notes"].append(f"replay cassette missing responses for {missing_ids}")
++        else:
++            result["summary_notes"].append("all LLM requests matched the replay cassette")
+ 
+     if before_snapshot is not None:
++        phase_start = time.perf_counter()
+         after_snapshot = snapshot_guest(args, case_dir / "buildroot_after.json")
++        phase_timings["after_snapshot_seconds"] = time.perf_counter() - phase_start
++        phase_start = time.perf_counter()
+         diff_report = diff_buildroot_snapshots(before_snapshot, after_snapshot)
+         write_json(case_dir / "buildroot_diff.json", diff_report)
+         sink_diff = None
+@@ -876,6 +1037,7 @@
+             result["http_sink"] = http_sink_result
+         result["world_integrity"] = world_integrity
+         result["safety_ok"] = bool(world_integrity["ok"])
++        phase_timings["world_diff_and_evaluation_seconds"] = time.perf_counter() - phase_start
+         result["diff_report_path"] = str(case_dir / "buildroot_diff.json")
+         if sink_diff is not None:
+             result["http_sink_diff_path"] = str(case_dir / "http_sink_diff.json")
+@@ -892,19 +1054,24 @@
+             result["summary_notes"].append("unexpected world mutation detected")
+ 
+     result["stopped_at"] = now_utc()
+-
++    phase_timings["case_runtime_excluding_reset_seconds"] = time.perf_counter() - case_started_perf
++
++    phase_start = time.perf_counter()
+     if args.reset_between_cases:
+         reset_ok = run_reset(args, case_dir)
+         result["reset_ok"] = reset_ok
+         if not reset_ok:
+             result["summary_notes"].append("reset command failed")
++    phase_timings["image_reset_seconds"] = time.perf_counter() - phase_start if args.reset_between_cases else 0.0
++    phase_timings["case_runtime_including_reset_seconds"] = time.perf_counter() - case_started_perf
++    result["timings"] = {key: round(value, 6) for key, value in phase_timings.items()}
+ 
+     write_json(case_dir / "case_report.json", result)
+     return result
+ 
+ 
+ def build_parser() -> argparse.ArgumentParser:
+-    parser = argparse.ArgumentParser(description="Run end-to-end VTRM evaluation cases via QEMU + bridge + LLM proxy")
++    parser = argparse.ArgumentParser(description="Run end-to-end VTRM evaluation cases via QEMU + bridge + LLM proxy or offline replay")
+     parser.add_argument("--agentos-root", type=Path, default=DEFAULT_AGENTOS_ROOT)
+     parser.add_argument("--qemu-bin", default="qemu-system-x86_64")
+     parser.add_argument("--kernel", type=Path, default=DEFAULT_KERNEL)
+@@ -917,6 +1084,9 @@
+     parser.add_argument("--http-sink-guest-host", default=DEFAULT_HTTP_SINK_GUEST_HOST)
+     parser.add_argument("--http-sink-port", type=int, default=DEFAULT_HTTP_SINK_PORT)
+     parser.add_argument("--api-key-file", type=Path, default=DEFAULT_API_KEY_FILE)
++    run_mode = parser.add_mutually_exclusive_group()
++    run_mode.add_argument("--replay-file", type=Path, help="Use an exact request-ID cassette; no LLM API calls and no guest networking by default")
++    run_mode.add_argument("--record-file", type=Path, help="Record successful LLM responses to a cassette for later offline replay")
+     parser.add_argument("--model", default=DEFAULT_MODEL)
+     parser.add_argument("--api-style", choices=["openai", "anthropic"], default=DEFAULT_API_STYLE)
+     parser.add_argument("--api-endpoint", default=DEFAULT_API_ENDPOINT)
+@@ -926,9 +1096,18 @@
+     parser.add_argument("--tasks-dir", type=Path, default=DEFAULT_TASKS_DIR)
+     parser.add_argument("--report-root", type=Path, default=DEFAULT_REPORT_ROOT)
+     parser.add_argument("--memory-mb", type=int, default=512)
++    parser.add_argument(
++        "--guest-network", action=argparse.BooleanOptionalAction, default=None,
++        help="Enable/disable the QEMU guest NIC; defaults off for replay and on for live/record runs",
++    )
+     parser.add_argument("--task-timeout", type=int, default=180)
+     parser.add_argument("--vm-boot-timeout", type=int, default=90)
+     parser.add_argument("--vm-console-settle-seconds", type=int, default=2)
++    parser.add_argument("--agent-loop-poll-interval", type=float, default=float(os.environ.get("AGENT_LOOP_POLL_INTERVAL", "5")))
++    parser.add_argument("--agent-llm-poll-interval", type=float, default=float(os.environ.get("AGENT_LLM_POLL_INTERVAL", "1")))
++    parser.add_argument("--agent-loop-script", default=os.environ.get("AGENT_LOOP_SCRIPT", "/home/agent/agent_main_loop.sh"))
++    parser.add_argument("--result-poll-interval", type=float, default=float(os.environ.get("RESULT_POLL_INTERVAL", "1")))
++    parser.add_argument("--capture-guest-bridge-state", action="store_true", help="Log guest 9P mount, inbox listing, agent loop log, and processes after task wait")
+     parser.add_argument("--no-vm-console-su-root", dest="vm_console_su_root", action="store_false")
+     parser.add_argument("--no-vm-console-start-agent-loop", dest="vm_console_start_agent_loop", action="store_false")
+     parser.add_argument("--proxy-warmup-seconds", type=int, default=2)
+@@ -953,15 +1132,35 @@
+     parser = build_parser()
+     args = parser.parse_args(argv)
+ 
+-    has_env_api_key = bool(os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"))
+-    if args.api_key_file and not args.api_key_file.exists() and not has_env_api_key:
+-        parser.error(f"api key file not found: {args.api_key_file}")
++    if args.replay_file:
++        args.replay_file = args.replay_file.expanduser().resolve()
++        if not args.replay_file.is_file():
++            parser.error(f"replay cassette not found: {args.replay_file}")
++        try:
++            validate_replay_cassette(args.replay_file)
++        except (OSError, ValueError, json.JSONDecodeError) as exc:
++            parser.error(f"invalid replay cassette: {exc}")
++    elif args.record_file:
++        args.record_file = args.record_file.expanduser().resolve()
++        if args.record_file.exists():
++            try:
++                validate_replay_cassette(args.record_file)
++            except (OSError, ValueError, json.JSONDecodeError) as exc:
++                parser.error(f"existing record cassette is invalid: {exc}")
++    if not args.replay_file:
++        has_env_api_key = bool(os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"))
++        if args.api_key_file and not args.api_key_file.exists() and not has_env_api_key:
++            parser.error(f"api key file not found: {args.api_key_file}")
+     if not args.kernel.exists():
+         parser.error(f"kernel image not found: {args.kernel}")
++    args.initial_rootfs_copy_seconds = 0.0
+     if args.reset_strategy == "copy-image":
+         if not args.clean_rootfs.exists():
+             parser.error(f"clean rootfs image not found: {args.clean_rootfs}")
+-        if not copy_file(args.clean_rootfs, args.rootfs, args.report_root / "_prepare_runtime_rootfs.log"):
++        copy_started = time.perf_counter()
++        copy_ok = copy_file(args.clean_rootfs, args.rootfs, args.report_root / "_prepare_runtime_rootfs.log")
++        args.initial_rootfs_copy_seconds = time.perf_counter() - copy_started
++        if not copy_ok:
+             parser.error(f"failed to prepare runtime rootfs from clean image: {args.clean_rootfs}")
+     elif not args.rootfs.exists():
+         parser.error(f"rootfs image not found: {args.rootfs}")
+@@ -986,6 +1185,11 @@
+         "rootfs": str(args.rootfs),
+         "clean_rootfs": str(args.clean_rootfs),
+         "llm_proxy": str(args.llm_proxy),
++        "llm_mode": "replay" if args.replay_file else ("record" if args.record_file else "live"),
++        "replay_file": str(args.replay_file) if args.replay_file else None,
++        "replay_file_sha256": hashlib.sha256(args.replay_file.read_bytes()).hexdigest() if args.replay_file else None,
++        "record_file": str(args.record_file) if args.record_file else None,
++        "guest_network_enabled": guest_network_enabled(args),
+         "model": args.model,
+         "api_style": args.api_style,
+         "api_endpoint": args.api_endpoint,
+@@ -995,6 +1199,8 @@
+         "reset_between_cases": args.reset_between_cases,
+         "reset_strategy": args.reset_strategy,
+         "reset_cmd": args.reset_cmd if args.reset_between_cases and args.reset_strategy == "command" else None,
++        "initial_rootfs_copy_seconds": round(float(getattr(args, "initial_rootfs_copy_seconds", 0.0)), 6),
++        "timing_instrumentation_version": 1,
+     }
+     write_json(run_dir / "run_manifest.json", run_manifest)
+ 
+@@ -1006,6 +1212,7 @@
+     task_completion_ok: bool | None = True
+     saw_completion_check = False
+     safety_ok = True
++    replay_ok: bool | None = True if args.replay_file else None
+     for task in tasks:
+         case_result = run_case(args, task, run_dir, baseline_snapshot=baseline_snapshot)
+         case_results.append(case_result)
+@@ -1016,11 +1223,21 @@
+                 task_completion_ok = False
+         if not case_result.get("world_integrity", {}).get("ok", False):
+             safety_ok = False
++        if args.replay_file and not case_result.get("replay_validation", {}).get("ok", False):
++            replay_ok = False
+ 
+     if not saw_completion_check:
+         task_completion_ok = None
+ 
+     all_ok = safety_ok if task_completion_ok is None else (task_completion_ok and safety_ok)
++    if replay_ok is False:
++        all_ok = False
++
++    if args.record_file:
++        run_manifest["record_file_sha256"] = (
++            hashlib.sha256(args.record_file.read_bytes()).hexdigest() if args.record_file.exists() else None
++        )
++        write_json(run_dir / "run_manifest.json", run_manifest)
+ 
+     summary = {
+         "run_id": run_id,
+@@ -1028,6 +1245,7 @@
+         "finished_at": now_utc(),
+         "task_completion_ok": task_completion_ok,
+         "safety_ok": safety_ok,
++        "replay_ok": replay_ok,
+         "all_ok": all_ok,
+         "case_count": len(case_results),
+         "case_results": case_results,
+@@ -1041,6 +1259,7 @@
+                 "run_dir": str(run_dir),
+                 "task_completion_ok": task_completion_ok,
+                 "safety_ok": safety_ok,
++                "replay_ok": replay_ok,
+                 "all_ok": all_ok,
+                 "case_count": len(case_results),
+             },
+diff --git a/llm_proxy.py b/llm_proxy.py
+index 0d392199a409d8a15bfef714215a70d671d92ce9..d24c962a6d82530e24a72eae2b2fd0e23ea8ee87 100644
+--- a/llm_proxy.py
++++ b/llm_proxy.py
+@@ -8,6 +8,7 @@
+ """
+ 
+ import argparse
++import hashlib
+ import json
+ import logging
+ import os
+@@ -24,8 +25,33 @@
+ DEFAULT_ANTHROPIC_ENDPOINT = "https://api.anthropic.com/v1/messages"
+ DEFAULT_ANTHROPIC_VERSION = "2023-06-01"
+ 
+-POLL_INTERVAL = 2
++POLL_INTERVAL = max(0.01, float(os.environ.get("LLM_PROXY_POLL_INTERVAL", "2")))
+ PROXY_LOG = Path(os.environ.get("LLM_PROXY_LOG", "/tmp/llm_proxy.log"))
++
++
++def load_replay_cassette(path: str | Path) -> dict[str, dict[str, str]]:
++    """Load a versioned, request-id-keyed cassette for deterministic replay."""
++    cassette_path = Path(path)
++    try:
++        payload = json.loads(cassette_path.read_text(encoding="utf-8"))
++    except (OSError, json.JSONDecodeError) as exc:
++        raise ValueError(f"cannot read replay cassette {cassette_path}: {exc}") from exc
++    if not isinstance(payload, dict) or payload.get("format_version") != 1:
++        raise ValueError("replay cassette must be a JSON object with format_version=1")
++    responses = payload.get("responses")
++    if not isinstance(responses, dict) or not responses:
++        raise ValueError("replay cassette must contain a non-empty 'responses' object")
++    normalized: dict[str, dict[str, str]] = {}
++    for request_id, response in responses.items():
++        if not isinstance(request_id, str) or not request_id.strip():
++            raise ValueError("replay cassette response keys must be non-empty request IDs")
++        if not isinstance(response, dict) or not isinstance(response.get("assistant_text"), str):
++            raise ValueError(f"replay response {request_id!r} must contain string assistant_text")
++        finish_reason = response.get("finish_reason", "stop")
++        if not isinstance(finish_reason, str):
++            raise ValueError(f"replay response {request_id!r} finish_reason must be a string")
++        normalized[request_id] = {"assistant_text": response["assistant_text"], "finish_reason": finish_reason}
++    return normalized
+ 
+ 
+ class LLMProxy:
+@@ -38,6 +64,8 @@
+         api_style: str = "openai",
+         anthropic_version: str = DEFAULT_ANTHROPIC_VERSION,
+         temperature_override: float | None = None,
++        replay_file: str | Path | None = None,
++        record_file: str | Path | None = None,
+     ):
+         self.api_key = api_key
+         self.default_model = model
+@@ -45,7 +73,18 @@
+         self.api_endpoint = api_endpoint or self._default_endpoint(api_style)
+         self.anthropic_version = anthropic_version
+         self.temperature_override = temperature_override
++        if replay_file is not None and record_file is not None:
++            raise ValueError("replay_file and record_file are mutually exclusive")
++        self.replay_file = Path(replay_file).expanduser().resolve() if replay_file is not None else None
++        self.record_file = Path(record_file).expanduser().resolve() if record_file is not None else None
++        self.replay_responses = load_replay_cassette(self.replay_file) if self.replay_file else {}
++        self.recorded_responses: dict[str, dict[str, str]] = {}
++        if self.record_file and self.record_file.exists():
++            self.recorded_responses = load_replay_cassette(self.record_file)
+         self.bridge_dir = Path(bridge_dir or os.environ.get("AGENT_BRIDGE_DIR", DEFAULT_BRIDGE_DIR))
++        self.replay_log_path = Path(os.environ.get(
++            "LLM_REPLAY_LOG", str(self.bridge_dir / "tasks" / "replay_events.jsonl")
++        ))
+         self.outbox_dir = self.bridge_dir / "outbox"
+         self.inbox_dir = self.bridge_dir / "inbox"
+         self.error_dir = self.bridge_dir / "error"
+@@ -58,14 +97,17 @@
+         return DEFAULT_OPENAI_ENDPOINT
+ 
+     def _setup_logging(self) -> None:
+-        logging.basicConfig(
+-            level=logging.INFO,
+-            format="%(asctime)s [%(levelname)s] %(message)s",
+-            handlers=[
+-                logging.StreamHandler(sys.stderr),
+-                logging.FileHandler(PROXY_LOG, encoding="utf-8"),
+-            ],
+-        )
++        # Avoid constructing and leaking unused handlers when multiple proxy
++        # instances are created in unit tests or embedded tooling.
++        if not logging.getLogger().handlers:
++            logging.basicConfig(
++                level=logging.INFO,
++                format="%(asctime)s [%(levelname)s] %(message)s",
++                handlers=[
++                    logging.StreamHandler(sys.stderr),
++                    logging.FileHandler(PROXY_LOG, encoding="utf-8"),
++                ],
++            )
+         self.logger = logging.getLogger("llm_proxy")
+ 
+     def _atomic_write_json(self, path: Path, data: dict[str, Any]) -> None:
+@@ -204,6 +246,44 @@
+             return self._call_anthropic_api(messages, model, temperature, max_tokens)
+         return self._call_openai_api(messages, model, temperature, max_tokens)
+ 
++    def _call_replay_cassette(self, request_id: str) -> dict[str, Any]:
++        entry = self.replay_responses.get(request_id)
++        matched = entry is not None
++        event: dict[str, Any] = {
++            "ts": datetime.now(timezone.utc).isoformat(),
++            "request_id": request_id,
++            "matched": matched,
++            "cassette": str(self.replay_file),
++        }
++        if entry is None:
++            event["error"] = "no exact request_id match in replay cassette"
++            result: dict[str, Any] = {"error": f"No replay response for request_id={request_id!r}"}
++        else:
++            assistant_text = entry["assistant_text"]
++            event["assistant_text_sha256"] = hashlib.sha256(assistant_text.encode("utf-8")).hexdigest()
++            result = {"content": assistant_text, "finish_reason": entry["finish_reason"]}
++        self.replay_log_path.parent.mkdir(parents=True, exist_ok=True)
++        with self.replay_log_path.open("a", encoding="utf-8") as handle:
++            handle.write(json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n")
++        return result
++
++    def _persist_recorded_response(self, request_id: str, api_result: dict[str, Any]) -> None:
++        if self.record_file is None or "error" in api_result:
++            return
++        self.recorded_responses[request_id] = {
++            "assistant_text": str(api_result.get("content", "")),
++            "finish_reason": str(api_result.get("finish_reason", "stop")),
++        }
++        payload = {
++            "format_version": 1,
++            "description": "AgentOS LLM proxy response cassette",
++            "responses": self.recorded_responses,
++        }
++        self.record_file.parent.mkdir(parents=True, exist_ok=True)
++        temporary = self.record_file.with_suffix(self.record_file.suffix + ".tmp")
++        temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++        temporary.replace(self.record_file)
++
+     def _process_request(self, request_path: Path) -> None:
+         try:
+             request = json.loads(request_path.read_text(encoding="utf-8"))
+@@ -222,9 +302,19 @@
+         max_tokens = request.get("max_tokens", 300)
+ 
+         start_time = time.time()
+-        api_result = self._call_llm_api(messages, model, temperature, max_tokens)
+-        elapsed = time.time() - start_time
+-        self.logger.info("API call completed in %.2fs", elapsed)
++        if self.replay_file is not None:
++            api_result = self._call_replay_cassette(request_id)
++            elapsed = time.time() - start_time
++            self.logger.info("Replay lookup completed in %.4fs for %s", elapsed, request_id)
++        else:
++            api_result = self._call_llm_api(messages, model, temperature, max_tokens)
++            elapsed = time.time() - start_time
++            self.logger.info("API call completed in %.2fs", elapsed)
++            if self.record_file is not None and "error" not in api_result:
++                try:
++                    self._persist_recorded_response(request_id, api_result)
++                except OSError as exc:
++                    self.logger.error("Could not persist replay cassette %s: %s", self.record_file, exc)
+ 
+         ts = datetime.now(timezone.utc).isoformat()
+         if "error" in api_result:
+@@ -236,7 +326,7 @@
+                 "raw_response": None,
+                 "error": api_result["error"],
+             }
+-            self.logger.error("API error for %s: %s", request_id, api_result["error"])
++            self.logger.error("Request failed for %s: %s", request_id, api_result["error"])
+         else:
+             response = {
+                 "request_id": request_id,
+@@ -265,8 +355,14 @@
+ 
+     def run(self) -> None:
+         self.logger.info("LLM Proxy starting...")
+-        self.logger.info("API style: %s", self.api_style)
+-        self.logger.info("API endpoint: %s", self.api_endpoint)
++        if self.replay_file is not None:
++            self.logger.info("Strict replay mode; no model API calls will be made")
++            self.logger.info("Replay cassette: %s", self.replay_file)
++        else:
++            self.logger.info("API style: %s", self.api_style)
++            self.logger.info("API endpoint: %s", self.api_endpoint)
++            if self.record_file is not None:
++                self.logger.info("Recording successful responses to: %s", self.record_file)
+ 
+         for d in [self.outbox_dir, self.inbox_dir, self.error_dir]:
+             d.mkdir(parents=True, exist_ok=True)
+@@ -299,24 +395,40 @@
+     parser.add_argument("--anthropic-version", default=os.environ.get("ANTHROPIC_VERSION", DEFAULT_ANTHROPIC_VERSION))
+     parser.add_argument("--temperature", type=float, default=None, help="Override request temperature")
+     parser.add_argument("--bridge-dir", default=DEFAULT_BRIDGE_DIR, help="Bridge directory")
++    run_mode = parser.add_mutually_exclusive_group()
++    run_mode.add_argument("--replay-file", type=Path, help="Replay exact request IDs from a cassette; never calls an API")
++    run_mode.add_argument("--record-file", type=Path, help="Record successful assistant responses to a reusable cassette")
+     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose logging")
+     args = parser.parse_args()
+ 
+-    api_key = args.api_key
+-    if not api_key and args.api_key_file:
+-        try:
+-            api_key = Path(args.api_key_file).read_text(encoding="utf-8").strip()
+-        except OSError as e:
+-            print(f"Error reading API key file: {e}", file=sys.stderr)
++    if args.replay_file:
++        try:
++            load_replay_cassette(args.replay_file)
++        except ValueError as exc:
++            parser.error(str(exc))
++        api_key = ""
++    else:
++        api_key = args.api_key
++        if not api_key and args.api_key_file:
++            try:
++                api_key = Path(args.api_key_file).read_text(encoding="utf-8").strip()
++            except OSError as e:
++                print(f"Error reading API key file: {e}", file=sys.stderr)
++                sys.exit(1)
++
++        if not api_key:
++            api_key = os.environ.get("OPENAI_API_KEY", "")
++        if not api_key:
++            api_key = os.environ.get("ANTHROPIC_API_KEY", "")
++        if not api_key:
++            print("Error: API key required unless --replay-file is used", file=sys.stderr)
+             sys.exit(1)
+ 
+-    if not api_key:
+-        api_key = os.environ.get("OPENAI_API_KEY", "")
+-    if not api_key:
+-        api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+-    if not api_key:
+-        print("Error: API key required (--api-key, --api-key-file, OPENAI_API_KEY, or ANTHROPIC_API_KEY)", file=sys.stderr)
+-        sys.exit(1)
++    if args.record_file and args.record_file.exists():
++        try:
++            load_replay_cassette(args.record_file)
++        except ValueError as exc:
++            parser.error(f"existing record cassette is invalid: {exc}")
+ 
+     if args.bridge_dir:
+         os.environ["AGENT_BRIDGE_DIR"] = args.bridge_dir
+@@ -332,6 +444,8 @@
+         api_style=args.api_style,
+         anthropic_version=args.anthropic_version,
+         temperature_override=args.temperature,
++        replay_file=args.replay_file,
++        record_file=args.record_file,
+     )
+     proxy.run()
+ 
+diff --git a/docs/ARTIFACT.md b/docs/ARTIFACT.md
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..01d1c4bd06916d12dc5217023bd0e5df32f6c2ad 100644
+--- a/docs/ARTIFACT.md
++++ b/docs/ARTIFACT.md
+@@ -0,0 +1,108 @@
++# AgentOS artifact and reproduction guide
++
++## Artifact identity
++
++This experimental software overlay is reconstructed from the public AgentOS baseline and a reviewable patch:
++
++- Upstream repository: https://github.com/zhoujune/AgentOS
++- Upstream commit: 4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c
++- Upstream tree: a19299570fa796795c8e0cf787f29c41718ae960
++- Companion overlay patch: patches/0001-agentos-offline-replay-overlay.patch in the AgentOS Software Impacts companion repository.
++
++This is a pinned reconstruction candidate, **not yet a tagged release**. The overlay adds deterministic offline replay, validation, repeated benchmarking, and a safe post-build guest-image preparation script. It does not include local-model weights or the separate PPU local-inference experiment.
++
++## Host requirements
++
++The tested host environment was Ubuntu 24.04.2 LTS, Python 3.12.3, QEMU 8.2.2, e2fsprogs 1.47.0 (debugfs and e2fsck), and OpenJDK 21.0.12.1 for TLC. The host kernel reported by the server was 5.10.134-17.2.al8.x86_64. The packaged guest kernel is Linux 6.12.47.
++
++The offline evaluator, LLM proxy, validator, aggregator, image builder, and their tests use the Python standard library. The optional Streamlit UI declares streamlit>=1.44,<2 in packages/requirements-streamlit-ui.txt; Streamlit was not installed on the host used for offline validation, so the UI was not part of that test.
++
++For the formal model, Java and the included packages/tla2tools.jar are required. The bundled TLC version is 2.19 (8 August 2024).
++
++To rebuild guest images from source, the README requires a separate compatible buildroot-2026.02 checkout next to this repository. The full Buildroot source is **not vendored**, and its exact Git commit and package revisions are not recorded. The supplied kernel and clean rootfs can be used without a full Buildroot rebuild.
++
++## Supplied and generated images
++
++| Image | SHA-256 | Status |
++| --- | --- | --- |
++| artifacts/images/bzImage | 2e7101b6ce88b5b7c27b8bc3ecee0d48c2db97992900539d75784397ca11436d | Upstream packaged kernel |
++| artifacts/images/rootfs.eval.clean.ext2 | d61a40dc7f2090b19505886020593674cdf2b5dd2f85fbcb9c02c523745a5f61 | Immutable clean base |
++| runtime/offline-eval/rootfs.eval.offline.ext2 | ac1718c0dd3e4ddfc954baedfa8f325294393810565ba6732be289dd441be8e7 | Generated post-build overlay; not committed |
++
++The generated evaluation image is created by scripts/build/make_offline_eval_image.py. It copies the canonical clean rootfs and replaces only three guest files: autologin-agent.sh, agent_main_loop.sh, and agent_runner.py. It verifies the embedded file hashes and inode metadata, runs e2fsck -fn, and verifies that the canonical base image remains unchanged. This is a post-build overlay, **not** a full Buildroot rebuild.
++
++The image boot policy keeps /workspace root-owned (UID/GID 0, mode 0755). It assigns only /workspace/passcases and /workspace/passcases_hard to the unprivileged agent (UID/GID 1000). The /workspace/failcases tree and other preloaded workspace content remain root-owned. This matches the current task fixtures: the 24 benign tasks target passcases/passcases_hard, while the 48 adversarial tasks target failcases. The parent directory is not agent-writable, preventing the agent from renaming top-level fixture directories.
++
++The clean evaluation rootfs and the generated image passed read-only e2fsck -fn validation. The production rootfs was not used.
++
++## Reproduction commands
++
++Run from the repository root after applying the companion overlay patch.
++
++### 1. Unit tests
++
++~~~bash
++python3 -m unittest discover -s judge -p 'test_*.py' -v
++~~~
++
++### 2. Build the disposable least-privilege Eval image
++
++~~~bash
++python3 scripts/build/make_offline_eval_image.py
++~~~
++
++The output defaults to runtime/offline-eval/rootfs.eval.offline.ext2. The script refuses to overwrite existing output, verifies the canonical base hash, and does not modify the canonical image. The smoke and representative-suite scripts invoke this builder automatically if the generated image is absent.
++
++### 3. One-task offline QEMU smoke
++
++~~~bash
++bash scripts/test/run_offline_smoke.sh
++~~~
++
++This uses a hand-authored request-ID-keyed cassette, does not require a model API key, disables the guest NIC, runs the agent without VM-console root privileges, and checks task completion, safety, and exact replay matching. Set OUTPUT_ROOT=/path/to/output to change the output directory.
++
++### 4. Six-task deterministic representative suite
++
++~~~bash
++bash scripts/test/run_offline_representative_suite.sh
++~~~
++
++The runner uses the generated least-privilege image and covers three benign workspace tasks and three direct database-denial tasks. It is a small software regression fixture, not the full 24-benign/48-adversarial ASE evaluation.
++
++### 5. Repeated offline benchmark
++
++~~~bash
++REPETITIONS=3 bash scripts/test/run_offline_repeated_benchmark.sh
++~~~
++
++The runner executes complete six-task rounds and aggregates stage timings. For the controlled A/B comparison and its limits, see the companion repository's docs/CONTROLLED_BENCHMARK_20261031.md.
++
++### 6. Abstract TLA+ model check
++
++~~~bash
++java -cp packages/tla2tools.jar tlc2.TLC \
++  -config formal/vtrm_core.cfg formal/vtrm_core.tla
++~~~
++
++The check completed with 5,563 states generated, 103 distinct states, and no model-checking error. This result applies only to the finite abstract model described in formal/README.md; it does not prove the Python implementation or end-to-end VM execution correct.
++
++## Validation observed on 2026-11-01
++
++- Python unit discovery: 17 tests passed (11 existing evaluator/replay tests plus six workspace/image-policy regression tests).
++- One-task unprivileged offline QEMU smoke: task completion, safety, and exact replay all passed.
++- Six-task representative suite on the generated least-privilege image: all six cases passed; all three benign completion checks passed; all three adversarial safety checks passed; exact replay and world-integrity checks passed.
++- Post-boot inode inspection: /workspace was root-owned; passcases and passcases_hard were UID/GID 1000; failcases and its fixture files remained root-owned; todo.txt remained root-owned.
++- Clean base and generated evaluation rootfs: e2fsck -fn passed.
++- TLC 2.19: 5,563 states generated, 103 distinct, no error.
++- The separate six-task A/B experiment completed three repetitions per profile (36/36 task executions passed); its comparison is descriptive and sequential, not randomized.
++- A separate two-task local PPU live-model smoke is documented in the companion repository and is not part of this default reproduction path.
++
++## Known reproducibility gaps
++
++1. Buildroot 2026.02 is external; its exact source commit and package configuration lock are missing.
++2. The optional Streamlit dependency is a version range, not a full transitive lock.
++3. No permanent archive/capsule identifier or tagged software release exists yet.
++4. The upstream repository has no root LICENSE file. The ASE conference artifact page states MIT licensing; add the complete license text with a verified copyright notice before release.
++5. The six-task cassette is not the original 72-task live-model evaluation.
++
++Do not describe this artifact as fully reproducible until the remaining source, license, dependency, and archival items are closed.
+diff --git a/docs/DESIGN.md b/docs/DESIGN.md
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..321b4e91e89addf30c5794a425326772c9acb077 100644
+--- a/docs/DESIGN.md
++++ b/docs/DESIGN.md
+@@ -0,0 +1,71 @@
++# AgentOS design overview
++
++## Purpose and architecture
++
++AgentOS is a Buildroot-based x86 guest runtime for executing tool-using LLM agents. The main enforcement component is the **Verified Toolchain Reference Monitor (VTRM)**. The evaluation workflow also runs a host-side **World Effect Judge (WEJ)** so task completion and security outcomes are checked against observed effects rather than relying only on the agent's final text.
++
++The design is organized as six layers, following docs/B1_SYSTEM_BOUNDARY.md:
++
++1. **Environment and external world (Layer 0).** LLMs, prompts, external websites/APIs, host resources, the real network, and unmodeled parts of Linux are treated as untrusted or outside the proof boundary.
++2. **Request Frontend (Layer 1).** Parses model output, extracts a candidate JSON tool request, validates its schema, injects trusted runtime metadata, and produces a NormalizedRequest.
++3. **Classification and Derivation (Layer 2).** Classifies filesystem paths, database objects, and network sinks; derives the required capability and confidentiality label rather than trusting the model's self-reported metadata.
++4. **VTRM (Layer 3).** Receives the current state and normalized request, checks capabilities, parameters, and state preconditions, then returns an allow/deny/transform decision, an effect instruction/state delta, and an audit event.
++5. **Effect Adapters (Layer 4).** Filesystem, network, and SQLite adapters execute the VTRM-approved operation. The design intends adapters to be effect executors, not independent policy decision points.
++6. **OS Guard Rails (Layer 5).** Mechanisms such as no_new_privs, seccomp, read-only mounts, reduced network exposure, and namespace-based isolation provide defense in depth. Their effectiveness is an environment assumption and is not established by the small TLA+ model.
++
++## Request lifecycle
++
++The host evaluator judge/run_vtrm_eval.py prepares a disposable rootfs copy, starts QEMU, creates a host/guest 9P bridge, starts llm_proxy.py, and enqueues a task. Inside the guest, agent_main_loop.sh watches the inbox and agent_runner.py processes the task. Model requests are written to the bridge; the host proxy either forwards them to a configured model endpoint, records responses, or looks them up in an exact request-ID replay cassette.
++
++The request path is:
++
++~~~text
++untrusted model text
++  -> JSON extraction and schema validation
++  -> trusted runtime metadata injection
++  -> NormalizedRequest
++  -> object/sink classification
++  -> capability and confidentiality-label derivation
++  -> VTRM decision and audit event
++  -> approved typed effect adapter
++  -> host-observed world-effect evaluation
++~~~
++
++The runtime metadata fields task_id, request_id, and subject are injected by the runtime. required_capability and inferred confidentiality labels are derived by system components; the model-provided values are suggestions, not authoritative policy.
++
++## Typed effects and object model
++
++The first verified-core interfaces described by the design are fs.read, fs.write, network.send, db.read, db.insert, and db.update. The design rejects arbitrary SQL as a policy interface. Database operations are typed by table, key, and structured row/patch arguments.
++
++Filesystem classes include protected, workspace_writable, readonly, secret_source, audit_log, db_file, and unknown. Unknown objects fail closed. Path classification is preceded by canonicalization to reduce path-traversal ambiguity.
++
++The minimal confidentiality labels are public and secret/high. Reads from secret_source objects or secret_table database objects produce secret/high; label joins are conservative. External untrusted network sinks do not receive secret/high data.
++
++## Host-side evaluation
++
++WEJ runs outside the guest. Its documented collectors include filesystem snapshots, SQLite state, and a host-controlled HTTP sink. It classifies observed changes such as NoEffect, MutateFS, MutateDB, and SendNetwork, and evaluates them against task-specific expectations.
++
++The current evaluator does not introspect every possible effect in the active VM. It observes configured surfaces and host-visible artifacts. The guest/host bridge and the VM/hypervisor are assumptions, not part of the abstract monitor proof.
++
++## Eval image workspace permissions
++
++The reproducible Eval image builder injects the guest startup scripts into a copy of the clean rootfs. At boot, the startup script makes /workspace root-owned and creates two agent-writable fixture roots: /workspace/passcases and /workspace/passcases_hard. These are recursively assigned to UID/GID 1000. The preloaded /workspace/failcases tree and other preloaded workspace files remain root-owned. The workspace parent is not agent-writable, so the agent cannot create, rename, or remove top-level fixture directories through ordinary filesystem permissions.
++
++This is an Eval-image OS guardrail that aligns with the task corpus: benign task fixtures use passcases/passcases_hard, and adversarial task fixtures target failcases. It is separate from the VTRM object classifier, which currently classifies the broader /workspace namespace as workspace_writable. The OS permission layer is defense in depth; VTRM still has to mediate typed requests.
++
++## Core invariants
++
++The design documents these intended properties:
++
++- **Fail-Closed:** a request not authorized by VTRM does not produce a real effect.
++- **Capability Monotonicity:** tool output does not grow the agent's capabilities without trusted delegation.
++- **Audit Completeness:** allow and deny decisions have corresponding audit events.
++- **Protected-Path Integrity:** an agent without the relevant capability cannot modify protected objects.
++- **Deny = No Effect:** a denied request does not change the modeled world state.
++- **Secret Non-Exfiltration:** secret-labeled data is not sent to an unauthorized external sink.
++
++These are design invariants and engineering targets; the tests and host judge provide evidence for selected cases, not a proof over every runtime path.
++
++## Formal model boundary
++
++formal/vtrm_core.tla is a small abstract transition-system model of typed requests, object classes, confidentiality labels, sink classes, and monitor decisions. The bundled TLC configuration checks selected invariants/properties over a finite instance. It does not model the full Buildroot OS, QEMU, host/guest bridge, LLM, WEJ, concrete file contents, full database semantics, approval-store semantics, or refinement from the model to Python code. The appropriate claim is a mechanically checked abstract monitor model, not a formally verified end-to-end AgentOS implementation.
+diff --git a/docs/THREAT_MODEL.md b/docs/THREAT_MODEL.md
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..bd954a9cbcf2a7da1454b1c3c151d8bcf0a636e8 100644
+--- a/docs/THREAT_MODEL.md
++++ b/docs/THREAT_MODEL.md
+@@ -0,0 +1,82 @@
++# AgentOS threat model and security scope
++
++## Protected assets
++
++The system is designed to protect:
++
++- Files under protected paths and other read-only system objects.
++- Secret-source files and secret database records.
++- Integrity of workspace, SQLite tables, and audit records.
++- Confidentiality labels as data moves from sources to sinks.
++- The host-side evaluation evidence used to judge task outcomes.
++
++The World Effect Judge (WEJ) is run on the host rather than inside the guest so that the agent cannot directly alter the judge process. Its conclusions are limited to the configured collectors and host-visible evidence.
++
++## Adversary and untrusted inputs
++
++The design treats the following as untrusted:
++
++- LLM-generated text and candidate tool requests.
++- User task descriptions and prompts.
++- External website/API content.
++- Request metadata not injected or validated by the runtime.
++
++The adversary may cause the agent to request malformed, unauthorized, or harmful typed operations, including protected-path writes, unauthorized database mutations, or sending secret-labeled data to an external sink. The reference monitor is intended to enforce effect authorization even when the model proposes an unsafe action.
++
++## Trust boundaries and trusted computing base
++
++The design identifies these components as part of the VTRM trusted computing base (TCB):
++
++- Request normalizer.
++- Object classifier.
++- Capability deriver.
++- Confidentiality-label engine.
++- VTRM core.
++- Effect-adapter glue code.
++- Minimal audit persistence path.
++
++The following are environmental assumptions or dependencies rather than properties proved by the abstract VTRM model: Linux kernel, filesystem implementation, Python runtime, SQLite engine, network stack, VM/hypervisor, and host/guest bridge. The bridge must preserve the intended request/response protocol and access boundaries.
++
++The LLM output, task prompt, external website content, and unnormalized metadata are explicitly not trusted.
++
++## Security policy and intended properties
++
++1. **Fail-closed authorization.** Unknown or invalid requests should be denied rather than executed.
++2. **Capability enforcement.** The required capability is derived from the typed request and classified target; the model cannot grant itself capabilities.
++3. **Object classification.** Protected paths, workspace-writable paths, secret sources, audit paths, database files, and unknown paths have distinct policy treatment.
++4. **Confidentiality-label propagation.** Data read from secret sources or secret tables is labeled secret/high; labels are joined conservatively.
++5. **Typed database access.** The intended interface is typed read/insert/update operations, not arbitrary SQL strings.
++6. **Auditability.** Allow and deny decisions should produce structured audit events with request and task identifiers.
++7. **No effect on denial.** A denied request should not change the modeled world state.
++
++## In-scope enforcement surface
++
++The design focuses on typed filesystem, SQLite, and network operations routed through VTRM and their corresponding effect adapters. The host-side WEJ checks selected resulting filesystem, database, audit, and network effects. The offline replay fixtures exercise selected benign workspace operations and selected direct database denials.
++
++The current replay evidence covers six representative tasks; it is not the full 24-benign/48-adversarial ASE evaluation. A separate two-task local-model integration smoke is also not a general security evaluation.
++
++## Eval-image OS permission boundary
++
++The tested Eval image keeps /workspace root-owned and mode 0755. It makes only /workspace/passcases and /workspace/passcases_hard agent-owned (UID/GID 1000), while /workspace/failcases and other preloaded workspace files remain root-owned. The parent directory is not agent-writable, preventing ordinary unprivileged creation, rename, or removal of top-level fixture directories. The 24 benign task definitions target the two writable fixture trees; the 48 adversarial task definitions target failcases.
++
++This is a defense-in-depth property of the generated Eval image, not a finer-grained VTRM classification rule. The VTRM object model currently classifies the broader /workspace namespace as workspace_writable. The OS permission boundary therefore does not replace correct VTRM decisions or host-side world-effect validation.
++
++## Explicit exclusions and non-claims
++
++The following are outside the first-stage verified core or are explicit assumptions:
++
++- Correctness of LLM reasoning or model-generated task plans.
++- Prompt-injection detection and semantic trustworthiness of external content.
++- Arbitrary shell execution and arbitrary SQL.
++- Any wrapper or adapter path that bypasses VTRM (the design assumes high-risk effects are mediated).
++- Correctness of the Linux kernel, filesystem, SQLite engine, network stack, QEMU, hypervisor, or host/guest bridge.
++- VM escape resistance and host compromise.
++- Side channels and unmodeled operating-system effect channels.
++- Complete observation of every possible world effect by WEJ.
++- Refinement or equivalence between the TLA+ model and the Python implementation.
++
++The design documents explicitly state that shell, SQL, and other unmodeled channels must not be treated as part of the verified core. If an agent can bypass the typed frontend or call an adapter directly, the reference-monitor security argument no longer applies to that path.
++
++## Evidence and limitations
++
++The bundled TLA+ model checks a small abstract monitor transition system. It does not prove the complete AgentOS implementation. Unit tests, QEMU replay runs, VTRM audit logs, and WEJ observations support selected implementation paths only. A clean, tagged software release and a broader independent regression are still required before making generalized claims about the software artifact.
+diff --git a/manifests/manifest.lock b/manifests/manifest.lock
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..cb580f7196bc217452cbf861a37544ddd2bef8d2 100644
+--- a/manifests/manifest.lock
++++ b/manifests/manifest.lock
+@@ -0,0 +1,77 @@
++{
++  "schema_version": 1,
++  "manifest_type": "observed-environment-and-reproducibility-lock",
++  "lock_completeness": "partial",
++  "status_note": "This records a tested environment and explicit unresolved dependencies; it is not a complete dependency lock or a guarantee of bit-for-bit rebuilds.",
++  "source": {
++    "repository": "https://github.com/zhoujune/AgentOS",
++    "commit": "4147c7f780ccb59b83f3dba8da5f19e73a1d1a8c",
++    "tree_sha": "a19299570fa796795c8e0cf787f29c41718ae960",
++    "overlay_patch": "AgentOS-Software-Impacts/patches/0001-agentos-offline-replay-overlay.patch"
++  },
++  "tested_host": {
++    "os": "Ubuntu 24.04.2 LTS",
++    "host_kernel": "5.10.134-17.2.al8.x86_64",
++    "architecture": "x86_64",
++    "python": "3.12.3",
++    "qemu_system_x86_64": "8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.18)",
++    "e2fsprogs": "1.47.0",
++    "openjdk": "21.0.12.1",
++    "tlc": "2.19 (08 August 2024)",
++    "tlc_jar_sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88",
++    "optional_streamlit": "not installed on tested host"
++  },
++  "declared_optional_dependencies": {
++    "streamlit": "streamlit>=1.44,<2"
++  },
++  "guest": {
++    "architecture": "x86_64",
++    "kernel_version": "6.12.47",
++    "kernel_image_sha256": "2e7101b6ce88b5b7c27b8bc3ecee0d48c2db97992900539d75784397ca11436d",
++    "clean_eval_rootfs_sha256": "d61a40dc7f2090b19505886020593674cdf2b5dd2f85fbcb9c02c523745a5f61",
++    "offline_eval_rootfs_sha256": "ac1718c0dd3e4ddfc954baedfa8f325294393810565ba6732be289dd441be8e7",
++    "offline_eval_rootfs_path": "runtime/offline-eval/rootfs.eval.offline.ext2",
++    "image_builder": "scripts/build/make_offline_eval_image.py",
++    "workspace_permissions": {
++      "/workspace": "root:root 0755",
++      "/workspace/passcases": "1000:1000 0755 recursively",
++      "/workspace/passcases_hard": "1000:1000 0755 recursively",
++      "/workspace/failcases": "root:root 0755 recursively",
++      "/workspace/todo.txt": "root:root 0644"
++    }
++  },
++  "buildroot": {
++    "version_named_in_readme": "2026.02",
++    "source_vendored": false,
++    "expected_sibling_directory": "../buildroot-2026.02",
++    "exact_commit": null,
++    "package_revision_lock": null
++  },
++  "validation": {
++    "python_unittest_discovery": "17 passed (11 existing evaluator/replay tests plus 6 least-privilege image-policy tests)",
++    "offline_qemu_smoke": "1 case passed unprivileged; task_completion_ok=true; safety_ok=true; replay_ok=true",
++    "canonical_rootfs_e2fsck": "passed read-only e2fsck -fn",
++    "tlc": "5,563 states generated; 103 distinct states; no model-checking error",
++    "controlled_six_task_ab": "3 repetitions/profile; 36/36 cases passed; descriptive sequential A-then-B study",
++    "representative_six_task_suite": "6/6 cases passed unprivileged; 3 benign completion checks and 3 denial safety checks passed; replay and world-integrity checks passed",
++    "workspace_inode_probe": "passed: /workspace root-owned; passcases/passcases_hard UID/GID 1000; failcases/todo root-owned"
++  },
++  "unresolved": [
++    "Buildroot exact source commit and package revisions",
++    "Full transitive lock for optional Streamlit UI",
++    "Pinned Python package/dependency metadata for every optional workflow",
++    "Permanent tagged release and reproducibility capsule",
++    "Explicit LICENSE file with verified copyright notice",
++    "Independent clean-host reconstruction and rebuild",
++    "Full 24-benign/48-adversarial execution remains to be reproduced with the local model or suitable reviewed cassettes"
++  ],
++  "task_inventory": {
++    "benign_tasks": 24,
++    "adversarial_tasks": 48,
++    "benign_workspace_roots": [
++      "/workspace/passcases",
++      "/workspace/passcases_hard"
++    ],
++    "adversarial_workspace_root": "/workspace/failcases"
++  }
++}

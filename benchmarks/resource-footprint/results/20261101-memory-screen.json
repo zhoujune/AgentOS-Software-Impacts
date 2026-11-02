@@ -1,0 +1,182 @@
+{
+  "format": "0.1",
+  "study": "AgentOS CPU-only configured-guest-RAM screening",
+  "completed_at_utc": "2026-11-01T12:07:06.227189+00:00",
+  "environment": {
+    "architecture": "x86_64",
+    "platform": "Linux",
+    "qemu_version": "QEMU emulator version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.18)"
+  },
+  "inputs": {
+    "canonical_unmodified_image": {
+      "sha256": "d61a40dc7f2090b19505886020593674cdf2b5dd2f85fbcb9c02c523745a5f61",
+      "size_bytes": 62914560
+    },
+    "clean_candidate_image": {
+      "sha256": "ac1718c0dd3e4ddfc954baedfa8f325294393810565ba6732be289dd441be8e7",
+      "size_bytes": 62914560
+    },
+    "kernel": {
+      "sha256": "2e7101b6ce88b5b7c27b8bc3ecee0d48c2db97992900539d75784397ca11436d",
+      "size_bytes": 6276096,
+      "type": "bzImage"
+    },
+    "replay_cassette": {
+      "sha256": "ca11bf6e0ce71ab28e55803a47dec7b0d48ea8cf015134517f6c489e9d033ede",
+      "size_bytes": 4599
+    }
+  },
+  "cases": [
+    {
+      "memory_mib": 512,
+      "case_kind": "benign",
+      "status": "PASS",
+      "boot_seconds": 10.005236,
+      "case_runtime_seconds": 26.306465,
+      "elapsed_seconds": 27.155,
+      "peak_sampled_process_tree_pss_mib": 402.05,
+      "peak_sampled_qemu_rss_mib": 382.71,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": true
+    },
+    {
+      "memory_mib": 512,
+      "case_kind": "denial",
+      "status": "PASS",
+      "boot_seconds": 10.003382,
+      "case_runtime_seconds": 25.22238,
+      "elapsed_seconds": 26.152,
+      "peak_sampled_process_tree_pss_mib": 404.02,
+      "peak_sampled_qemu_rss_mib": 384.77,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": null
+    },
+    {
+      "memory_mib": 384,
+      "case_kind": "benign",
+      "status": "PASS",
+      "boot_seconds": 10.003718,
+      "case_runtime_seconds": 25.243115,
+      "elapsed_seconds": 26.12,
+      "peak_sampled_process_tree_pss_mib": 404.08,
+      "peak_sampled_qemu_rss_mib": 384.81,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": true
+    },
+    {
+      "memory_mib": 384,
+      "case_kind": "denial",
+      "status": "PASS",
+      "boot_seconds": 10.00337,
+      "case_runtime_seconds": 26.345798,
+      "elapsed_seconds": 27.491,
+      "peak_sampled_process_tree_pss_mib": 404.11,
+      "peak_sampled_qemu_rss_mib": 384.89,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": null
+    },
+    {
+      "memory_mib": 256,
+      "case_kind": "benign",
+      "status": "PASS",
+      "boot_seconds": 10.005008,
+      "case_runtime_seconds": 25.326911,
+      "elapsed_seconds": 26.424,
+      "peak_sampled_process_tree_pss_mib": 398.13,
+      "peak_sampled_qemu_rss_mib": 378.81,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": true
+    },
+    {
+      "memory_mib": 256,
+      "case_kind": "denial",
+      "status": "PASS",
+      "boot_seconds": 10.004053,
+      "case_runtime_seconds": 25.378408,
+      "elapsed_seconds": 26.323,
+      "peak_sampled_process_tree_pss_mib": 400.15,
+      "peak_sampled_qemu_rss_mib": 380.76,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": null
+    },
+    {
+      "memory_mib": 192,
+      "case_kind": "benign",
+      "status": "PASS",
+      "boot_seconds": 10.004255,
+      "case_runtime_seconds": 26.283043,
+      "elapsed_seconds": 27.477,
+      "peak_sampled_process_tree_pss_mib": 395.97,
+      "peak_sampled_qemu_rss_mib": 376.65,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": true
+    },
+    {
+      "memory_mib": 192,
+      "case_kind": "denial",
+      "status": "PASS",
+      "boot_seconds": 10.005432,
+      "case_runtime_seconds": 25.216117,
+      "elapsed_seconds": 26.162,
+      "peak_sampled_process_tree_pss_mib": 398.78,
+      "peak_sampled_qemu_rss_mib": 379.5,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": null
+    },
+    {
+      "memory_mib": 128,
+      "case_kind": "benign",
+      "status": "PASS",
+      "boot_seconds": 10.004743,
+      "case_runtime_seconds": 25.366623,
+      "elapsed_seconds": 26.519,
+      "peak_sampled_process_tree_pss_mib": 394.11,
+      "peak_sampled_qemu_rss_mib": 374.82,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": true
+    },
+    {
+      "memory_mib": 128,
+      "case_kind": "denial",
+      "status": "PASS",
+      "boot_seconds": 10.004919,
+      "case_runtime_seconds": 26.247554,
+      "elapsed_seconds": 27.577,
+      "peak_sampled_process_tree_pss_mib": 394.14,
+      "peak_sampled_qemu_rss_mib": 374.92,
+      "world_integrity_ok": true,
+      "replay_ok": true,
+      "task_completion_ok": null
+    }
+  ],
+  "protocol": {
+    "expected_cases": 10,
+    "actual_cases": 10,
+    "screens_per_memory": 2,
+    "memory_levels_mib": [
+      512,
+      384,
+      256,
+      192,
+      128
+    ],
+    "guest_network_disabled": true,
+    "llm_mode": "exact_replay",
+    "reset_between_cases": "copy_image"
+  },
+  "interpretation": [
+    "Each configuration passed one legitimate effect and one strict DB denial; this is a feasibility screen, not the complete repeated six-task study.",
+    "128 MiB refers to allocated QEMU guest RAM and is NOT measured total host memory or guest working-set peak.",
+    "Peak host process-tree PSS samples are not total-system or physical-device memory; the host runs other unrelated processes.",
+    "These x86_64/QEMU CPU-only measurements are not ARM64/edge-device, power or local-LLM-inference results."
+  ]
+}

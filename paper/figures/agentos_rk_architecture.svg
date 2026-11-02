@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="460" viewBox="0 0 1200 460" role="img" aria-label="AgentOS-RK architecture schematic">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#2d5375"/></marker></defs>
+<rect width="1200" height="460" fill="white"/>
+<g font-family="Arial,sans-serif" stroke-width="2">
+<rect x="30" y="50" width="238" height="316" rx="10" fill="#f5f8fa" stroke="#a2b3c1"/>
+<text x="149" y="82" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="20">HOST CONTROL</text>
+<rect x="60" y="113" width="178" height="78" rx="8" fill="#fff" stroke="#a2b3c1"/>
+<text x="149" y="145" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="18">Model service</text>
+<text x="149" y="174" text-anchor="middle" fill="#2d5375" font-size="16">or exact replay</text>
+<rect x="60" y="225" width="178" height="80" rx="8" fill="#fff" stroke="#a2b3c1"/>
+<text x="149" y="257" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="18">Task / reset</text>
+<text x="149" y="287" text-anchor="middle" fill="#2d5375" font-size="16">and bridge</text>
+<rect x="304" y="50" width="538" height="316" rx="10" fill="#f2f7fa" stroke="#2d5375" stroke-width="3"/>
+<text x="573" y="82" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="20">COMPACT AGENTOS GUEST (Buildroot / Linux)</text>
+<rect x="328" y="142" width="132" height="83" rx="8" fill="white" stroke="#a2b3c1"/>
+<text x="394" y="175" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="18">Agent loop</text>
+<text x="394" y="202" text-anchor="middle" fill="#2d5375" font-size="15">typed actions</text>
+<rect x="494" y="142" width="144" height="83" rx="8" fill="white" stroke="#a2b3c1"/>
+<text x="566" y="175" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="18">VTRM</text>
+<text x="566" y="202" text-anchor="middle" fill="#2d5375" font-size="15">policy decision</text>
+<rect x="671" y="142" width="146" height="83" rx="8" fill="white" stroke="#a2b3c1"/>
+<text x="744" y="175" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="18">Adapters</text>
+<text x="744" y="202" text-anchor="middle" fill="#2d5375" font-size="15">effect API</text>
+<rect x="469" y="283" width="222" height="53" rx="7" fill="#fff9ed" stroke="#d4b77a"/>
+<text x="580" y="305" text-anchor="middle" fill="#80602f" font-weight="bold" font-size="16">TLA+ abstract model</text>
+<text x="580" y="326" text-anchor="middle" fill="#80602f" font-size="14">selected policy properties</text>
+<rect x="886" y="134" width="280" height="95" rx="8" fill="#f4f8f4" stroke="#a5c5b4"/>
+<text x="1026" y="173" text-anchor="middle" fill="#2d6457" font-weight="bold" font-size="19">Observable effects</text>
+<text x="1026" y="201" text-anchor="middle" fill="#2d6457" font-size="16">files · SQLite · audit</text>
+<rect x="885" y="288" width="282" height="79" rx="8" fill="white" stroke="#2d5375"/>
+<text x="1026" y="321" text-anchor="middle" fill="#1d2b3a" font-weight="bold" font-size="19">World Effect Judge</text>
+<text x="1026" y="348" text-anchor="middle" fill="#2d5375" font-size="15">host-side task oracles</text>
+<path d="M268 183 H324 M460 184 H490 M638 184 H668 M817 184 H882 M1026 231 V282" fill="none" stroke="#2d5375" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M580 282 V229" stroke="#9e7a3b" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="600" y="424" text-anchor="middle" fill="#1d2b3a" font-size="16">Evaluation: task completion  |  policy denial  |  replay integrity  |  world integrity</text>
+</g></svg>

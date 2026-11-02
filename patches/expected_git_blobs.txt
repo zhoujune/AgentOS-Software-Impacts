@@ -1,0 +1,7 @@
+6534ddad6f8a29eb8c53721cd8e83268fb0d5384  patches/0001-agentos-offline-replay-overlay.patch
+38cf209e85209aef9aa48f251b938141042babd3  patches/0002-offline-aggregation-and-fixtures.patch
+92812cd63a212e1e2f12dbdb64d9aef599c33e71  patches/0003-offline-tests-and-validation.patch
+e3f50a8f3dfa3e4d73ac0cc8caee502c87784d48  overlay-files/scripts/build/make_offline_eval_image.py
+8dd31f00c8b52e0261f6b421e598980728da8055  overlay-files/scripts/test/run_offline_smoke.sh
+f79e0099e4f7e9ebd9126f5b136c5de383ef5932  overlay-files/scripts/test/run_offline_representative_suite.sh
+3a0cf2d8264835677b7b94b787d0d1898ae149a0  overlay-files/scripts/test/run_offline_repeated_benchmark.sh

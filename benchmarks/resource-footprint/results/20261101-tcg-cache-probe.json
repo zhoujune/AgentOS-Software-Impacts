@@ -1,0 +1,59 @@
+{
+  "study": "TCG cache allocation diagnosis",
+  "purpose": "Separate exploratory same-guest one-task A/B, not part of the 90-task matrix",
+  "cache_condition": {
+    "default": "QEMU 8.2.2 unconfigured TCG cache",
+    "tuned": "QEMU -accel tcg,tb-size=32"
+  },
+  "cases": [
+    {
+      "variant": "default",
+      "configured_guest_memory_mib": 128,
+      "one_task_passed": true,
+      "sampled_peak_qemu_pss_mib": 367.146,
+      "sampled_peak_qemu_rss_mib": 370.988,
+      "largest_rwxp_mapping_virtual_mib": 1023.996,
+      "largest_rwxp_mapping_resident_pss_mib": 226.0,
+      "guest_ram_mapping_virtual_mib": 128.0,
+      "guest_ram_mapping_resident_pss_mib": 62.0
+    },
+    {
+      "variant": "default",
+      "configured_guest_memory_mib": 512,
+      "one_task_passed": true,
+      "sampled_peak_qemu_pss_mib": 381.094,
+      "sampled_peak_qemu_rss_mib": 384.977,
+      "largest_rwxp_mapping_virtual_mib": 1023.996,
+      "largest_rwxp_mapping_resident_pss_mib": 226.0,
+      "guest_ram_mapping_virtual_mib": 512.0,
+      "guest_ram_mapping_resident_pss_mib": 74.0
+    },
+    {
+      "variant": "tcg32",
+      "configured_guest_memory_mib": 128,
+      "one_task_passed": true,
+      "sampled_peak_qemu_pss_mib": 144.456,
+      "sampled_peak_qemu_rss_mib": 148.305,
+      "largest_rwxp_mapping_virtual_mib": 31.996,
+      "largest_rwxp_mapping_resident_pss_mib": 31.996,
+      "guest_ram_mapping_virtual_mib": 128.0,
+      "guest_ram_mapping_resident_pss_mib": 62.0
+    },
+    {
+      "variant": "tcg32",
+      "configured_guest_memory_mib": 512,
+      "one_task_passed": true,
+      "sampled_peak_qemu_pss_mib": 154.568,
+      "sampled_peak_qemu_rss_mib": 158.426,
+      "largest_rwxp_mapping_virtual_mib": 31.996,
+      "largest_rwxp_mapping_resident_pss_mib": 31.996,
+      "guest_ram_mapping_virtual_mib": 512.0,
+      "guest_ram_mapping_resident_pss_mib": 76.0
+    }
+  ],
+  "notes": [
+    "Each result is one benign replay task at a configured 128 or 512 MiB guest cap; the original 90-task matrix was not rerun under the tuned cache.",
+    "The largest rwxp anonymous mapping is consistent with TCG translation code cache; use QEMU documented tb-size behavior to interpret, not as a guest working-set metric.",
+    "Host QEMU PSS was sampled at 1 Hz from /proc/smaps; it is not total host memory, physical edge hardware, or a capacity claim."
+  ]
+}
