@@ -2,11 +2,11 @@
 
 **Article type:** *Software Impacts*, Original Software Publication (expanded author-review draft; **not yet submission-ready**).
 
-**Authors:** Jun Zhou¹; Li Yuan¹,*
+**Authors:** Jun Zhou¹,*; Li Yuan¹,*
 
 ¹ Chongqing Electric Power College, Chongqing, Chongqing, China.
 
-*Corresponding author:* Li Yuan (yuanli@cqepc.edu.cn). First author: Jun Zhou (zhoujun@cqepc.edu.cn).
+*Co-corresponding authors:* Li Yuan (yuanli@cqepc.edu.cn) and Jun Zhou (zhoujun@cqepc.edu.cn). Jun Zhou is the first author. For the submission system, designate Li Yuan as the primary administrative corresponding author if only one contact is supported; indicate both co-corresponding authors on the manuscript subject to journal policy.
 
 ## Abstract
 
@@ -26,7 +26,7 @@ AgentOS-RK is a reproducible research kit for studying tool-using large language
 | C6 | Software languages, tools and services | Python 3, Bash, Buildroot/Linux, QEMU x86-64, SQLite, TLA+ (abstract model); optional local LLM service. |
 | C7 | Compilation requirements, operating environment and dependencies | Linux x86-64, Git, Python 3, QEMU x86-64, e2fsprogs (debugfs/e2fsck); reconstruction fetches pinned AgentOS source. A full guest rebuild requires a compatible Buildroot source tree; complete package lock is pending. |
 | C8 | Developer documentation | [Release-candidate README and reproduction instructions](../README.md); **replace with immutable release link**. |
-| C9 | Support email | yuanli@cqepc.edu.cn (corresponding author: Li Yuan). |
+| C9 | Support email | zhoujun@cqepc.edu.cn (Jun Zhou; co-corresponding author). |
 
 ## 1. Introduction and motivation
 
