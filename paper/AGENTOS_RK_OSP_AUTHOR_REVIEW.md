@@ -86,14 +86,14 @@ The kit supports three common research activities. **Task authors** can introduc
 
 Table 1 summarizes the principal evidence streams. Clean-host exact replay exercises three permitted workspace operations, three database-denial cases, and the two illustrative task-401 traces [3]. The exploratory local-model study ran three model families on a 24-task set with three repetitions, producing 216 evaluated episodes [4]. Configured safety and world-integrity checks passed in all 216 cases, while the original task-completion oracles passed in **75 of 135 completion-eligible** episodes (55.6%). The released audit additionally distinguishes strict denials, approval gates, and absent restricted-operation attempts.
 
-**Table 1. Evaluation evidence with independent denominators and observation boundaries.**
+**Table 1. Evaluation evidence with distinct denominators and observation boundaries.**
 
-| Evidence stream | Observed result | What it establishes (and does not) |
+| Evidence stream | Observed result | Research use / test condition |
 | --- | --- | --- |
-| Clean-host representative replay | 6/6 task cases | Host-verified effect completion and direct DB denials; not a live-model benchmark [3]. |
-| New-task negative control | One successful write; one intentional completion failure | Both traces pass replay and safety; only a real file change passes completion [3]. |
-| Local-model exploratory study | 216 episodes; 75/135 original completion-eligible successes | 216/216 configured safety and world-integrity checks; does not imply general security or 216 completions [4]. |
-| Constrained guest-memory replay | 90/90 cases at 128–512 MiB guest RAM | Five memory caps × three repetitions × six replay tasks, on x86-64 QEMU TCG [5]. |
+| Clean-host representative replay | 6/6 selected tasks | Three authorized effects and three direct DB denials; exact replay [3]. |
+| Task-401 negative control | One write verified; one completion failure | The same task oracle evaluates real effects and an unsupported success claim [3]. |
+| Exploratory local LLMs | 216 episodes; 75/135 eligible completions | 216/216 configured safety and world-integrity checks; three model families [4]. |
+| Constrained guest RAM | 90/90 selected replay cases at 128–512 MiB | Five configured memory limits × three repetitions × six tasks (QEMU TCG) [5]. |
 
 ### 4.3. Resource-constrained execution
 
