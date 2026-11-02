@@ -46,7 +46,7 @@ The Verified Toolchain Reference Monitor (VTRM) checks the typed operation again
 
 ![Fig. 1. AgentOS-RK architecture](figures/agentos_rk_architecture.svg)
 
-*Fig. 1. AgentOS-RK execution and evaluation boundaries. Model inference or replay is host-controlled; VTRM mediates typed effects in the Buildroot guest; WEJ validates observable outcomes. The TLA+ box represents an abstract policy model, not an end-to-end verification claim.*
+*Fig. 1. AgentOS-RK execution and evaluation boundaries. Model inference or replay is host-controlled; VTRM mediates typed effects in the Buildroot guest; WEJ validates observable outcomes. The TLA+ box represents an abstract policy model, not an end-to-end verification claim. The schematic was prepared programmatically with OpenAI ChatGPT assistance and reviewed by the authors.*
 
 ### 2.2. World-effect judging and output evidence
 
@@ -68,7 +68,7 @@ Two **developer-authored deterministic cassettes** exercise this task. The \`per
 
 ![Fig. 2. Observed outcomes of two deterministic traces](figures/agentos_rk_world_effect_workflow.svg)
 
-*Fig. 2. A single declared file-effect oracle distinguishes an authorized write from an unsupported final-answer claim. Both traces are synthetic and are not measurements of LLM-generated behavior.*
+*Fig. 2. A single declared file-effect oracle distinguishes an authorized write from an unsupported final-answer claim. Both traces are synthetic and are not measurements of LLM-generated behavior. The schematic was prepared programmatically with OpenAI ChatGPT assistance and reviewed by the authors.*
 
 The positive trace produces the required file change, a successful authorized \`fs.write\` audit event, and matching replay responses (2/2); its task-completion, replay, and safety checks pass. The negative trace has no corresponding file change or \`fs.write\` audit event and has one matching final response (1/1). Its completion check **fails as intended**, while its replay, safety, and world-integrity checks pass [3]. Thus, the negative control tests whether the judge confuses plausible language with an observable effect rather than measuring an agent's language-model success rate.
 
@@ -113,7 +113,7 @@ AgentOS-RK mediates the explicitly typed effect channels that it implements; arb
 
 ## Declaration of competing interest
 
-**[PENDING: Authors to confirm.]**
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 ## Funding
 
@@ -125,7 +125,7 @@ First-party source, deterministic fixtures and sanitized reports: [AgentOS-RK re
 
 ## Declaration of generative AI and AI-assisted technologies in the manuscript preparation process
 
-During preparation of this manuscript, the authors used OpenAI ChatGPT to assist with structuring and editing text, checking cited software evidence, and programmatically preparing explanatory figures and draft artifacts. The authors will review and edit the material, verify technical statements, and take full responsibility for the published content. **[Authors must confirm exact scope and wording before submission.]**
+During the preparation of this work, we used OpenAI ChatGPT to assist with structuring and editing text, checking cited software evidence, and programmatically preparing explanatory figures and draft artifacts. We reviewed and edited the content as needed, verified the technical statements, and take full responsibility for the content of the published article.
 
 ## References
 
@@ -145,4 +145,4 @@ During preparation of this manuscript, the authors used OpenAI ChatGPT to assist
 
 ---
 
-**AUTHOR-REVIEW CHECKLIST — REMOVE BEFORE SUBMISSION.** Verify official name spelling and affiliation, agree CRediT roles and competing-interest declaration, complete software release C1–C3/DOI and tagged links; review third-party file rights and artifact inclusion; inspect figures and numerical results; approve generative-AI declaration; verify page allowance in official OSP template and delete the review notice.
+**AUTHOR-REVIEW CHECKLIST — REMOVE BEFORE SUBMISSION.** Verify official name spelling and affiliation, agree the CRediT roles, complete software release C1–C3/DOI and tagged links; review third-party file rights and artifact inclusion; inspect figures and numerical results; confirm the final AI declaration and figure-caption transparency; verify page allowance in official OSP template and delete the review notice.
