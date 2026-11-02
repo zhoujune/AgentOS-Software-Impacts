@@ -18,7 +18,7 @@ Status date: November 1, 2026. Intended article: **Original Software Publication
 | Third-party compliance and distribution scope | **OPEN** | Decide exactly which files will be distributed: preferably source and metadata only. Review any vendored JAR, original software patches, and dataset rights; exclude noncleared guest images/weights. If shipping Buildroot-derived images, complete per-package licenses, notices and source-availability requirements first. |
 | Reproduction verified at final version | **PASS AT PRIOR TECHNICAL COMMITS; FINAL TAG NOT YET CHECKED** | Re-run clean Ubuntu reconstruction, six replay tasks and world-effect positive/negative controls at the intended release commit; ensure `LICENSE` copy and source-hash checks work. Five CI workflows passed on the prior integrated head. |
 | Authors, affiliations and support (C9) | **SUPPLIED BY AUTHOR; JOURNAL CO-CORRESPONDING DISPLAY TO CONFIRM** | First author **Jun Zhou** (zhoujun@cqepc.edu.cn), now additionally designated co-corresponding; **Li Yuan** (yuanli@cqepc.edu.cn), also co-corresponding. Both at Chongqing Electric Power College, Chongqing, China. C9 software-support contact: **zhoujun@cqepc.edu.cn**. If Editorial Manager permits only one administrative corresponding author, select Li Yuan and keep both manuscript contact footnotes subject to journal acceptance. |
-| Submission declarations and editorial checks | **PARTIAL** | Funding: **no specific grant**, per author confirmation; no-grant statement added. Competing-interest declaration and CRediT contributions still need author agreement; confirm AI-assistance disclosure and any submission metadata. |
+| Submission declarations and editorial checks | **PARTIAL — TWO STATEMENTS APPROVED** | **No specific funding, no competing interests, and reviewed-and-edited ChatGPT declaration** now appear in the manuscript, including AI-assisted figure captions. [CRediT roles](../paper/CRediT_AUTHOR_CONFIRMATION.md) still require substantive contribution selections approved by both authors. |
 
 ## B. Highest-value polish (worth doing, but not new research)
 
@@ -51,3 +51,20 @@ Status date: November 1, 2026. Intended article: **Original Software Publication
 - [Software Impacts OSP template (version 2)](https://legacyfileshare.elsevier.com/promis_misc/SIMPAC_Article_Template.pdf)
 - [Elsevier generative-AI declaration policy](https://www.elsevier.com/about/policies-and-standards/generative-ai-policies-for-journals)
 - [Existing AgentOS-RK RC PR #12](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/12)
+
+
+## Final submission stop/go summary (2026-11-02)
+
+**Already settled by authors:** Jun Zhou and Li Yuan (both co-corresponding), first-author order, school affiliation, C9 support email `zhoujun@cqepc.edu.cn`, no-specific-grant funding, no competing interests, and reviewed-and-edited AI assistance disclosure.
+
+**Must complete before actual submission:**
+
+1. [ ] Both authors approve the substantive and accurate [CRediT role assignments](../paper/CRediT_AUTHOR_CONFIRMATION.md) and final manuscript.
+2. [ ] Select a reviewed, immutable first-party source release commit and publish version `v0.1.0` (update C1/C2 and all mutable links); verify clean CI at the exact intended version. Avoid claiming binary image redistribution is cleared.
+3. [ ] Check licensing/provenance of any bundled or downloaded third-party files in the source-only release; explicitly separate kernel/Buildroot images and local model weights.
+4. [ ] Decide what to put in C3: an accessible, versioned reproducibility capsule if available; the published GoBugMiner OSP leaves C3 blank, while the official template presents the field without sample content. An invented DOI or private capsule link is not acceptable.
+5. [ ] Check the final OSP template layout, figure labels, tables, six keywords, citation links, code metadata C1–C9, and originality versus the ASE 2026 publication. The official OSP template allows up to three pages of **body text excluding metadata, figures, tables, references**.
+6. [ ] Enter both author records and validate co-corresponding presentation in Editorial Manager; confirm the administrative contact it permits. If the system asks for a separate declaration-of-interest DOCX, complete it as required, even though the manuscript contains the statement.
+7. [ ] Verify repository contents, source archive download, CI and 6-task/2-trace evidence one last time; submit only the final author-approved manuscript and associated files.
+
+**Not a mandatory blocker on its own:** the existing protocol for an independent external researcher's run. Such evidence improves impact, but it must not be claimed as completed unless obtained.
