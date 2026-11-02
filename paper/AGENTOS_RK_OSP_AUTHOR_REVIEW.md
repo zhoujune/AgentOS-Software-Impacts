@@ -46,7 +46,7 @@ The Verified Toolchain Reference Monitor (VTRM) checks the typed operation again
 
 ![Fig. 1. AgentOS-RK architecture](figures/agentos_rk_architecture.svg)
 
-*Fig. 1. AgentOS-RK execution and evaluation boundaries. Model inference or replay is host-controlled; VTRM mediates typed effects in the Buildroot guest; WEJ validates observable outcomes. The TLA+ box represents an abstract policy model, not an end-to-end verification claim. The schematic was prepared programmatically with OpenAI ChatGPT assistance and reviewed by the authors.*
+*Fig. 1. AgentOS-RK execution and evaluation boundaries. Model inference or replay is host-controlled; VTRM mediates typed effects in the Buildroot guest; WEJ validates observable outcomes. The TLA+ box represents an abstract policy model, not an end-to-end verification claim. The schematic was prepared programmatically with OpenAI ChatGPT assistance.*
 
 ### 2.2. World-effect judging and output evidence
 
@@ -68,7 +68,7 @@ Two **developer-authored deterministic cassettes** exercise this task. The \`per
 
 ![Fig. 2. Observed outcomes of two deterministic traces](figures/agentos_rk_world_effect_workflow.svg)
 
-*Fig. 2. A single declared file-effect oracle distinguishes an authorized write from an unsupported final-answer claim. Both traces are synthetic and are not measurements of LLM-generated behavior. The schematic was prepared programmatically with OpenAI ChatGPT assistance and reviewed by the authors.*
+*Fig. 2. A single declared file-effect oracle distinguishes an authorized write from an unsupported final-answer claim. Both traces are synthetic and are not measurements of LLM-generated behavior. The schematic was prepared programmatically with OpenAI ChatGPT assistance.*
 
 The positive trace produces the required file change, a successful authorized \`fs.write\` audit event, and matching replay responses (2/2); its task-completion, replay, and safety checks pass. The negative trace has no corresponding file change or \`fs.write\` audit event and has one matching final response (1/1). Its completion check **fails as intended**, while its replay, safety, and world-integrity checks pass [3]. Thus, the negative control tests whether the judge confuses plausible language with an observable effect rather than measuring an agent's language-model success rate.
 
@@ -109,7 +109,7 @@ AgentOS-RK mediates the explicitly typed effect channels that it implements; arb
 
 ## CRediT authorship contribution statement
 
-**[PENDING: Authors to agree and approve role assignments. No contributions or institutional affiliations inferred.]**
+Jun Zhou: **[CRediT roles to confirm jointly]**. Li Yuan: **[CRediT roles to confirm jointly]**. Select actual contributions using the [CRediT confirmation worksheet](CRediT_AUTHOR_CONFIRMATION.md); both authors must approve them before submission.
 
 ## Declaration of competing interest
 
