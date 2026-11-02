@@ -2,7 +2,9 @@
 
 **Candidate ref:** `release-candidate/agentos-v0.1.0-prelicense`.
 
-**State: MIT-LICENSED FIRST-PARTY SOURCE CANDIDATE; NO VERSIONED RELEASE.** This ref is neither a version tag nor a redistributable binary release. The [LICENSE](../LICENSE) grants MIT rights for first-party software; third-party components retain separate licenses and obligations.
+**State: MIT-LICENSED FIRST-PARTY SOURCE CANDIDATE; NO VERSIONED RELEASE.**
+
+For the verified source-only inventory, exact-revision CI checks, and outstanding gates, see [2026-11-02 release preflight](SOURCE_ONLY_RELEASE_PREFLIGHT_20261102.md). This ref is neither a version tag nor a redistributable binary release. The [LICENSE](../LICENSE) grants MIT rights for first-party software; third-party components retain separate licenses and obligations.
 
 ## What is ready
 
@@ -18,7 +20,7 @@
 | First-party MIT license | **COMPLETED IN STAGING** | Project owner confirmed MIT licensing and the copyright notice **Copyright (c) 2026 Jun Zhou**. [LICENSE](../LICENSE) is committed to the journal candidate; the corresponding [upstream original repo PR](https://github.com/zhoujune/AgentOS/pull/1) has been merged (`09326969884e35d0a3cd8633f94bb28eb90bc378`). Continue auditing any other contributor-owned files. |
 | Third-party and binary redistribution | **BLOCKED** | Review Buildroot, Linux/uClibc, QEMU, model weights, prepared images, third-party datasets, and generated binary licensing using the [inventory](LICENSE_AND_REDISTRIBUTION_REVIEW.md). Do not automatically redistribute pretrained models or built images. Respect source/notice obligations. |
 | Immutable version and archive | **BLOCKED** | After license clearance and clean CI, agree release version, create immutable annotated tag `v0.1.0`, check release commit/tree identities, archive authorized source/capsule (e.g. Zenodo version DOI), and retain SHA-256 checksums. Branch name is not a release identifier. |
-| Complete dependency provenance | **PARTIAL** | Current `manifests/manifest.lock` is explicitly partial. Record Buildroot exact source commit/package versions, dependency constraints and license notices; verify artifact rebuild procedure. |
+| Complete dependency provenance | **PARTIAL** | The journal candidate currently has **no** `manifests/manifest.lock`; the dependency/source provenance inventory remains incomplete. Record the exact Buildroot source/configuration and package versions, review licenses/notices and verify the artifact rebuild procedure. Do not fabricate unknown dependency pins. |
 | Clean-host technical CI | **PASSED AT TESTED COMMIT** | [GitHub workflow 41312785790](https://github.com/zhoujune/AgentOS-Software-Impacts/actions/runs/41312785790) reconstructed the source and passed 6/6 baseline tasks plus the 2/2 world-effect fixture outcomes at commit `c7f3d640d865594681daaa0219d92441bb32f3c6`. Final release commit must also pass. |
 | Non-maintainer independent reproduction | **NOT DONE** | Recruit a person outside the project. Provide only the one-branch public instructions. Collect first unaided attempt, environmental details, retries, setup time, completed six-task baseline, new-task positive and false-success controls and any additional participant-authored task. Retain consented, redacted artifact hashes. |
 | Manuscript and metadata | **PARTIAL** | C4 now identifies **MIT first-party code**. Complete C1–C3 (tag and capsule), C9 (approved support contact), author list/affiliations, and third-party notices; distinguish ASE results, exploratory live evaluation and the memory study. |
