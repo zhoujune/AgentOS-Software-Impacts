@@ -4,7 +4,15 @@
 
 ## Current gate
 
-At preparation time, the release candidate remains in draft [PR #12](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/12). The legal/redistribution/provenance inventory is not complete, and no GitHub release or Zenodo record has been published. See [release gates](RELEASE_CANDIDATE_GATES.md) and [source-only preflight PR #14](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/14). Keep all first-party copyright and third-party rights checks independent of the technical CI status.
+At preparation time, the release candidate remains in draft [PR #12](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/12). The legal/redistribution/provenance inventory is not complete, and no final GitHub release has been published. An initial Zenodo deposit (v1, review-branch ZIP) is documented below. See [release gates](RELEASE_CANDIDATE_GATES.md) and [source-only preflight PR #14](https://github.com/zhoujune/AgentOS-Software-Impacts/pull/14). Keep all first-party copyright and third-party rights checks independent of the technical CI status.
+
+## Update after first published Zenodo deposit (2026-11-02)
+
+The account owner has published [Zenodo record 23876102](https://zenodo.org/records/23876102), **version DOI [10.5281/zenodo.23876102](https://doi.org/10.5281/zenodo.23876102)**, all-versions DOI [10.5281/zenodo.23876101](https://doi.org/10.5281/zenodo.23876101). The record displays **v1**, names **Zhou, Jun** as creator, and provides a **259.7 KB ZIP named `AgentOS-Software-Impacts-review-zenodo-metadata-20261102.zip`**.
+
+**Do not yet cite this deposited ZIP as the final AgentOS-RK v0.1.0 software release.** The filename refers to the still-open review branch, while the intended reviewed release/tag remains unpublished. The Zenodo page displays **CC BY 4.0**, whereas the repository states **MIT for first-party source**. Inspect the ZIP's exact contents and rights first; correct the published record's editable license metadata if appropriate, without falsely applying MIT to separately licensed components.
+
+For the **final** v0.1.0 software article: complete release signoff, publish the exact reviewed code/tag, and create a **new Zenodo version** containing the finalized source. Cite **that version-specific DOI** and Git SHA in OSP C1/C2 and the software reference. Use C3 for a true computational capsule if one is provided; a Zenodo source archive alone is not necessarily a runnable capsule. Published Zenodo files cannot ordinarily be replaced in place: updating software bytes needs a new version rather than relabeling the old ZIP.
 
 ## Proposed method: Zenodo's GitHub integration
 
@@ -29,4 +37,4 @@ At preparation time, the release candidate remains in draft [PR #12](https://git
 
 The draft `CITATION.cff` intentionally has **no** `doi`, `version`, or `date-released` field: none should be asserted before publication. Adding a `.zenodo.json` file is unnecessary for basic software metadata; Zenodo currently prioritizes `.zenodo.json` over `CITATION.cff` when both exist. Maintain a single authoritative metadata source unless Zenodo-specific fields are genuinely required.
 
-**Release decision: HOLD** until source distribution/provenance review and authorized approval are complete.
+**Final v0.1.0 release decision: HOLD** until source distribution/provenance review and authorized approval are complete. The preliminary Zenodo v1 deposit already exists and must not be confused with the final release.
