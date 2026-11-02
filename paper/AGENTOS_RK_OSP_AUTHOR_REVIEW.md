@@ -60,6 +60,8 @@ AgentOS-RK offers a single-checkout workflow for reconstructing the pinned Agent
 
 Task definitions supply the instruction and explicit \`expected\` predicates; a cassette links each replay response to a task/step request identifier. The code and example inputs are available in the repository, including a source-reconstruction script, a six-case representative suite, and a fail-closed report validator [3]. The prepared evaluation artifacts include a roughly 6.0 MB kernel and a provisioned 60 MiB ext2 image; these sizes describe stored files, **not** resident memory or total deployment footprint.
 
+In preparing portions of the research-kit packaging and evaluation scripts, OpenAI ChatGPT was used for coding and testing assistance. Those scripts are accompanied by automated regression checks and source-provenance records; the authors remain responsible for reviewing their behavior and verifying the reported research results.
+
 ## 3. Illustrative use: one task, two claims of success
 
 The bundled task \`401-world-effect-reuse\` asks the agent to create \`/workspace/passcases/impact_validation.txt\` containing \`impact_verified=true\`, without changing any other file. Its JSON specification requires that the target file exist after execution and contain the specified string; it permits changes under \`/workspace\` and marks \`/protected\` and \`/secrets\` as forbidden change prefixes. The task can be added to the existing evaluation directory without changing VTRM policy code.
