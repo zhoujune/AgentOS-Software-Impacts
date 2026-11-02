@@ -1,6 +1,6 @@
 # AgentOS-RK — CRediT authorship confirmation
 
-**For both human authors to complete before submission.** CRediT describes **actual contributions to AgentOS-RK and this software article**; it is not determined by author order, correspondence status, institutional title, or prior ASE authorship. See [Elsevier's CRediT guidance](https://www.elsevier.com/researcher/author/policies-and-guidelines/credit-author-statement).
+**Contribution record: Li Yuan's manuscript review and revision is confirmed; Jun Zhou's roles are drafted for his approval.** CRediT describes **actual contributions to AgentOS-RK and this software article**; it is not determined by author order, correspondence status, institutional title, or prior ASE authorship. See [Elsevier's CRediT guidance](https://www.elsevier.com/researcher/author/policies-and-guidelines/credit-author-statement).
 
 **Authors:** Jun Zhou (first author, co-corresponding); Li Yuan (co-corresponding). **Affiliation:** Chongqing Electric Power College, Chongqing, China.
 
@@ -20,16 +20,16 @@ Mark **only those categories actually performed**. A single author can hold seve
 | Project administration | Coordinating the research and its software release | [ ] | [ ] |
 | Supervision | Leading or overseeing research planning and execution | [ ] | [ ] |
 | Writing – original draft | Substantively preparing the manuscript's initial text | [ ] | [ ] |
-| Writing – review & editing | Critically revising and interpreting the manuscript | [ ] | [ ] |
+| Writing – review & editing | Critically revising and interpreting the manuscript | [ ] | [x] |
 | Funding acquisition | Securing project funding | [ ] | [ ] |
 
 **Funding acquisition** should not be selected merely because an author was employed by an institution. The paper states that it received no specific grant; selecting this role would need a separate explanation.
 
 ## Final manuscript format (fill in only after both authors agree)
 
-> Jun Zhou: [verified roles from the table, separated by commas].
+> **Jun Zhou (proposed; author to verify):** Conceptualization, Methodology, Software, Investigation, Validation, Writing – original draft.
 >
-> Li Yuan: [verified roles from the table, separated by commas].
+> **Li Yuan (confirmed by first author):** Writing – review & editing.
 
 Both authors should approve the final manuscript and agree to submission, not merely grant use of an email address or act as an administrative corresponding author. Keep the original ASE paper's authorship distinct from this research-software article, but appropriately cite the ASE work.
 
