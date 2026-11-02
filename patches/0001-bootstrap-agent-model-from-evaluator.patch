@@ -1,0 +1,10 @@
+--- a/judge/run_vtrm_eval.py
++++ b/judge/run_vtrm_eval.py
+@@ -222,6 +222,7 @@
+     if args.vm_console_start_agent_loop:
+         command = (
+             f"AGENT_MODE={shlex.quote(args.agent_mode)} "
++            f"AGENT_MODEL={shlex.quote(args.model)} "
+             f"AGENT_LOOP_POLL_INTERVAL={shlex.quote(str(args.agent_loop_poll_interval))} "
+             f"AGENT_LLM_POLL_INTERVAL={shlex.quote(str(args.agent_llm_poll_interval))} "
+             f"sh {shlex.quote(args.agent_loop_script)} >/var/log/sandbox/agent/judge_main_loop.log 2>&1 &"
