@@ -16,7 +16,7 @@ for tool in git python3 qemu-system-x86_64 debugfs e2fsck sha256sum; do
   command -v "$tool" >/dev/null || { echo "Missing prerequisite: $tool" >&2; exit 2; }
 done
 mkdir -p "$OUT"
-printf '%s\n' "Release candidate is NOT legally cleared or an independent-user success."
+printf '%s\n' "This run is technical reproduction, not an independent-user study. See docs/SOURCE_RELEASE_SCOPE.md for distribution boundaries."
 python3 "$ROOT/scripts/verify_split_sources.py"
 echo "Reconstructing pinned upstream + seven verified overlay inputs"
 bash "$ROOT/scripts/reconstruct_agentos_overlay.sh" "$OUT/AgentOS" > "$OUT/reconstruction.log" 2>&1 || {
